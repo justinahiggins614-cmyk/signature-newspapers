@@ -194,6 +194,7 @@ footer a{color:#3a5a9c}
 <p>Free forever. No login. Machine-readable: <a href="api.json">api.json</a> · <a href="data/index/editions.idx.json.gz">edition index</a> · <a href="sitemap.xml">sitemap</a></p>
 </div>
 </footer>
+<script src="js/jah-talk-fallback.js"></script>
 <script>
 "use strict";
 /* ============ config & utils ============ */
@@ -341,7 +342,28 @@ function downloadEdition(e){
   a.download=e.id+".txt";document.body.appendChild(a);a.click();
   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
 }
-/* ============ per-edition Q&A (grounded in the edition's articles) ============ */
+/* ============ per-edition Q&A (grounded in the edition's articles) ============
+   JAHtalk voice (js/jah-talk-fallback.js): shared human-talk layer. The
+   deterministic grounded answers stay primary; JAHtalk.reply handles
+   conversational turns (hello/duties/who are you/thanks/bye), JAHtalk.greet
+   opens the chat, JAHtalk.guard scrubs every final reply. The desk
+   assistant is a site helper — NOT a phone-book canon AI, claims no
+   JAH-AI ID. ============ */
+function editionAIProfile(e){
+  var p=(typeof PAPERS!=="undefined"&&PAPERS[e.paper])||{name:""};
+  return {name:(p.name?p.name+" Desk Assistant":"Edition Desk Assistant"),
+    description:"A helper AI that answers questions from this newspaper edition's own printed articles — headlines, stories, bylines and sections — and says plainly when something is not printed here.",
+    abilities:["list the headlines","summarize the edition","list the bylines","describe the sections inside","quote stories from this edition"],
+    domain:"newspapers",kind:"helper"};
+}
+function editionConversational(t){
+  return /^(hi|hey|hello|yo|howdy|greetings|good (morning|afternoon|evening))\b/.test(t)
+    || /(what (are|is) your (duties|job|role)|your duties|^duties|what can you do)/.test(t)
+    || /who are you|your name|introduce yourself/.test(t)
+    || /\b(thank|thanks|thx)\b/.test(t)
+    || /^(bye|goodbye|good ?night|see you|later)\b/.test(t)
+    || /how are you|how('| i)s it going|how do you feel/.test(t);
+}
 function qsay(html,who){
   var log=$("qalog");if(!log)return;
   var d=document.createElement("div");d.className="qmsg "+who;d.innerHTML=html;
@@ -349,7 +371,9 @@ function qsay(html,who){
 }
 function qaInit(e){
   var p=PAPERS[e.paper]||{name:""};
-  qsay("Hello — I'm the <b>"+esc(p.name)+"</b> desk assistant for the <b>"+fmtDate(e.date)+"</b> edition ("+e.id+"). Ask me about any story in this paper — I answer only from what's printed here. 📰","ai");
+  var P=editionAIProfile(e);
+  var g=(typeof JAHtalk!=="undefined")?JAHtalk.greet(P):("Hello — I'm the "+p.name+" desk assistant.");
+  qsay(esc(g)+" I'm your desk assistant for the <b>"+fmtDate(e.date)+"</b> edition ("+e.id+"). Ask me about any story in this paper — I answer only from what's printed here. 📰","ai");
   var chips=["What are the headlines?","Summarize this edition","Who wrote the stories?","What sections are inside?"];
   $("qachips").innerHTML=chips.map(function(c){return '<button class="qchip">'+esc(c)+'</button>'}).join("");
   Array.prototype.forEach.call($("qachips").children,function(b){b.onclick=function(){$("qin").value=b.textContent;qaAsk(e)}});
@@ -360,7 +384,10 @@ function qaAsk(e){
   var inp=$("qin"),q=inp.value.trim();
   if(!q)return;qsay(esc(q),"you");inp.value="";
   var t=q.toLowerCase(),p=PAPERS[e.paper]||{name:""};
-  var a;
+  var P=editionAIProfile(e),a;
+  if(editionConversational(t)&&typeof JAHtalk!=="undefined"){
+    a=esc(JAHtalk.reply(P,q));
+  }else{
   function kwHits(kw){
     kw=kw.toLowerCase().split(/\s+/).filter(function(w){return w.length>3});
     if(!kw.length)return[];
@@ -394,7 +421,9 @@ function qaAsk(e){
       a="I can only answer from what's printed in this edition — try asking for the <b>headlines</b>, a <b>summary</b>, the <b>bylines</b>, or a word from a story you're curious about.";
     }
   }
+  if(typeof JAHtalk!=="undefined")a=JAHtalk.guard(a,P);
   qsay(a,"ai");
+  }
 }
 /* ============ tiered read-aloud (ResponsiveVoice → 2× Google TTS) ============ */
 var RD={audio:null,queue:[],playing:false,stopped:true,timer:null,total:0};
