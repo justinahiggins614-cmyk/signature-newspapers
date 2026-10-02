@@ -20,7 +20,7 @@ Layout: weekly gz chunks data/volumes/editions-wNNNNN.jsonl.gz (7 days x 6
 papers = 42 editions/chunk). Compact search index data/index/editions.idx.json.gz
 rows: [id, date, paper_idx, n_articles, chunk, headlines+ledes joined].
 """
-import argparse, gzip, json, os, random, sys, datetime
+import argparse, gzip, json, os, random, re, sys, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -77,12 +77,12 @@ ORGS = ["the Signature Council", "the Lumen Exchange", "the Meridian Transit Aut
 TEAMS = ["Meridian Comets", "Argent Kestrels", "Solara Lanterns",
          "Pelagia Tides", "Borealia Auroras", "Vesper Foxes"]
 
-PROJECTS = ["the new skybridge arc", "the Grand Concourse extension",
-            "the harbor light-rail loop", "the Civic Athenaeum",
-            "the riverside promenade", "the night-market halls",
-            "the observatory dome restoration", "the great bell tower",
-            "the underground archive vaults", "the festival green",
-            "the wind-harbor piers", "the lantern district renewal"]
+PROJECTS = ["The New Skybridge Arc", "The Grand Concourse Extension",
+            "The Harbor Light-Rail Loop", "The Civic Athenaeum",
+            "The Riverside Promenade", "The Night-Market Halls",
+            "The Observatory Dome Restoration", "The Great Bell Tower",
+            "The Underground Archive Vaults", "The Festival Green",
+            "The Wind-Harbor Piers", "The Lantern District Renewal"]
 
 THINGS = ["a pocket observatory", "a hand-crank printing press",
           "a tide-powered lantern", "a whisper-quiet courier drone",
@@ -98,13 +98,13 @@ EVENTS = ["Lantern Festival", "Harvest of Inks", "the Long Light Fair",
 # ---------------- headline templates per section ----------------
 HEADS = {
  "lead": [
-    "Council Approves {project_cap} for {city}",
+    "Council Approves {project} for {city}",
     "{org_cap} Unveils {thing} in {city}",
     "Record Crowds Gather for {event} in {city}",
     "{city} Breaks Ground on {project}",
     "{org_cap} Opens New Chapter With {thing} Debut",
-    "{person} Named Steward of {project_cap}",
-    "{city} and {city2} Linked by New {thing}",
+    "{person} Named Steward of {project}",
+    "{city} and {city2} Linked by the New {thing_title}",
     "Thousands Turn Out as {event} Opens in {city}",
  ],
  "region": [
@@ -112,7 +112,7 @@ HEADS = {
     "New Ferry Route Joins {city} to {city2}",
     "{org_cap} Funds {project} Across the Region",
     "{city} Library Extends Hours for Readers",
-    "Historic {thing_cap} Finds Home in {city} Museum",
+    "The {thing_title} Finds a Historic Home in {city} Museum",
     "Farmers of {region} Report Bountiful Season",
     "{city} Council Votes to Plant Ten Thousand Trees",
     "Night Trains Return to {city} Station",
@@ -261,6 +261,11 @@ HONESTY = ("Signature press: this edition is an original generated newspaper of 
 def cap_org(s):
     return s[0].upper() + s[1:] if s.startswith("the ") else s
 
+def title_noun(s):
+    # "a pocket observatory" -> "Pocket Observatory" (strip leading article, title-case)
+    s = re.sub(r"^(a|an|the) ", "", s)
+    return " ".join(w.capitalize() for w in s.split())
+
 def fill(tpl, r):
     city = r.choice(CITIES); city2 = r.choice([c for c in CITIES if c != city])
     person = r.choice(PEOPLE); person2 = r.choice([p for p in PEOPLE if p != person])
@@ -271,7 +276,7 @@ def fill(tpl, r):
         org=org, org2=org2, org_cap=cap_org(org),
         team=team, team2=team2,
         project=r.choice(PROJECTS), project_cap=r.choice(PROJECTS).capitalize(),
-        thing=r.choice(THINGS), thing_cap=r.choice(THINGS).capitalize(),
+        thing=r.choice(THINGS), thing_title=title_noun(r.choice(THINGS)),
         event=r.choice(EVENTS), region=r.choice(["Meridia", "Argentia", "Borealia", "Solara", "Pelagia"]),
         place=r.choice(["high vales", "outer isles", "northern reaches", "salt marshes", "ember hills"]),
     )
@@ -428,7 +433,7 @@ def build_all():
     rows = []
     for eid_, date, pi, n, wi, iss in meta:
         e = _ed(wi, eid_)
-        txt = " ".join(a["h"] + " " + a["body"][0] for a in e["articles"])
+        txt = " ‖ ".join(a["h"] + " — " + a["body"][0] for a in e["articles"])
         rows.append([eid_, date, pi, n, wi, txt])
     with gzip.open(os.path.join(IDX, "editions.idx.json.gz"), "wt", encoding="utf-8") as f:
         json.dump(rows, f, ensure_ascii=False)
