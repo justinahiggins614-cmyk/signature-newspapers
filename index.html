@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Signature Global Newspaper Archive — Daily Signature-World Editions</title>
+<meta name="description" content="The Signature Global Newspaper Archive: original generated newspapers of the Signature world. Daily editions from six regional papers across past dates, updated every day. All people, places, and events are invented.">
+<link rel="canonical" href="https://justinahiggins614-cmyk.github.io/signature-newspapers/">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"NewsMediaOrganization",
+"name":"The Signature Global Newspaper Archive",
+"url":"https://justinahiggins614-cmyk.github.io/signature-newspapers/",
+"description":"Original generated newspapers of the Signature world: daily editions from six regional papers, updated daily. All content is invented Signature-world reporting."}
+</script>
+<style>
+:root{--paper:#f6f1e2;--paper2:#efe8d2;--ink:#1c1a15;--mut:#6b6353;--red:#9c2b2b;--rule:#2b2820;--gold:#8a6d1f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Georgia,'Times New Roman',serif}
+.jahnet{background:#0a0f1e;color:#9aa4b2;font-size:.76em;padding:7px 10px;text-align:center;line-height:2;letter-spacing:.02em;border-bottom:1px solid #2a3a5f;font-family:Arial,Helvetica,sans-serif}
+.jahnet-t{color:#c9a227;font-weight:700;letter-spacing:.25em;margin-right:10px}
+.jahnet a{color:#9fc2ff;text-decoration:none;margin:0 7px;white-space:nowrap}
+.jahnet a:hover{text-decoration:underline}
+.jahnet .cur{color:#c9a227;font-weight:700;margin:0 7px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 14px}
+.honesty{background:#fff8e1;border-top:3px double var(--rule);border-bottom:3px double var(--rule);padding:10px 14px;font-size:.88em;color:#4a4234;text-align:center;font-family:Arial,Helvetica,sans-serif}
+.honesty b{color:var(--red)}
+header.hero{text-align:center;padding:26px 14px 14px;border-bottom:4px double var(--rule)}
+.masthead{font-size:2.4em;font-weight:900;letter-spacing:.04em;margin:.1em 0;text-transform:uppercase}
+.masthead .sig{color:var(--red)}
+.dateline{color:var(--mut);font-style:italic;margin:.3em 0}
+.stats{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:12px 0;font-family:Arial,Helvetica,sans-serif}
+.stat{background:#fffdf4;border:1px solid #c9bfa4;border-radius:8px;padding:8px 16px;min-width:120px}
+.stat b{display:block;font-size:1.3em}
+.stat span{font-size:.76em;color:var(--mut)}
+.march{max-width:620px;margin:8px auto 4px;font-family:Arial,Helvetica,sans-serif}
+.march .bar{height:12px;background:#e4dcc2;border:1px solid #b9ac86;border-radius:8px;overflow:hidden}
+.march .fill{height:100%;background:linear-gradient(90deg,#9c2b2b,#c9a227);width:0%}
+.march small{color:var(--mut)}
+.controls{position:sticky;top:0;z-index:20;background:rgba(246,241,226,.98);border-bottom:2px solid var(--rule);padding:10px 0;font-family:Arial,Helvetica,sans-serif}
+.controls .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+input[type=search],input[type=date],select{background:#fffdf4;color:var(--ink);border:1px solid #b9ac86;border-radius:6px;padding:9px 12px;font-size:1em;font-family:inherit}
+input[type=search]{min-width:min(400px,88vw)}
+button{cursor:pointer}
+.btn{background:var(--ink);color:var(--paper);border:1px solid var(--ink);border-radius:6px;padding:9px 14px;font-family:inherit;font-size:.95em}
+.btn:hover{background:#33302a}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff}
+h2.sec{font-size:1.4em;border-bottom:2px solid var(--rule);padding-bottom:6px;margin:26px 0 12px;text-transform:uppercase;letter-spacing:.06em}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:#fffdf4;border:1px solid #c9bfa4;border-radius:4px;padding:14px;cursor:pointer;box-shadow:2px 2px 0 #d8cfb2}
+.card:hover{border-color:var(--red)}
+.card .pmast{font-weight:900;font-size:1.05em;border-bottom:3px double var(--rule);padding-bottom:6px;margin-bottom:8px}
+.card .pdate{color:var(--mut);font-size:.82em;font-family:Arial,Helvetica,sans-serif}
+.card .ph{font-size:1em;margin:8px 0 4px;line-height:1.35}
+.card .ph:first-of-type{font-weight:700;font-size:1.08em}
+.card .meta{font-size:.76em;color:var(--mut);font-family:Arial,Helvetica,sans-serif;margin-top:8px}
+#edview{display:none}
+/* ---- broadsheet edition view ---- */
+.sheet{background:#fffdf4;border:1px solid #c9bfa4;box-shadow:3px 3px 0 #d8cfb2;margin:18px 0 30px;padding:26px 30px}
+.sheet .emast{text-align:center;font-size:2em;font-weight:900;text-transform:uppercase;letter-spacing:.03em;border-bottom:4px double var(--rule);padding-bottom:10px;margin-bottom:4px}
+.sheet .etag{text-align:center;font-style:italic;color:var(--mut);margin-bottom:4px}
+.sheet .edate{text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:.85em;color:var(--mut);border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:16px}
+.sheet .ehon{font-size:.8em;background:#fff8e1;border:1px dashed #b9ac86;padding:8px 12px;margin-bottom:18px;font-family:Arial,Helvetica,sans-serif;color:#4a4234}
+article.story{margin-bottom:22px;break-inside:avoid}
+.story .kicker{font-family:Arial,Helvetica,sans-serif;font-size:.72em;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--red)}
+.story h3{font-size:1.35em;margin:.15em 0 .25em;line-height:1.25}
+.story .byline{font-size:.82em;color:var(--mut);font-style:italic;margin-bottom:8px}
+.story p{line-height:1.65;margin:.5em 0;text-align:justify}
+.eactions{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;font-family:Arial,Helvetica,sans-serif}
+/* ---- Q&A ---- */
+.qa{background:#fffdf4;border:2px solid var(--rule);border-radius:6px;padding:14px;margin:16px 0;font-family:Arial,Helvetica,sans-serif}
+.qa h4{margin:0 0 8px;text-transform:uppercase;letter-spacing:.1em;font-size:.9em}
+#qalog{max-height:280px;overflow-y:auto;border:1px solid #d8cfb2;background:#fff;padding:10px;border-radius:4px;margin-bottom:8px;font-size:.92em}
+.qmsg{margin:6px 0;line-height:1.45}
+.qmsg.you{font-weight:700}
+.qmsg.ai{color:#2a2a2a}
+.qchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.qchip{background:transparent;border:1px solid #b9ac86;border-radius:20px;padding:5px 12px;font-size:.82em;font-family:inherit}
+.qrow{display:flex;gap:8px}
+.qrow input{flex:1}
+#rdbar{display:none;position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);border-radius:30px;padding:10px 18px;z-index:50;font-family:Arial,Helvetica,sans-serif;align-items:center;gap:12px}
+#rdbar.show{display:flex}
+#rdbar button{background:var(--red);color:#fff;border:none;border-radius:20px;padding:6px 14px}
+.about{background:#fffdf4;border:1px solid #c9bfa4;border-radius:4px;padding:16px 20px;margin:20px 0;font-size:.95em}
+.about h3{margin-top:0;text-transform:uppercase;letter-spacing:.06em;font-size:1.05em}
+.paperlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:10px}
+.paperlist .p{border-left:3px solid var(--red);padding:4px 10px}
+.paperlist .p b{display:block}
+.paperlist .p span{font-size:.85em;color:var(--mut);font-style:italic}
+footer{border-top:4px double var(--rule);margin-top:30px;padding:18px 14px 40px;font-family:Arial,Helvetica,sans-serif;font-size:.82em;color:var(--mut)}
+footer .sites{line-height:2}
+footer a{color:#3a5a9c}
+.note-provisional{color:var(--red);font-style:italic}
+.lateststatic{font-size:.9em}
+.lateststatic a{color:#3a5a9c}
+</style>
+</head>
+<body>
+<div class="jahnet"><span class="jahnet-t">THE JAH NETWORK</span><a href="https://justinahiggins614-cmyk.github.io/jah-ai-models/">The Signature AI Telephone Book</a><a href="https://justinahiggins614-cmyk.github.io/jah-calculator/">Signature Universal Paradox Immune Calculator</a><a href="https://justinahiggins614-cmyk.github.io/jah-dictionary/">The Signature Dictionary</a><a href="https://justinahiggins614-cmyk.github.io/jah-wiki/">JAH Wiki</a><a href="https://justinahiggins614-cmyk.github.io/jah-n-wiki-leaks/">JAH-N Wiki</a><a href="https://justinahiggins614-cmyk.github.io/cyber-patent-catalog/">Globally Rejustered Patent Catalog</a><a href="https://justinahiggins614-cmyk.github.io/signature-one-archive/specs.html">Signature Spec Catalog Pending Patents</a><a href="https://justinahiggins614-cmyk.github.io/signature-llama/">Signature Llama</a><a href="https://justinahiggins614-cmyk.github.io/jah-computer-systems/">The Signature PC System Depository</a><a href="https://justinahiggins614-cmyk.github.io/signature-cyber-mega-mall/">Signature Cyber Mega Mall</a><a href="https://justinahiggins614-cmyk.github.io/signature-university/">Signature University</a><a href="https://justinahiggins614-cmyk.github.io/signature-books/">The Signature Book Depository</a><a href="https://justinahiggins614-cmyk.github.io/signature-comics/">The Signature Comic Store</a><span class="cur">YOU ARE HERE: THE SIGNATURE GLOBAL NEWSPAPER ARCHIVE</span><a href="https://justinahiggins614-cmyk.github.io/signature-3d-print/">The Signature 3D Print Depository</a></div>
+
+<div class="honesty"><b>Signature press.</b> Every edition below is an original generated newspaper of the Signature world — all people, places, teams, organizations, and events are invented. It reports no real-world news and names no real persons.</div>
+
+<div id="home">
+<header class="hero wrap">
+<div class="masthead"><span class="sig">The Signature</span> Global Newspaper Archive</div>
+<div class="dateline">Daily editions from six regional papers of the Signature world · past dates on file · new editions every morning</div>
+<div class="stats" id="stats"><div class="stat"><b>…</b><span>loading</span></div></div>
+<div class="march"><div class="bar"><div class="fill" id="marchfill"></div></div><small id="marchtxt">Marching to 1,000,000 editions + articles</small></div>
+</header>
+
+<div class="controls"><div class="wrap">
+<div class="row">
+<input type="search" id="q" placeholder="Search headlines, articles, or JAH-ED-######…" aria-label="Search editions">
+<select id="paper" aria-label="Paper filter"><option value="">All six papers</option></select>
+<input type="date" id="day" aria-label="Pick a date" min="2025-10-03">
+<button class="btn ghost" id="goday">Go to date</button>
+<button class="btn ghost" id="golatest">Latest</button>
+</div>
+</div></div>
+
+<div class="wrap">
+<h2 class="sec">Today's editions</h2>
+<div class="grid" id="today"><div class="card">Loading the press…</div></div>
+
+<h2 class="sec">Browse the archive</h2>
+<div class="grid" id="results"></div>
+<button class="btn" id="more" style="display:block;margin:18px auto">Load more editions</button>
+
+<div class="about">
+<h3>About the papers</h3>
+<p>Six regional papers serve the Signature world, each printing a fresh edition every morning. Every edition carries a masthead, date, volume and issue number, full headlines, and complete article text — free to read, copy, download, and hear read aloud.</p>
+<div class="paperlist" id="paperlist"></div>
+</div>
+
+<div class="about lateststatic">
+<h3>Fresh off the press</h3>
+<!-- LATEST-EDITIONS -->
+<p><b><a href="?edition=JAH-ED-002179">The Signature Daily Globe</a></b> — 2026-10-01, Vol. 3 Issue 991<ul><li>Record Crowds Gather for Lantern Festival in Glimmerwick</li><li>Quillhaven Council Votes to Plant Ten Thousand Trees</li><li>Engineers Tune the Great Bell of Marlowe Bay</li></ul></p>
+<p><b><a href="?edition=JAH-ED-002180">The Meridian Herald</a></b> — 2026-10-01, Vol. 3 Issue 974<ul><li>Thousands Turn Out as the Tide Gala Opens in Lumenport</li><li>Halcyon Reach Market Hall Reopens After Restoration</li><li>Observatory at Frostgate Spots Distant Light</li></ul></p>
+<p><b><a href="?edition=JAH-ED-002181">The Argent Post</a></b> — 2026-10-01, Vol. 3 Issue 936<ul><li>Record Crowds Gather for Harvest of Inks in Argent Falls</li><li>Borealia Harbor Council Votes to Plant Ten Thousand Trees</li><li>The Meridian Transit Authority Charts a New Comet Over Meridian City</li></ul></p>
+<p><b><a href="?edition=JAH-ED-002182">The Northlight Times</a></b> — 2026-10-01, Vol. 3 Issue 893<ul><li>Juniper Quay Breaks Ground on the lantern district renewal</li><li>The Observatory at Frostgate Funds the Civic Athenaeum Across the Region</li><li>Halloway Researchers Bottle a self-inking survey compass</li></ul></p>
+<p><b><a href="?edition=JAH-ED-002183">The Sunspire Gazette</a></b> — 2026-10-01, Vol. 3 Issue 849<ul><li>Alistair Fenwick Named Steward of The harbor light-rail loop</li><li>Cadence Vale Library Extends Hours for Readers</li><li>New Study: Cinderwick Air Sweetest at Dawn</li></ul></p>
+<p><b><a href="?edition=JAH-ED-002184">The Tidewater Chronicle</a></b> — 2026-10-01, Vol. 3 Issue 805<ul><li>The Archive of Weights and Measures Opens New Chapter With a fold-flat market stall Debut</li><li>Meridian City Market Hall Reopens After Restoration</li><li>Botanists Catalog Rare Blooms Near Quillhaven</li></ul></p>
+<!-- /LATEST-EDITIONS -->
+</div>
+</div>
+</div>
+
+<div id="edview" class="wrap"></div>
+
+<div id="rdbar"><span>🔊 <span id="rdprog">Reading…</span></span><button id="rdstop">⏹ Stop</button></div>
+
+<footer>
+<div class="wrap">
+<p><b>The Signature Global Newspaper Archive</b> — original generated newspapers of the Signature world, by <b>Justin Addam Higgins</b>. Every edition is generated by the Signature system: invented people, places, and events; no real-world news; no real persons named. New editions print every morning.</p>
+<p class="note-provisional">Site title provisional — Manon to confirm.</p>
+<div class="sites">THE JAH NETWORK ·
+<a href="https://justinahiggins614-cmyk.github.io/jah-ai-models/">Telephone Book</a> ·
+<a href="https://justinahiggins614-cmyk.github.io/jah-calculator/">Calculator</a> ·
+<a href="https://justinahiggins614-cmyk.github.io/jah-dictionary/">Dictionary</a> ·
+<a href="https://justinahiggins614-cmyk.github.io/jah-wiki/">JAH Wiki</a> ·
+<a href="https://justinahiggins614-cmyk.github.io/jah-n-wiki-leaks/">JAH-N Wiki</a> ·
+<a href="https://justinahiggins614-cmyk.github.io/cyber-patent-catalog/">Patent Catalog</a> ·
+<a href="https://justinahiggins614-cmyk.github.io/signature-one-archive/specs.html">Spec Catalog</a> ·
+<a href="https://justinahiggins614-cmyk.github.io/signature-llama/">Signature Llama</a> ·
+<a href="https://justinahiggins614-cmyk.github.io/jah-computer-systems/">PC Depository</a> ·
+<a href="https://justinahiggins614-cmyk.github.io/signature-cyber-mega-mall/">Mega Mall</a> ·
+<a href="https://justinahiggins614-cmyk.github.io/signature-university/">University</a> ·
+<a href="https://justinahiggins614-cmyk.github.io/signature-books/">Book Depository</a> ·
+<a href="https://justinahiggins614-cmyk.github.io/signature-comics/">Comic Store</a> ·
+<b>Newspaper Archive</b> ·
+<a href="https://justinahiggins614-cmyk.github.io/signature-3d-print/">3D Print Depository</a></div>
+<p>Free forever. No login. Machine-readable: <a href="api.json">api.json</a> · <a href="data/index/editions.idx.json.gz">edition index</a> · <a href="sitemap.xml">sitemap</a></p>
+</div>
+</footer>
+<script>
+"use strict";
+/* ============ config & utils ============ */
+var IDX_URL="data/index/editions.idx.json.gz", API_URL="api.json";
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+async function gz(url){var r=await fetch(url);if(!r.ok)throw new Error("fetch "+r.status);
+  var ds=new DecompressionStream("gzip"),buf=await new Response(r.body.pipeThrough(ds)).text();return buf}
+function fmtDate(d){var p=d.split("-");var M=["January","February","March","April","May","June","July","August","September","October","November","December"];return M[+p[1]-1]+" "+(+p[2])+", "+p[0]}
+var PAPERS=[], IDX=null, chunkCache={}, curEdition=null, grid=[], shown=0, PAGE=24;
+
+/* ============ boot ============ */
+async function boot(){
+  var api=null;
+  try{api=await(await fetch(API_URL)).json()}catch(e){}
+  if(api&&api.papers)PAPERS=api.papers;
+  var ps=$("paper");
+  PAPERS.forEach(function(p,i){var o=document.createElement("option");o.value=i;o.textContent=p.name;ps.appendChild(o)});
+  $("paperlist").innerHTML=PAPERS.map(function(p){
+    return '<div class="p"><b>'+esc(p.name)+'</b><span>'+esc(p.region)+' · '+esc(p.tagline)+'</span><br><a href="?paper='+(PAPERS.indexOf(p))+'">Browse its editions →</a></div>'}).join("");
+  try{IDX=JSON.parse(await gz(IDX_URL))}catch(e){IDX=[]}
+  renderStats(api);renderToday();
+  var qp=new URLSearchParams(location.search);
+  if(qp.get("edition")){openEdition(qp.get("edition"))}
+  else{applyPaperParam(qp);resetGrid();wireUI()}
+  if(api&&api.date_range&&api.date_range[1]){$("day").max=api.date_range[1]}
+}
+function renderStats(api){
+  var nEd=IDX.length,nArt=IDX.reduce(function(a,r){return a+r[3]},0);
+  var dr=api&&api.date_range?api.date_range:["",""];
+  $("stats").innerHTML=
+    '<div class="stat"><b>'+nEd.toLocaleString()+'</b><span>editions on file</span></div>'+
+    '<div class="stat"><b>'+nArt.toLocaleString()+'</b><span>articles printed</span></div>'+
+    '<div class="stat"><b>'+PAPERS.length+'</b><span>regional papers</span></div>'+
+    '<div class="stat"><b>'+esc(dr[0]||"—")+'</b><span>archive begins</span></div>';
+  var march=nEd+nArt;
+  $("marchfill").style.width=Math.min(100,march/10000)+"%";
+  $("marchtxt").textContent=march.toLocaleString()+" / 1,000,000 editions + articles";
+}
+function edCard(r){
+  var p=PAPERS[r[2]]||{name:""};
+  var heads=r[5].split("  ").slice(0,3);
+  return '<div class="card" onclick="openEdition(\''+r[0]+'\')">'+
+    '<div class="pmast">'+esc(p.name)+'</div>'+
+    '<div class="pdate">'+fmtDate(r[1])+' · '+r[0]+'</div>'+
+    heads.map(function(h,i){return '<div class="ph">'+esc(h.split(" ").slice(0,14).join(" "))+(h.split(" ").length>14?"…":"")+'</div>'}).join("")+
+    '<div class="meta">'+r[3]+' articles · <span style="color:#9c2b2b">Read edition →</span></div></div>';
+}
+function renderToday(){
+  if(!IDX.length)return;
+  var latest=IDX[IDX.length-1][1];
+  var todays=IDX.filter(function(r){return r[1]===latest});
+  $("today").innerHTML=todays.map(edCard).join("")||"<p>No editions.</p>";
+}
+/* ============ browse / search ============ */
+function filtered(){
+  var q=$("q").value.trim().toLowerCase(),pi=$("paper").value,day=$("day").value;
+  return IDX.filter(function(r){
+    if(pi!==""&&r[2]!==+pi)return false;
+    if(day&&r[1]!==day)return false;
+    if(q&&r[0].toLowerCase().indexOf(q)<0&&r[5].toLowerCase().indexOf(q)<0)return false;
+    return true;
+  }).reverse();
+}
+function resetGrid(){grid=filtered();shown=0;$("results").innerHTML="";renderMore()}
+function renderMore(){
+  var slice=grid.slice(shown,shown+PAGE);shown+=PAGE;
+  $("results").insertAdjacentHTML("beforeend",slice.map(edCard).join(""));
+  $("more").style.display=shown<grid.length?"":"none";
+  if(!grid.length)$("results").innerHTML="<p>No editions match — try different words, another paper, or another date.</p>";
+}
+function applyPaperParam(qp){
+  var pi=qp.get("paper");
+  if(pi!==null&&PAPERS[+pi]){$("paper").value=pi}
+}
+function wireUI(){
+  var t;
+  $("q").addEventListener("input",function(){clearTimeout(t);t=setTimeout(resetGrid,220)});
+  $("paper").addEventListener("change",resetGrid);
+  $("goday").onclick=function(){if($("day").value)resetGrid()};
+  $("golatest").onclick=function(){$("q").value="";$("paper").value="";$("day").value="";resetGrid()};
+  $("more").onclick=renderMore;
+}
+async function getEdition(id){
+  var row=IDX.find(function(r){return r[0]===id});
+  if(!row)return null;
+  var wi=row[4];
+  if(!chunkCache[wi]){chunkCache[wi]=JSON.parse(await gz("data/volumes/editions-w"+String(wi).padStart(5,"0")+".jsonl.gz"))}
+  return chunkCache[wi].find(function(e){return e.id===id})||null;
+}
+/* ============ edition view ============ */
+var SEC_TITLES={"lead":"Front Page","region":"Regional","science":"Science & Discovery","culture":"Arts & Culture","weather":"Weather","sports":"Sport","business":"Business","opinion":"Opinion"};
+async function openEdition(id){
+  $("home").style.display="none";$("edview").style.display="block";window.scrollTo(0,0);
+  $("edview").innerHTML="<p>Unfolding the edition…</p>";
+  var e=await getEdition(id);
+  if(!e){$("edview").innerHTML='<p>Edition not found. <a href="./">Back to the archive →</a></p>';return}
+  curEdition=e;
+  var p=PAPERS[e.paper]||{name:"",tagline:""};
+  var html='<div class="sheet">'+
+    '<div class="emast">'+esc(p.name)+'</div>'+
+    '<div class="etag">'+esc(p.tagline||"")+'</div>'+
+    '<div class="edate">'+fmtDate(e.date)+' · Vol. '+e.volume+', Issue '+e.issue+' · '+e.id+'</div>'+
+    '<div class="ehon"><b>Signature press:</b> '+esc(e.honesty)+'</div>'+
+    e.articles.map(function(a){
+      return '<article class="story"><div class="kicker">'+esc(SEC_TITLES[a.sec]||a.sec)+'</div>'+
+      '<h3>'+esc(a.h)+'</h3><div class="byline">'+esc(a.by)+' · '+fmtDate(e.date)+'</div>'+
+      a.body.map(function(par){return '<p>'+esc(par)+'</p>'}).join("")+'</article>'}).join("")+
+    '</div>'+
+    '<div class="eactions">'+
+    '<button class="btn red" id="rded">🔊 Read edition aloud</button>'+
+    '<button class="btn ghost" id="cped">📋 Copy edition</button>'+
+    '<button class="btn ghost" id="dled">⬇ Download .txt</button>'+
+    '<a class="btn ghost" href="./" style="text-decoration:none">← Back to archive</a>'+
+    '</div>'+
+    '<div class="qa"><h4>❓ Ask about this edition</h4><div id="qalog"></div>'+
+    '<div class="qchips" id="qachips"></div>'+
+    '<div class="qrow"><input id="qin" placeholder="Ask anything about this edition…" aria-label="Ask about this edition"><button class="btn" id="qgo">Ask</button></div></div>';
+  $("edview").innerHTML=html;
+  history.replaceState(null,"","?edition="+e.id);
+  document.title=e.id+" · "+p.name+" · "+fmtDate(e.date)+" — The Signature Global Newspaper Archive";
+  $("rded").onclick=function(){readEdition(e)};
+  $("cped").onclick=function(){copyEdition(e)};
+  $("dled").onclick=function(){downloadEdition(e)};
+  qaInit(e);
+}
+function editionText(e){
+  var p=PAPERS[e.paper]||{name:""};
+  var t=p.name+". "+fmtDate(e.date)+". Volume "+e.volume+", Issue "+e.issue+".\n\n";
+  e.articles.forEach(function(a){
+    t+=(SEC_TITLES[a.sec]||a.sec).toUpperCase()+": "+a.h+"\n"+a.by+"\n"+a.body.join("\n")+"\n\n";
+  });
+  t+="\nSignature press: "+e.honesty;
+  return t;
+}
+function copyEdition(e){
+  var done=function(){alert("Edition copied — paste it anywhere.")};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(editionText(e)).then(done,function(){fallbackCopy(e);done()})}
+  else{fallbackCopy(e);done()}
+}
+function fallbackCopy(e){var ta=document.createElement("textarea");ta.value=editionText(e);document.body.appendChild(ta);ta.select();try{document.execCommand("copy")}catch(x){}document.body.removeChild(ta)}
+function downloadEdition(e){
+  var blob=new Blob([editionText(e)],{type:"text/plain"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download=e.id+".txt";document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+}
+/* ============ per-edition Q&A (grounded in the edition's articles) ============ */
+function qsay(html,who){
+  var log=$("qalog");if(!log)return;
+  var d=document.createElement("div");d.className="qmsg "+who;d.innerHTML=html;
+  log.appendChild(d);log.scrollTop=log.scrollHeight;
+}
+function qaInit(e){
+  var p=PAPERS[e.paper]||{name:""};
+  qsay("Hello — I'm the <b>"+esc(p.name)+"</b> desk assistant for the <b>"+fmtDate(e.date)+"</b> edition ("+e.id+"). Ask me about any story in this paper — I answer only from what's printed here. 📰","ai");
+  var chips=["What are the headlines?","Summarize this edition","Who wrote the stories?","What sections are inside?"];
+  $("qachips").innerHTML=chips.map(function(c){return '<button class="qchip">'+esc(c)+'</button>'}).join("");
+  Array.prototype.forEach.call($("qachips").children,function(b){b.onclick=function(){$("qin").value=b.textContent;qaAsk(e)}});
+  $("qgo").onclick=function(){qaAsk(e)};
+  $("qin").addEventListener("keydown",function(ev){if(ev.key==="Enter")qaAsk(e)});
+}
+function qaAsk(e){
+  var inp=$("qin"),q=inp.value.trim();
+  if(!q)return;qsay(esc(q),"you");inp.value="";
+  var t=q.toLowerCase(),p=PAPERS[e.paper]||{name:""};
+  var a;
+  function kwHits(kw){
+    kw=kw.toLowerCase().split(/\s+/).filter(function(w){return w.length>3});
+    if(!kw.length)return[];
+    return e.articles.filter(function(ar){
+      var txt=(ar.h+" "+ar.body.join(" ")).toLowerCase();
+      return kw.some(function(w){return txt.indexOf(w)>=0});
+    });
+  }
+  if(/headline|front page|top stor|lead stor/.test(t)){
+    a="<b>Headlines, "+fmtDate(e.date)+":</b><br>• "+e.articles.map(function(x){return esc(x.h)}).join("<br>• ");
+  }else if(/summar|tldr|overview|about this edition|what.*in this/.test(t)){
+    var lead=e.articles[0];
+    a="This edition leads with <b>"+esc(lead.h)+"</b> — "+esc(lead.body[0])+" It carries "+e.articles.length+" stories across "+[...new Set(e.articles.map(function(x){return SEC_TITLES[x.sec]||x.sec}))].join(", ")+".";
+  }else if(/who wrote|byline|author|reporter|journalist/.test(t)){
+    a="<b>Bylines:</b><br>• "+e.articles.map(function(x){return esc(x.h)+" — <i>"+esc(x.by)+"</i>"}).join("<br>• ");
+  }else if(/section|inside|departments|kinds of/.test(t)){
+    a="Inside this edition: <b>"+[...new Set(e.articles.map(function(x){return SEC_TITLES[x.sec]||x.sec}))].join("</b>, <b>")+"</b>.";
+  }else if(/date|when|which day|issue|volume/.test(t)){
+    a="This is the <b>"+fmtDate(e.date)+"</b> edition of <b>"+esc(p.name)+"</b> — Vol. "+e.volume+", Issue "+e.issue+" ("+e.id+").";
+  }else if(/paper|masthead|newspaper|publication/.test(t)){
+    a="<b>"+esc(p.name)+"</b> — "+esc(p.tagline||"")+" Serving "+esc(p.region||"the Signature world")+".";
+  }else if(/how many|count/.test(t)){
+    a="This edition prints <b>"+e.articles.length+" stories</b>.";
+  }else if(/real|true|actually happen|made up|fiction/.test(t)){
+    a="Good question — and the honest answer: <b>none of it is real-world news.</b> "+esc(e.honesty);
+  }else{
+    var hits=kwHits(t.replace(/[^a-z0-9\s]/gi,""));
+    if(hits.length){
+      a="From this edition:<br>• "+hits.slice(0,4).map(function(x){return "<b>"+esc(x.h)+"</b><br><span style='color:#555'>"+esc(x.body[0].slice(0,180))+"…</span>"}).join("<br>• ");
+    }else{
+      a="I can only answer from what's printed in this edition — try asking for the <b>headlines</b>, a <b>summary</b>, the <b>bylines</b>, or a word from a story you're curious about.";
+    }
+  }
+  qsay(a,"ai");
+}
+/* ============ tiered read-aloud (ResponsiveVoice → 2× Google TTS) ============ */
+var RD={audio:null,queue:[],playing:false,stopped:true,timer:null,total:0};
+var RD_TIERS=[
+ function(t){return "https://code.responsivevoice.org/getvoice.php?t="+encodeURIComponent(t)+"&tl=en-US&sv=g2&vn=&pitch=0.5&rate=0.95"},
+ function(t){return "https://translate.google.com/translate_tts?ie=UTF-8&q="+encodeURIComponent(t)+"&tl=en&client=tw-ob"},
+ function(t){return "https://translate.googleapis.com/translate_tts?ie=UTF-8&q="+encodeURIComponent(t)+"&tl=en&client=tw-ob"}];
+function rdChunks(t,m){t=String(t).replace(/\s+/g," ").trim();var out=[],cur="";
+  t.split(/(?<=[.!?])\s+/).forEach(function(s){if((cur+" "+s).length>170){if(cur)out.push(cur);cur=s}else cur=(cur?cur+" ":"")+s});
+  if(cur)out.push(cur);return out.slice(0,m||400)}
+function rdStop(){RD.stopped=true;RD.playing=false;RD.queue=[];if(RD.timer){clearTimeout(RD.timer);RD.timer=null}
+  if(RD.audio){try{RD.audio.pause()}catch(e){}RD.audio=null}$("rdbar").classList.remove("show")}
+function rdTier(chunk,tier,done){
+  if(tier>=RD_TIERS.length){done(false);return}
+  var url=RD_TIERS[tier](chunk),a=new Audio();RD.audio=a;
+  var fin=false;
+  function next(ok){if(fin)return;fin=true;try{a.pause()}catch(e){}done(ok)}
+  a.onended=function(){next(true)};a.onerror=function(){next(false)};
+  RD.timer=setTimeout(function(){rdTier(chunk,tier+1,done)},12000);
+  a.src=url;var pr=a.play();if(pr&&pr.catch)pr.catch(function(){next(false)});
+  var old=next;next=function(ok){if(RD.timer){clearTimeout(RD.timer);RD.timer=null}old(ok)};
+}
+function rdNext(){
+  if(RD.stopped||!RD.queue.length){rdStop();return}
+  RD.playing=true;var chunk=RD.queue.shift(),tier=0;
+  $("rdprog").textContent="Reading chunk "+(RD.total-RD.queue.length)+" of "+RD.total+"…";
+  (function attempt(){if(RD.stopped)return;
+    rdTier(chunk,tier,function(ok){if(RD.stopped)return;
+      if(ok){setTimeout(rdNext,250)}else{tier++;if(tier<RD_TIERS.length)attempt();else setTimeout(rdNext,250)}});
+  })();
+}
+function readEdition(e){
+  if(RD.playing&&!RD.stopped){rdStop();return}
+  rdStop();RD.queue=rdChunks(editionText(e),400);RD.total=RD.queue.length;
+  if(!RD.queue.length)return;RD.stopped=false;
+  $("rdbar").classList.add("show");rdNext();
+}
+$("rdstop").onclick=rdStop;
+boot();
+</script>
+</body>
+</html>

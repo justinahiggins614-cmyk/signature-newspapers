@@ -1,0 +1,57 @@
+{
+ "site": "The Signature Global Newspaper Archive",
+ "site_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/",
+ "title_provisional": true,
+ "description": "Original generated newspapers of the Signature world: daily editions from six regional papers across past dates, updated daily. All people, places, and events are invented; no real-world news.",
+ "updated": "2026-10-02",
+ "counts": {
+  "editions": 2184,
+  "articles": 13104,
+  "papers": 6
+ },
+ "papers": [
+  {
+   "name": "The Signature Daily Globe",
+   "region": "the Signature world",
+   "tagline": "All the world's Signature news, every morning",
+   "founded": "2024-01-15"
+  },
+  {
+   "name": "The Meridian Herald",
+   "region": "Meridia",
+   "tagline": "Meridia's morning voice since the first printing",
+   "founded": "2024-02-01"
+  },
+  {
+   "name": "The Argent Post",
+   "region": "Argentia",
+   "tagline": "Argentia, reported straight",
+   "founded": "2024-03-10"
+  },
+  {
+   "name": "The Northlight Times",
+   "region": "Borealia",
+   "tagline": "News from under the northern lights",
+   "founded": "2024-04-22"
+  },
+  {
+   "name": "The Sunspire Gazette",
+   "region": "Solara",
+   "tagline": "Solara's sunlit record of the day",
+   "founded": "2024-06-05"
+  },
+  {
+   "name": "The Tidewater Chronicle",
+   "region": "Pelagia",
+   "tagline": "Pelagia's paper of record, tide in tide out",
+   "founded": "2024-07-19"
+  }
+ ],
+ "date_range": [
+  "2025-10-03",
+  "2026-10-01"
+ ],
+ "deep_link_pattern": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?edition=JAH-ED-000001",
+ "index": "data/index/editions.idx.json.gz",
+ "honesty": "Signature press: this edition is an original generated newspaper of the Signature world. All people, places, teams, organizations, and events named herein are invented. It reports no real-world news and names no real persons."
+}
