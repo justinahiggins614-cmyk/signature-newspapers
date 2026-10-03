@@ -1,0 +1,56 @@
+[
+ {
+  "region_id": "JAH-REGION-000001",
+  "name": "the Signature world",
+  "papers": [
+   "JAH-PAPER-000001"
+  ],
+  "fictionality_status": "FICTIONAL_GENERATED",
+  "note": "Fictional Signature-world region. Geography beyond the name is not defined in the archive; no real-world place is implied."
+ },
+ {
+  "region_id": "JAH-REGION-000002",
+  "name": "Meridia",
+  "papers": [
+   "JAH-PAPER-000002"
+  ],
+  "fictionality_status": "FICTIONAL_GENERATED",
+  "note": "Fictional Signature-world region. Geography beyond the name is not defined in the archive; no real-world place is implied."
+ },
+ {
+  "region_id": "JAH-REGION-000003",
+  "name": "Argentia",
+  "papers": [
+   "JAH-PAPER-000003"
+  ],
+  "fictionality_status": "FICTIONAL_GENERATED",
+  "note": "Fictional Signature-world region. Geography beyond the name is not defined in the archive; no real-world place is implied."
+ },
+ {
+  "region_id": "JAH-REGION-000004",
+  "name": "Borealia",
+  "papers": [
+   "JAH-PAPER-000004"
+  ],
+  "fictionality_status": "FICTIONAL_GENERATED",
+  "note": "Fictional Signature-world region. Geography beyond the name is not defined in the archive; no real-world place is implied."
+ },
+ {
+  "region_id": "JAH-REGION-000005",
+  "name": "Solara",
+  "papers": [
+   "JAH-PAPER-000005"
+  ],
+  "fictionality_status": "FICTIONAL_GENERATED",
+  "note": "Fictional Signature-world region. Geography beyond the name is not defined in the archive; no real-world place is implied."
+ },
+ {
+  "region_id": "JAH-REGION-000006",
+  "name": "Pelagia",
+  "papers": [
+   "JAH-PAPER-000006"
+  ],
+  "fictionality_status": "FICTIONAL_GENERATED",
+  "note": "Fictional Signature-world region. Geography beyond the name is not defined in the archive; no real-world place is implied."
+ }
+]

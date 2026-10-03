@@ -1,0 +1,14 @@
+{
+ "generated": "2026-10-03",
+ "algorithm": "SHA-256",
+ "files": {
+  "api.json": "e5aea3fdf9c98a3016d4ca8c6ae63a1f2cb4f5fde4897e4a34c64d5f4e5b0675",
+  "articles.idx.json": "2b8a4cc0f1e2be51c703855ac19044d4daaa99de587878dc8cf8308740dedb6f",
+  "articles.idx.json.gz": "fe65929439e6a17fc372509a3ec0584532b49b3268af4c30dbfd789d5372b3d5",
+  "editions.idx.json": "95db1b48c90413e5c0f63fc504e69bc4ed42b5b812c81be5eee15a3e20d93be4",
+  "editions.idx.json.gz": "181013484f3d39d3b58cae1b1dadbb044e43370434c4b7d6a7ded42081eaf8e7",
+  "newspapers-catalog.json": "2b6a7971f47b2d1c2d71490da35dead1e18d4ca40c919c1ade8a5ee31d8e7d5a",
+  "papers.json": "c8a14d2d20eb3d61556c0b27e4f2fd714b1c53c4166d3410dde05acda684ddb0",
+  "regions.json": "9cc62879070922f6777440a41ec2cbe3422866ce753224d3ec1e565cb906741d"
+ }
+}
