@@ -126,6 +126,16 @@ footer a{color:#3a5a9c}
 .pagescan img,.pageimg img{width:100%;height:100%;object-fit:cover;display:block}
 img{max-width:100%;height:auto}
 img[width][height]{aspect-ratio:attr(width)/attr(height)}
+/* Gemini corrections: fictional-world masthead ribbon + six visually distinct papers */
+.ficlabel{background:#1c1a15;color:#f6f1e2;font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:.78em;letter-spacing:.14em;text-align:center;padding:8px 10px;margin:0 0 4px;text-transform:uppercase}
+.ficmini{font-family:Arial,Helvetica,sans-serif;font-size:.68em;letter-spacing:.1em;color:#9c2b2b;text-transform:uppercase;margin-top:6px}
+.pmast.pp0,.emast.pp0{color:#9c2b2b}
+.pmast.pp1,.emast.pp1{color:#1f3a6e}
+.pmast.pp2,.emast.pp2{color:#2e6b34}
+.pmast.pp3,.emast.pp3{color:#5b2a86}
+.pmast.pp4,.emast.pp4{color:#b06a00}
+.pmast.pp5,.emast.pp5{color:#0f6b6e}
+.artid{font-family:Arial,Helvetica,sans-serif;font-size:.72em;color:var(--mut);letter-spacing:.06em;margin-bottom:2px}
 </style>
 </head>
 <body>
@@ -245,9 +255,10 @@ async function boot(){
     return '<div class="p"><b>'+esc(p.name)+'</b><span>'+esc(p.region)+' · '+esc(p.tagline)+'</span><br><a href="?paper='+(PAPERS.indexOf(p))+'">Browse its editions →</a></div>'}).join("");
   try{IDX=JSON.parse(await gz(IDX_URL))}catch(e){IDX=[]}
   renderStats(api);renderToday();fillYearMonth();
+  if(window.__wantLatest){window.__wantLatest=false;goLatest()}
   var qp=new URLSearchParams(location.search);
   if(qp.get("edition")){openEdition(qp.get("edition"))}
-  else{applyPaperParam(qp);resetGrid();wireUI()}
+  else{applyPaperParam(qp);resetGrid()}
   if(api&&api.date_range&&api.date_range[1]){$("day").max=api.date_range[1]}
 }
 function renderStats(api){
@@ -266,7 +277,8 @@ function edCard(r){
   var p=PAPERS[r[2]]||{name:""};
   var heads=r[5].split("‖").slice(0,3);
   return '<div class="card" onclick="openEdition(\''+r[0]+'\')">'+
-    '<div class="pmast">'+esc(p.name)+'</div>'+
+    '<div class="pmast pp'+r[2]+'">'+esc(p.name)+'</div>'+
+    '<div class="ficmini">Fictional Signature world · not real news</div>'+
     '<div class="pdate">'+fmtDate(r[1])+' · '+r[0]+'</div>'+
     heads.map(function(h){h=h.split("—")[0].trim();return '<div class="ph">'+esc(h)+'</div>'}).join("")+
     '<div class="meta">'+r[3]+' articles · <span style="color:#9c2b2b">Read edition →</span></div></div>';
@@ -290,12 +302,23 @@ function filtered(){
     return true;
   }).reverse();
 }
-function resetGrid(){grid=filtered();shown=0;$("results").innerHTML="";renderMore()}
+function resetGrid(){
+  if(!IDX){$("results").innerHTML="<p>Loading the press…</p>";return}
+  grid=filtered();shown=0;$("results").innerHTML="";renderMore();
+}
 function renderMore(){
   var slice=grid.slice(shown,shown+PAGE);shown+=PAGE;
   $("results").insertAdjacentHTML("beforeend",slice.map(edCard).join(""));
   $("more").style.display=shown<grid.length?"":"none";
-  if(!grid.length)$("results").innerHTML="<p>No editions match — try different words, another paper, or another date.</p>";
+  if(!grid.length){
+    var d=$("day").value;
+    if(d){
+      var first=IDX.length?IDX[0][1]:"",last=IDX.length?IDX[IDX.length-1][1]:"";
+      $("results").innerHTML="<p>No edition was printed for <b>"+esc(fmtDate(d))+"</b> — the archive holds editions from "+esc(fmtDate(first))+" to "+esc(fmtDate(last))+". Try another date.</p>";
+    }else{
+      $("results").innerHTML="<p>No editions match — try different words, another paper, or another month.</p>";
+    }
+  }
 }
 function applyPaperParam(qp){
   var pi=qp.get("paper");
@@ -315,8 +338,19 @@ function wireUI(){
   $("yr").addEventListener("change",resetGrid);
   $("mo").addEventListener("change",resetGrid);
   $("goday").onclick=function(){if($("day").value)resetGrid()};
-  $("golatest").onclick=function(){$("q").value="";$("paper").value="";$("day").value="";$("yr").value="";$("mo").value="";resetGrid()};
+  $("golatest").onclick=goLatest;
   $("more").onclick=renderMore;
+}
+/* Gemini correction 4: "Latest" works even when tapped before loading finishes —
+   the request is queued and honored once the index is in. */
+function goLatest(){
+  $("q").value="";$("paper").value="";$("day").value="";$("yr").value="";$("mo").value="";
+  if(!IDX||!IDX.length){
+    window.__wantLatest=true;
+    $("results").innerHTML="<p>Loading the press — the latest editions will appear in a moment…</p>";
+    return;
+  }
+  resetGrid();window.scrollTo(0,0);
 }
 async function getEdition(id){
   var row=IDX.find(function(r){return r[0]===id});
@@ -335,12 +369,14 @@ async function openEdition(id){
   curEdition=e;
   var p=PAPERS[e.paper]||{name:"",tagline:""};
   var html='<div class="sheet">'+
-    '<div class="emast">'+esc(p.name)+'</div>'+
+    '<div class="emast pp'+e.paper+'">'+esc(p.name)+'</div>'+
+    '<div class="ficlabel">Fictional Signature world — not real-world news</div>'+
     '<div class="etag">'+esc(p.tagline||"")+'</div>'+
     '<div class="edate">'+fmtDate(e.date)+' · Vol. '+e.volume+', Issue '+e.issue+' · '+e.id+'</div>'+
     '<div class="ehon"><b>Signature press:</b> '+esc(e.honesty)+'</div>'+
-    e.articles.map(function(a){
-      return '<article class="story"><div class="kicker">'+esc(SEC_TITLES[a.sec]||a.sec)+'</div>'+
+    e.articles.map(function(a,i){
+      var aid=e.id+'-A'+(i+1);
+      return '<article class="story"><div class="artid">'+aid+' · Fictional Signature world</div><div class="kicker">'+esc(SEC_TITLES[a.sec]||a.sec)+'</div>'+
       '<h3>'+esc(a.h)+'</h3><div class="byline">'+esc(a.by)+' · '+fmtDate(e.date)+'</div>'+
       a.body.map(function(par){return '<p>'+esc(par)+'</p>'}).join("")+'</article>'}).join("")+
     '</div>'+
@@ -391,11 +427,12 @@ async function openEdition(id){
 }
 function editionText(e){
   var p=PAPERS[e.paper]||{name:""};
-  var t=p.name+". "+fmtDate(e.date)+". Volume "+e.volume+", Issue "+e.issue+".\n\n";
-  e.articles.forEach(function(a){
-    t+=(SEC_TITLES[a.sec]||a.sec).toUpperCase()+": "+a.h+"\n"+a.by+"\n"+a.body.join("\n")+"\n\n";
+  var t="FICTIONAL SIGNATURE WORLD — NOT REAL-WORLD NEWS\n\n"+
+    p.name+". "+fmtDate(e.date)+". Volume "+e.volume+", Issue "+e.issue+".\n\n";
+  e.articles.forEach(function(a,i){
+    t+="["+e.id+"-A"+(i+1)+"] "+(SEC_TITLES[a.sec]||a.sec).toUpperCase()+": "+a.h+"\n"+a.by+"\n"+a.body.join("\n")+"\n\n";
   });
-  t+="\nSignature press: "+e.honesty;
+  t+="\nFICTIONAL SIGNATURE WORLD — NOT REAL-WORLD NEWS. "+e.honesty;
   return t;
 }
 function copyEdition(e){
@@ -550,6 +587,7 @@ function fAsk(){
 document.getElementById("fgo").onclick=fAsk;
 document.getElementById("fq").addEventListener("keydown",function(e){if(e.key==="Enter")fAsk()});
 $("rdstop").onclick=rdStop;
+wireUI();
 boot();
 </script>
 </body>

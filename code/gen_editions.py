@@ -476,7 +476,13 @@ WEEK_CSS = ("body{margin:0;background:#f6f1e2;color:#1c1a15;font-family:Georgia,
  "font-family:Arial,sans-serif;margin:6px 0 12px}h3{font-size:1.15em;margin:1em 0 .2em}"
  ".byline{font-size:.82em;color:#6b6353;font-style:italic}p{line-height:1.65}"
  ".back{font-family:Arial,sans-serif;font-size:.85em;margin:18px 0}"
- "ul.weeks{line-height:2;font-family:Arial,sans-serif}")
+ "ul.weeks{line-height:2;font-family:Arial,sans-serif}"
+ ".ficlabel{background:#1c1a15;color:#f6f1e2;font-family:Arial,sans-serif;font-weight:700;"
+ "font-size:.78em;letter-spacing:.14em;text-align:center;padding:8px 10px;margin:0 0 4px;"
+ "text-transform:uppercase}"
+ ".pp0{color:#9c2b2b}.pp1{color:#1f3a6e}.pp2{color:#2e6b34}"
+ ".pp3{color:#5b2a86}.pp4{color:#b06a00}.pp5{color:#0f6b6e}"
+ ".artid{font-family:Arial,sans-serif;font-size:.72em;color:#6b6353;letter-spacing:.06em}")
 
 def edition_jsonld(e, paper_name):
     lead = e["articles"][0]["h"] if e["articles"] else paper_name
@@ -499,20 +505,22 @@ def write_week_digest(adir, d0, fn, items, chunk_of):
         e = chunk_of(wi, eid_)
         p = PAPERS[pi]
         arts = []
-        for a in e["articles"]:
-            arts.append('<h3 itemprop="headline">%s</h3><div class="byline">%s</div>%s' % (
-                esc_h(a["h"]), esc_h(a["by"]),
+        for i, a in enumerate(e["articles"]):
+            arts.append('<div class="artid">%s-A%d &middot; Fictional Signature world</div>'
+                        '<h3 itemprop="headline">%s</h3><div class="byline">%s</div>%s' % (
+                eid_, i + 1, esc_h(a["h"]), esc_h(a["by"]),
                 "".join("<p>%s</p>" % esc_h(par) for par in a["body"])))
         ld = json.dumps(edition_jsonld(e, p["name"]), ensure_ascii=False)
         parts.append(
             '<article class="ed" itemscope itemtype="https://schema.org/NewsArticle">'
-            '<div class="emast">%s</div>'
+            '<div class="emast pp%d">%s</div>'
+            '<div class="ficlabel">Fictional Signature world &mdash; not real-world news</div>'
             '<div class="edate"><time itemprop="datePublished" datetime="%s">%s</time>'
             ' &middot; Vol. %d, Issue %d &middot; <span itemprop="identifier">%s</span></div>'
             '<div class="hon">Signature press: %s</div>'
             '<script type="application/ld+json">%s</script>%s'
             '<p><a href="%s?edition=%s">Read the interactive edition &rarr;</a></p>'
-            '</article>' % (esc_h(p["name"]), date, date, e["volume"], e["issue"],
+            '</article>' % (pi, esc_h(p["name"]), date, date, e["volume"], e["issue"],
                              eid_, esc_h(e["honesty"]), ld, "".join(arts), SITE, eid_))
     html = ("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">"
             "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
