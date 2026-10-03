@@ -1,0 +1,113 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "schema_id": "JAH-EDITION-RECORD/1.0",
+ "title": "Signature Newspaper Edition Record",
+ "type": "object",
+ "required": [
+  "id",
+  "paper_id",
+  "date",
+  "volume",
+  "issue",
+  "articles",
+  "article_ids",
+  "article_count",
+  "fictionality_status",
+  "creation_mode",
+  "version",
+  "status",
+  "content_hash",
+  "canonical_url",
+  "created",
+  "updated",
+  "honesty"
+ ],
+ "properties": {
+  "id": {
+   "type": "string",
+   "pattern": "^JAH-ED-[0-9]{6}$",
+   "description": "Permanent edition ID. Never reused, never changed after publication."
+  },
+  "paper_id": {
+   "type": "string",
+   "pattern": "^JAH-PAPER-[0-9]{6}$"
+  },
+  "paper": {
+   "type": "integer",
+   "description": "Paper index 0-5 (legacy; paper_id is authoritative)."
+  },
+  "date": {
+   "type": "string",
+   "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+   "description": "Fictional Signature-world publication date (canonical timezone: UTC)."
+  },
+  "volume": {
+   "type": "integer"
+  },
+  "issue": {
+   "type": "integer"
+  },
+  "articles": {
+   "type": "array",
+   "items": {
+    "$ref": "article-schema.json"
+   }
+  },
+  "article_ids": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "article_count": {
+   "type": "integer"
+  },
+  "fictionality_status": {
+   "type": "string",
+   "enum": [
+    "FICTIONAL_GENERATED"
+   ],
+   "description": "Fictionality status of this record. Always FICTIONAL_GENERATED for this archive: an original generated newspaper of the fictional Signature world. All people, places, teams, organizations and events are invented; it reports no real-world news and names no real persons."
+  },
+  "creation_mode": {
+   "type": "string",
+   "enum": [
+    "GENERATED",
+    "HUMAN_WRITTEN",
+    "HUMAN_EDITED",
+    "HYBRID",
+    "IMPORTED"
+   ]
+  },
+  "version": {
+   "type": "string",
+   "description": "Record version, v1.0 at publication. Revisions bump the version; historical versions are preserved, never silently replaced."
+  },
+  "status": {
+   "type": "string",
+   "enum": [
+    "PUBLISHED",
+    "CORRECTED",
+    "WITHDRAWN"
+   ]
+  },
+  "content_hash": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$",
+   "description": "SHA-256 over the canonical JSON of this record (sorted keys, no whitespace), excluding content_hash itself."
+  },
+  "canonical_url": {
+   "type": "string"
+  },
+  "created": {
+   "type": "string"
+  },
+  "updated": {
+   "type": "string"
+  },
+  "honesty": {
+   "type": "string",
+   "description": "The Signature-press honesty banner, carried verbatim on every edition."
+  }
+ }
+}

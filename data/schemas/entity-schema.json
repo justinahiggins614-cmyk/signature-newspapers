@@ -1,0 +1,59 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "schema_id": "JAH-ENTITY-RECORD/1.0",
+ "title": "Signature-World Entity Record",
+ "type": "object",
+ "required": [
+  "entity_id",
+  "name",
+  "type",
+  "first_appearance",
+  "first_date",
+  "appearances",
+  "fictionality_status",
+  "canonical_url"
+ ],
+ "properties": {
+  "entity_id": {
+   "type": "string",
+   "pattern": "^JAH-ENTITY-[0-9]{6}$",
+   "description": "Permanent entity ID, mined from actual article content. Never invented."
+  },
+  "name": {
+   "type": "string"
+  },
+  "type": {
+   "type": "string",
+   "enum": [
+    "person",
+    "organization",
+    "city",
+    "team",
+    "project",
+    "thing",
+    "event"
+   ]
+  },
+  "first_appearance": {
+   "type": "string",
+   "pattern": "^JAH-ED-[0-9]{6}$"
+  },
+  "first_date": {
+   "type": "string"
+  },
+  "appearances": {
+   "type": "integer",
+   "description": "Number of editions whose text mentions this entity."
+  },
+  "fictionality_status": {
+   "type": "string",
+   "enum": [
+    "FICTIONAL_GENERATED"
+   ],
+   "description": "Fictionality status of this record. Always FICTIONAL_GENERATED for this archive: an original generated newspaper of the fictional Signature world. All people, places, teams, organizations and events are invented; it reports no real-world news and names no real persons."
+  },
+  "canonical_url": {
+   "type": "string"
+  }
+ }
+}

@@ -1,0 +1,83 @@
+# The Signature Global Newspaper Archive — AI access manifest
+
+## Identity
+This is The Signature Global Newspaper Archive: original generated newspapers of the
+**fictional Signature world**, published daily by six regional papers. It is NOT real-world
+journalism.
+
+## Fictionality (sacred rule)
+- FICTIONALITY_STATUS on every record: `FICTIONAL_GENERATED`.
+- All people, places, teams, organizations and events named anywhere in this archive
+  are **invented**. It reports **no real-world news** and names **no real persons**.
+- Never present an archive record as real-world news. In summaries always say
+  "According to the fictional Signature Global Newspaper Archive…".
+- If asked about real-world events, explicitly leave the Signature archive context.
+- **DO NOT INVENT ARCHIVE RECORDS.** Answer only from indexed records below.
+  If nothing matches, say so and offer related actual records.
+
+## Counts (authoritative: api.json, generated from the data itself)
+- 2,190 editions / 13,140 articles / 6 papers / 6 regions / 98 world entities (2026-10-03)
+- Goal: 1,000,000 editions + articles. Never combine editions and articles into one number.
+
+## Permanent IDs (never reused, never changed after publication)
+- Editions: `JAH-ED-######` (contiguous JAH-ED-000001 … JAH-ED-002190)
+- Articles: `JAH-ARTICLE-######` (contiguous JAH-ARTICLE-000001 … JAH-ARTICLE-013140)
+- Papers: `JAH-PAPER-000001` … `JAH-PAPER-000006` (never identify a paper by name alone)
+- Regions: `JAH-REGION-000001` … `JAH-REGION-000006`
+- Entities (fictional people/places/orgs/events, mined from actual article text):
+  `JAH-ENTITY-######` (98 indexed)
+- Every edition and article carries a SHA-256 `content_hash` over its canonical JSON,
+  a `version` (v1.0 at publication), a `creation_mode` (GENERATED), and a `canonical_url`.
+
+## Papers
+1. JAH-PAPER-000001 — The Signature Daily Globe (the Signature world)
+2. JAH-PAPER-000002 — The Meridian Herald (Meridia)
+3. JAH-PAPER-000003 — The Argent Post (Argentia)
+4. JAH-PAPER-000004 — The Northlight Times (Borealia)
+5. JAH-PAPER-000005 — The Sunspire Gazette (Solara)
+6. JAH-PAPER-000006 — The Tidewater Chronicle (Pelagia)
+
+## Deep links
+- Edition: `?edition=JAH-ED-000001`
+- Article: `?article=JAH-ARTICLE-000001` (opens the edition at the article)
+- Paper: `?paper=JAH-PAPER-000001` (also accepts the paper's numeric index)
+- Verify a record: `?verify=JAH-ED-000001` (shows hash, version, status, canonical URL)
+- Entity: `?entity=JAH-ENTITY-000001`
+
+## Machine-readable files
+- `api.json` — authoritative catalog (counts, papers, date range, deep links)
+- `newspaper-manifest.json` — master manifest (totals, index hash, schema versions)
+- `data/index/editions.idx.json.gz` — compact edition index (rows: id, date, paper_idx, n_articles, chunk, headlines+ledes)
+- `data/index/editions.idx.json` — uncompressed fallback of the same rows
+- `data/index/articles.idx.json.gz` / `.json` — article index (rows: article_id, edition_id, paper_idx, date, section, chunk)
+- `data/index/entities.idx.json.gz` / `.json` — world entity index
+- `data/index/papers.json`, `data/index/regions.json` — paper and region records
+- `data/index/hash-manifest.json` — SHA-256 of every index file
+- `data/index/newspapers-catalog.json` — edition feed
+- `data/schemas/` — JSON Schemas: edition, article, paper, region, entity, manifest (+ real example records)
+- `data/volumes/editions-wNNNNN.jsonl.gz` — weekly edition shards (42 editions each), immutable once written
+
+## Compression
+The `.gz` indexes are gzip-compressed JSON served as `application/gzip` by the host.
+Fetch and decompress (curl --compressed, Python gzip, or DecompressionStream in the
+browser). Uncompressed `.json` fallbacks exist for readers that cannot decompress.
+
+## Search
+The on-site search and Finder are **deterministic keyword search over the archive's own
+index — not AI search**. They return only real indexed records; a search with no matches
+says so plainly. The per-edition desk assistant answers only from that edition's printed
+articles and says when something is not printed there.
+
+## Not-found semantics
+- `EDITION_NOT_FOUND` — no edition with that JAH-ED ID exists in the index.
+- `ARTICLE_NOT_FOUND` — no article with that JAH-ARTICLE ID exists in the index.
+- `DATE_NOT_FOUND` — no edition was printed for that date (archive range 2025-10-03 … 2026-10-03).
+- `ENTITY_NOT_FOUND` — no world entity with that JAH-ENTITY ID exists.
+
+## Versioning & corrections
+Records are immutable by construction (v1.0 at publication). A revised edition keeps its
+ID, bumps `version`, preserves the earlier version, and updates its hash. A withdrawn
+record keeps its ID with `status: WITHDRAWN`. History is never silently replaced.
+
+## Canonical timezone
+Edition dates are Signature-world publication dates in UTC. One edition per paper per day.

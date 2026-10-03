@@ -24,6 +24,8 @@ Deterministic: re-running on already-enriched data is a no-op for content
 (article/edition text untouched); hashes verify stable.
 """
 import gzip, hashlib, json, os, datetime
+import record_std  # idempotent stamping: content_hash excluded before hashing
+from record_std import FICTIONALITY, SCHEMA_VERSION, PAPERS, SITE, eid, aid
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -127,7 +129,8 @@ def main():
     next_article = 1
     by_chunk = {}
     for cf, e in all_editions:
-        e, next_article = enrich_edition(e, next_article)
+        # idempotent: record_std excludes content_hash before hashing
+        next_article = record_std.stamp_edition(e, next_article)
         by_chunk.setdefault(cf, []).append(e)
     total_articles = next_article - 1
 

@@ -21,6 +21,7 @@ papers = 42 editions/chunk). Compact search index data/index/editions.idx.json.g
 rows: [id, date, paper_idx, n_articles, chunk, headlines+ledes joined].
 """
 import argparse, gzip, json, os, random, re, sys, datetime
+import record_std  # permanent record standard: IDs, hashes, fictionality
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -371,7 +372,10 @@ def add_editions(ed_list, state):
             e = make_edition(pi, d)
             e["id"] = eid(state["next_index"])
             state["next_index"] += 1
-            state["total_articles"] += len(e["articles"])
+            # stamp the permanent record standard: paper/article IDs, hashes, fictionality
+            state["next_article_index"] = record_std.stamp_edition(
+                e, state.get("next_article_index", 1))
+            state["total_articles"] = state.get("total_articles", 0) + len(e["articles"])
             existing.append(e)
         existing.sort(key=lambda e: (e["date"], e["paper"]))
         write_chunk(wi, existing)
@@ -582,19 +586,75 @@ def build_static_archive(meta):
 
 def build_all():
     meta = all_editions_meta()
-    # --- compact search index: [id, date, paper, n_art, week, headlines+ledes] ---
+    # --- compact search indexes -------------------------------------------
+    # editions: [id, date, paper, n_art, week, headlines+ledes]
+    # articles: [article_id, edition_id, paper, date, section, week]
     cache = {}
     def _ed(wi, eid_):
         if wi not in cache:
             cache[wi] = {x["id"]: x for x in read_chunk(wi)}
         return cache[wi][eid_]
-    rows = []
+    rows, arows = [], []
     for eid_, date, pi, n, wi, iss in meta:
         e = _ed(wi, eid_)
         txt = " ‖ ".join(a["h"] + " — " + a["body"][0] for a in e["articles"])
         rows.append([eid_, date, pi, n, wi, txt])
+        for a in e["articles"]:
+            arows.append([a["id"], eid_, pi, date, a["sec"], wi])
     with gzip.open(os.path.join(IDX, "editions.idx.json.gz"), "wt", encoding="utf-8") as f:
         json.dump(rows, f, ensure_ascii=False)
+    with gzip.open(os.path.join(IDX, "articles.idx.json.gz"), "wt", encoding="utf-8") as f:
+        json.dump(arows, f, ensure_ascii=False)
+    # uncompressed fallbacks for readers that cannot handle application/gzip
+    with open(os.path.join(IDX, "editions.idx.json"), "w", encoding="utf-8") as f:
+        json.dump(rows, f, ensure_ascii=False)
+    with open(os.path.join(IDX, "articles.idx.json"), "w", encoding="utf-8") as f:
+        json.dump(arows, f, ensure_ascii=False)
+    # --- papers + regions (recomputed from the data) -----------------------
+    papers, regions = [], []
+    for i, p in enumerate(record_std.PAPERS):
+        mine = [t for t in meta if t[2] == i]
+        papers.append({
+            "paper_id": p["paper_id"], "name": p["name"],
+            "region_id": p["region_id"], "region": p["region"],
+            "tagline": p["tagline"], "description": p["tagline"],
+            "founded": p["founded"], "status": "ACTIVE",
+            "edition_count": len(mine),
+            "first_edition": mine[0][0] if mine else None,
+            "latest_edition": mine[-1][0] if mine else None,
+            "editorial_model": "generated-daily",
+            "creation_mode": "GENERATED", "version": "1.0",
+            "fictionality_status": record_std.FICTIONALITY,
+            "canonical_url": SITE + "?paper=" + p["paper_id"],
+            "created": p["founded"], "updated": datetime.date.today().isoformat(),
+        })
+        regions.append({
+            "region_id": p["region_id"], "name": p["region"],
+            "papers": [p["paper_id"]],
+            "fictionality_status": record_std.FICTIONALITY,
+            "note": ("Fictional Signature-world region. Geography beyond the name is "
+                     "not defined in the archive; no real-world place is implied."),
+        })
+    with open(os.path.join(IDX, "papers.json"), "w", encoding="utf-8") as f:
+        json.dump(papers, f, indent=1, ensure_ascii=False)
+    with open(os.path.join(IDX, "regions.json"), "w", encoding="utf-8") as f:
+        json.dump(regions, f, indent=1, ensure_ascii=False)
+    # --- world entities (mined from actual article content; never invented) -
+    import build_world_index
+    build_world_index.main()
+    # --- hash manifest over every index file --------------------------------
+    hashes = {}
+    for fn in sorted(os.listdir(IDX)):
+        fp = os.path.join(IDX, fn)
+        if os.path.isfile(fp):
+            h = hashlib.sha256()
+            with open(fp, "rb") as f:
+                for b in iter(lambda: f.read(1 << 20), b""):
+                    h.update(b)
+            hashes[fn] = h.hexdigest()
+    with open(os.path.join(IDX, "hash-manifest.json"), "w", encoding="utf-8") as f:
+        json.dump({"generated": datetime.date.today().isoformat(), "algorithm": "SHA-256",
+                   "files": hashes}, f, indent=1)
     # --- sitemap.xml ---
     urls = [SITE] + [SITE + "?edition=" + eid_ for eid_, _, _, _, _, _ in meta]
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
@@ -606,6 +666,7 @@ def build_all():
         f.write("\n".join(sm))
     # --- api.json (root + data/index) ---
     dates = sorted({d for _, d, _, _, _, _ in meta})
+    n_ed, n_art = len(meta), sum(n for _, _, _, n, _, _ in meta)
     api = {
         "site": "The Signature Global Newspaper Archive",
         "site_url": SITE,
@@ -614,23 +675,83 @@ def build_all():
                         "from six regional papers across past dates, updated daily. All people, "
                         "places, and events are invented; no real-world news."),
         "updated": datetime.date.today().isoformat(),
-        "counts": {"editions": len(meta),
-                   "articles": sum(n for _, _, _, n, _, _ in meta),
-                   "papers": len(PAPERS)},
-        "papers": [{"name": p["name"], "region": p["region"], "tagline": p["tagline"],
-                    "founded": p["founded"]} for p in PAPERS],
+        "counts": {"editions": n_ed, "articles": n_art,
+                   "papers": len(PAPERS), "regions": len(PAPERS)},
+        "schema_version": record_std.SCHEMA_VERSION,
+        "catalog_version": datetime.date.today().isoformat(),
+        "archive_version": datetime.date.today().isoformat(),
+        "papers": [{"paper_id": p["paper_id"], "name": p["name"],
+                    "region_id": p["region_id"], "region": p["region"],
+                    "tagline": p["tagline"], "founded": p["founded"]} for p in record_std.PAPERS],
         "date_range": [dates[0], dates[-1]] if dates else [None, None],
-        "deep_link_pattern": SITE + "?edition=JAH-ED-000001",
-        "index": "data/index/editions.idx.json.gz",
+        "deep_links": {
+            "edition": SITE + "?edition=JAH-ED-000001",
+            "article": SITE + "?article=JAH-ARTICLE-000001",
+            "paper": SITE + "?paper=JAH-PAPER-000001",
+            "verify": SITE + "?verify=JAH-ED-000001",
+        },
+        "index": {"editions_gz": "data/index/editions.idx.json.gz",
+                  "editions": "data/index/editions.idx.json",
+                  "articles_gz": "data/index/articles.idx.json.gz",
+                  "articles": "data/index/articles.idx.json",
+                  "entities_gz": "data/index/entities.idx.json.gz",
+                  "entities": "data/index/entities.idx.json",
+                  "hash_manifest": "data/index/hash-manifest.json"},
         "feed": "data/index/newspapers-catalog.json",
         "sitemap_index": "sitemap-index.xml",
         "static_archive": "archive/index.html",
         "honesty": HONESTY,
+        "fictionality_status": record_std.FICTIONALITY,
     }
     with open(os.path.join(ROOT, "api.json"), "w") as f:
         json.dump(api, f, indent=1)
     with open(os.path.join(IDX, "api.json"), "w") as f:
         json.dump(api, f, indent=1)
+    # --- master manifest ----------------------------------------------------
+    ents = json.load(gzip.open(os.path.join(IDX, "entities.idx.json.gz"), "rt"))
+    manifest = {
+        "site_id": "SIGNATURE-GLOBAL-NEWSPAPER-ARCHIVE",
+        "site_name": "The Signature Global Newspaper Archive",
+        "site_version": "1.0",
+        "archive_version": datetime.date.today().isoformat(),
+        "total_editions": n_ed, "total_articles": n_art,
+        "total_papers": 6, "total_regions": 6, "total_entities": len(ents),
+        "earliest_date": dates[0] if dates else None,
+        "latest_date": dates[-1] if dates else None,
+        "goal": "1,000,000 editions + articles",
+        "schema_version": record_std.SCHEMA_VERSION,
+        "index_version": "1.0",
+        "index_hash": hashes.get("editions.idx.json.gz"),
+        "generator_version": "code/gen_editions.py (SALT 20261002)",
+        "fictionality_status": record_std.FICTIONALITY,
+        "fictionality_note": ("Every record in this archive is an original generated newspaper of "
+            "the fictional Signature world. All people, places, teams, organizations and events "
+            "are invented. It reports no real-world news and names no real persons."),
+        "license": "Original Signature-generated content. Read, copy and download freely from this archive.",
+        "created": "2025-10-03",
+        "updated": datetime.date.today().isoformat(),
+        "canonical_url": SITE,
+        "records": {"edition_id": "JAH-ED-######", "article_id": "JAH-ARTICLE-######",
+                    "paper_id": "JAH-PAPER-######", "region_id": "JAH-REGION-######",
+                    "entity_id": "JAH-ENTITY-######"},
+        "indexes": {"editions_gz": "data/index/editions.idx.json.gz",
+                    "editions": "data/index/editions.idx.json",
+                    "articles_gz": "data/index/articles.idx.json.gz",
+                    "articles": "data/index/articles.idx.json",
+                    "entities_gz": "data/index/entities.idx.json.gz",
+                    "entities": "data/index/entities.idx.json",
+                    "papers": "data/index/papers.json",
+                    "regions": "data/index/regions.json",
+                    "hash_manifest": "data/index/hash-manifest.json"},
+        "schemas": "data/schemas/",
+        "papers": [{"paper_id": p["paper_id"], "name": p["name"],
+                    "region_id": p["region_id"], "region": p["region"],
+                    "edition_count": p["edition_count"],
+                    "first_edition": p["first_edition"],
+                    "latest_edition": p["latest_edition"]} for p in papers],
+    }
+    with open(os.path.join(ROOT, "newspaper-manifest.json"), "w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=1, ensure_ascii=False)
     # --- robots.txt ---
     with open(os.path.join(ROOT, "robots.txt"), "w") as f:
         f.write("User-agent: *\nAllow: /\nSitemap: %ssitemap.xml\nSitemap: %ssitemap-index.xml\n" % (SITE, SITE))
@@ -647,7 +768,15 @@ def build_all():
     total = sum(os.path.getsize(os.path.join(dp, f))
                 for dp, _, fns in os.walk(DATA) for f in fns)
     print("DATA bytes: %d (guard 800MB: %s)" % (total, "TRIPPED" if total > 800 * 1024 * 1024 else "ok"))
-    print("editions: %d articles: %d" % (len(meta), sum(n for _, _, _, n, _, _ in meta)))
+    print("editions: %d articles: %d" % (n_ed, n_art))
+    # --- QA gates: fail the build LOUDLY on any integrity problem -----------
+    import subprocess
+    qa = os.path.join(HERE, "qa", "run_all.sh")
+    r = subprocess.run(["bash", qa], cwd=ROOT)
+    if r.returncode != 0:
+        print("*** BUILD GATES FAILED — not publishing ***")
+        sys.exit(1)
+    print("build gates: PASS")
 
 def cmd_backfill(days=365):
     state = load_state()

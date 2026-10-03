@@ -1,0 +1,39 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "schema_id": "JAH-REGION-RECORD/1.0",
+ "title": "Signature-World Region Record",
+ "type": "object",
+ "required": [
+  "region_id",
+  "name",
+  "papers",
+  "fictionality_status"
+ ],
+ "properties": {
+  "region_id": {
+   "type": "string",
+   "pattern": "^JAH-REGION-[0-9]{6}$"
+  },
+  "name": {
+   "type": "string",
+   "description": "Region name as used in the archive."
+  },
+  "papers": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "fictionality_status": {
+   "type": "string",
+   "enum": [
+    "FICTIONAL_GENERATED"
+   ],
+   "description": "Fictionality status of this record. Always FICTIONAL_GENERATED for this archive: an original generated newspaper of the fictional Signature world. All people, places, teams, organizations and events are invented; it reports no real-world news and names no real persons."
+  },
+  "note": {
+   "type": "string",
+   "description": "Honesty note: geography beyond the name is not defined; no real-world place is implied."
+  }
+ }
+}

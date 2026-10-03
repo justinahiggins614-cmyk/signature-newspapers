@@ -1,0 +1,85 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "schema_id": "JAH-ARTICLE-RECORD/1.0",
+ "title": "Signature Newspaper Article Record",
+ "type": "object",
+ "required": [
+  "id",
+  "edition_id",
+  "h",
+  "body",
+  "sec",
+  "fictionality_status",
+  "creation_mode",
+  "version",
+  "content_hash",
+  "canonical_url"
+ ],
+ "properties": {
+  "id": {
+   "type": "string",
+   "pattern": "^JAH-ARTICLE-[0-9]{6}$",
+   "description": "Permanent article ID. Never reused."
+  },
+  "edition_id": {
+   "type": "string",
+   "pattern": "^JAH-ED-[0-9]{6}$"
+  },
+  "h": {
+   "type": "string",
+   "description": "Headline, exactly as printed."
+  },
+  "by": {
+   "type": "string",
+   "description": "Byline. All bylined reporters are fictional Signature-world persons."
+  },
+  "sec": {
+   "type": "string",
+   "enum": [
+    "lead",
+    "region",
+    "science",
+    "culture",
+    "business",
+    "opinion",
+    "weather",
+    "sports"
+   ],
+   "description": "Article section. Only sections that actually exist in the archive."
+  },
+  "body": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   },
+   "description": "Article text, paragraph by paragraph, exactly as printed."
+  },
+  "fictionality_status": {
+   "type": "string",
+   "enum": [
+    "FICTIONAL_GENERATED"
+   ],
+   "description": "Fictionality status of this record. Always FICTIONAL_GENERATED for this archive: an original generated newspaper of the fictional Signature world. All people, places, teams, organizations and events are invented; it reports no real-world news and names no real persons."
+  },
+  "creation_mode": {
+   "type": "string",
+   "enum": [
+    "GENERATED",
+    "HUMAN_WRITTEN",
+    "HUMAN_EDITED",
+    "HYBRID",
+    "IMPORTED"
+   ]
+  },
+  "version": {
+   "type": "string"
+  },
+  "content_hash": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "canonical_url": {
+   "type": "string"
+  }
+ }
+}

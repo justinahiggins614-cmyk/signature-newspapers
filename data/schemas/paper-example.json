@@ -1,0 +1,20 @@
+{
+ "paper_id": "JAH-PAPER-000001",
+ "name": "The Signature Daily Globe",
+ "region_id": "JAH-REGION-000001",
+ "region": "the Signature world",
+ "tagline": "All the world's Signature news, every morning",
+ "description": "All the world's Signature news, every morning",
+ "founded": "2024-01-15",
+ "status": "ACTIVE",
+ "edition_count": 365,
+ "first_edition": "JAH-ED-000001",
+ "latest_edition": "JAH-ED-002185",
+ "editorial_model": "generated-daily",
+ "creation_mode": "GENERATED",
+ "version": "1.0",
+ "fictionality_status": "FICTIONAL_GENERATED",
+ "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?paper=JAH-PAPER-000001",
+ "created": "2024-01-15",
+ "updated": "2026-10-03"
+}

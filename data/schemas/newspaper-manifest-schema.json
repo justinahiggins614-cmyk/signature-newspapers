@@ -1,0 +1,90 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "schema_id": "JAH-NEWSPAPER-MANIFEST/1.0",
+ "title": "Signature Global Newspaper Archive Master Manifest",
+ "type": "object",
+ "required": [
+  "site_id",
+  "site_name",
+  "site_version",
+  "archive_version",
+  "total_editions",
+  "total_articles",
+  "total_papers",
+  "total_regions",
+  "total_entities",
+  "earliest_date",
+  "latest_date",
+  "goal",
+  "schema_version",
+  "index_version",
+  "generator_version",
+  "fictionality_status",
+  "created",
+  "updated",
+  "canonical_url"
+ ],
+ "properties": {
+  "site_id": {
+   "type": "string"
+  },
+  "site_name": {
+   "type": "string"
+  },
+  "site_version": {
+   "type": "string"
+  },
+  "archive_version": {
+   "type": "string"
+  },
+  "total_editions": {
+   "type": "integer"
+  },
+  "total_articles": {
+   "type": "integer"
+  },
+  "total_papers": {
+   "type": "integer"
+  },
+  "total_regions": {
+   "type": "integer"
+  },
+  "total_entities": {
+   "type": "integer"
+  },
+  "earliest_date": {
+   "type": "string"
+  },
+  "latest_date": {
+   "type": "string"
+  },
+  "goal": {
+   "type": "string"
+  },
+  "schema_version": {
+   "type": "string"
+  },
+  "index_version": {
+   "type": "string"
+  },
+  "generator_version": {
+   "type": "string"
+  },
+  "fictionality_status": {
+   "type": "string",
+   "enum": [
+    "FICTIONAL_GENERATED"
+   ],
+   "description": "Fictionality status of this record. Always FICTIONAL_GENERATED for this archive: an original generated newspaper of the fictional Signature world. All people, places, teams, organizations and events are invented; it reports no real-world news and names no real persons."
+  },
+  "created": {
+   "type": "string"
+  },
+  "updated": {
+   "type": "string"
+  },
+  "canonical_url": {
+   "type": "string"
+  }
+ }
+}

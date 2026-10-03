@@ -1,0 +1,99 @@
+{
+ "site_id": "SIGNATURE-GLOBAL-NEWSPAPER-ARCHIVE",
+ "site_name": "The Signature Global Newspaper Archive",
+ "site_version": "1.0",
+ "archive_version": "2026-10-03",
+ "total_editions": 2190,
+ "total_articles": 13140,
+ "total_papers": 6,
+ "total_regions": 6,
+ "total_entities": 98,
+ "earliest_date": "2025-10-03",
+ "latest_date": "2026-10-03",
+ "goal": "1,000,000 editions + articles",
+ "schema_version": "JAH-NEWSPAPER-RECORD/1.0",
+ "index_version": "1.0",
+ "index_hash": "181013484f3d39d3b58cae1b1dadbb044e43370434c4b7d6a7ded42081eaf8e7",
+ "generator_version": "code/gen_editions.py (SALT 20261002)",
+ "fictionality_status": "FICTIONAL_GENERATED",
+ "fictionality_note": "Every record in this archive is an original generated newspaper of the fictional Signature world. All people, places, teams, organizations and events are invented. It reports no real-world news and names no real persons.",
+ "license": "Original Signature-generated content. Read, copy and download freely from this archive.",
+ "created": "2025-10-03",
+ "updated": "2026-10-03",
+ "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/",
+ "records": {
+  "edition_id": "JAH-ED-######",
+  "article_id": "JAH-ARTICLE-######",
+  "paper_id": "JAH-PAPER-######",
+  "region_id": "JAH-REGION-######",
+  "entity_id": "JAH-ENTITY-######"
+ },
+ "indexes": {
+  "editions_gz": "data/index/editions.idx.json.gz",
+  "editions": "data/index/editions.idx.json",
+  "articles_gz": "data/index/articles.idx.json.gz",
+  "articles": "data/index/articles.idx.json",
+  "entities_gz": "data/index/entities.idx.json.gz",
+  "entities": "data/index/entities.idx.json",
+  "papers": "data/index/papers.json",
+  "regions": "data/index/regions.json",
+  "hash_manifest": "data/index/hash-manifest.json"
+ },
+ "schemas": "data/schemas/",
+ "papers": [
+  {
+   "paper_id": "JAH-PAPER-000001",
+   "name": "The Signature Daily Globe",
+   "region_id": "JAH-REGION-000001",
+   "region": "the Signature world",
+   "edition_count": 365,
+   "first_edition": "JAH-ED-000001",
+   "latest_edition": "JAH-ED-002185"
+  },
+  {
+   "paper_id": "JAH-PAPER-000002",
+   "name": "The Meridian Herald",
+   "region_id": "JAH-REGION-000002",
+   "region": "Meridia",
+   "edition_count": 365,
+   "first_edition": "JAH-ED-000002",
+   "latest_edition": "JAH-ED-002186"
+  },
+  {
+   "paper_id": "JAH-PAPER-000003",
+   "name": "The Argent Post",
+   "region_id": "JAH-REGION-000003",
+   "region": "Argentia",
+   "edition_count": 365,
+   "first_edition": "JAH-ED-000003",
+   "latest_edition": "JAH-ED-002187"
+  },
+  {
+   "paper_id": "JAH-PAPER-000004",
+   "name": "The Northlight Times",
+   "region_id": "JAH-REGION-000004",
+   "region": "Borealia",
+   "edition_count": 365,
+   "first_edition": "JAH-ED-000004",
+   "latest_edition": "JAH-ED-002188"
+  },
+  {
+   "paper_id": "JAH-PAPER-000005",
+   "name": "The Sunspire Gazette",
+   "region_id": "JAH-REGION-000005",
+   "region": "Solara",
+   "edition_count": 365,
+   "first_edition": "JAH-ED-000005",
+   "latest_edition": "JAH-ED-002189"
+  },
+  {
+   "paper_id": "JAH-PAPER-000006",
+   "name": "The Tidewater Chronicle",
+   "region_id": "JAH-REGION-000006",
+   "region": "Pelagia",
+   "edition_count": 365,
+   "first_edition": "JAH-ED-000006",
+   "latest_edition": "JAH-ED-002190"
+  }
+ ]
+}

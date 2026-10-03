@@ -1,0 +1,97 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "schema_id": "JAH-PAPER-RECORD/1.0",
+ "title": "Signature Newspaper Paper Record",
+ "type": "object",
+ "required": [
+  "paper_id",
+  "name",
+  "region_id",
+  "region",
+  "tagline",
+  "founded",
+  "status",
+  "edition_count",
+  "first_edition",
+  "latest_edition",
+  "creation_mode",
+  "version",
+  "fictionality_status",
+  "canonical_url"
+ ],
+ "properties": {
+  "paper_id": {
+   "type": "string",
+   "pattern": "^JAH-PAPER-[0-9]{6}$",
+   "description": "Permanent paper ID. Papers are never identified by name alone."
+  },
+  "name": {
+   "type": "string"
+  },
+  "region_id": {
+   "type": "string",
+   "pattern": "^JAH-REGION-[0-9]{6}$"
+  },
+  "region": {
+   "type": "string"
+  },
+  "tagline": {
+   "type": "string"
+  },
+  "description": {
+   "type": "string"
+  },
+  "founded": {
+   "type": "string"
+  },
+  "status": {
+   "type": "string",
+   "enum": [
+    "ACTIVE",
+    "SUSPENDED",
+    "RETIRED"
+   ]
+  },
+  "edition_count": {
+   "type": "integer"
+  },
+  "first_edition": {
+   "type": "string"
+  },
+  "latest_edition": {
+   "type": "string"
+  },
+  "editorial_model": {
+   "type": "string"
+  },
+  "creation_mode": {
+   "type": "string",
+   "enum": [
+    "GENERATED",
+    "HUMAN_WRITTEN",
+    "HUMAN_EDITED",
+    "HYBRID",
+    "IMPORTED"
+   ]
+  },
+  "version": {
+   "type": "string"
+  },
+  "fictionality_status": {
+   "type": "string",
+   "enum": [
+    "FICTIONAL_GENERATED"
+   ],
+   "description": "Fictionality status of this record. Always FICTIONAL_GENERATED for this archive: an original generated newspaper of the fictional Signature world. All people, places, teams, organizations and events are invented; it reports no real-world news and names no real persons."
+  },
+  "canonical_url": {
+   "type": "string"
+  },
+  "created": {
+   "type": "string"
+  },
+  "updated": {
+   "type": "string"
+  }
+ }
+}
