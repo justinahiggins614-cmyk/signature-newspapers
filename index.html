@@ -352,12 +352,32 @@ function goLatest(){
   }
   resetGrid();window.scrollTo(0,0);
 }
+/* FIX 2026-10-02: chunks are JSONL (one JSON object per line), NOT a JSON
+   array. The old code did JSON.parse on the whole chunk text, which always
+   threw SyntaxError and left every edition stuck at "Unfolding the
+   edition…". Parse line-by-line inside try/catch; a corrupt chunk yields an
+   honest error object instead of an unhandled rejection. */
 async function getEdition(id){
   var row=IDX.find(function(r){return r[0]===id});
   if(!row)return null;
-  var wi=row[4];
-  if(!chunkCache[wi]){chunkCache[wi]=JSON.parse(await gz("data/volumes/editions-w"+String(wi).padStart(5,"0")+".jsonl.gz"))}
-  return chunkCache[wi].find(function(e){return e.id===id})||null;
+  var wi=row[4],wname=String(wi).padStart(5,"0");
+  try{
+    if(!chunkCache[wi]){
+      var txt=await gz("data/volumes/editions-w"+wname+".jsonl.gz");
+      var arr=[];
+      txt.split(/\r?\n/).forEach(function(line){
+        line=line.trim();
+        if(!line)return;
+        try{arr.push(JSON.parse(line))}catch(e){}
+      });
+      if(!arr.length)throw new Error("chunk editions-w"+wname+".jsonl.gz held no readable records");
+      chunkCache[wi]=arr;
+    }
+    return chunkCache[wi].find(function(e){return e.id===id})||null;
+  }catch(e){
+    chunkCache[wi]=null;
+    return {__error:String((e&&e.message)||e)};
+  }
 }
 /* ============ edition view ============ */
 var SEC_TITLES={"lead":"Front Page","region":"Regional","science":"Science & Discovery","culture":"Arts & Culture","weather":"Weather","sports":"Sport","business":"Business","opinion":"Opinion"};
@@ -365,6 +385,7 @@ async function openEdition(id){
   $("home").style.display="none";$("edview").style.display="block";window.scrollTo(0,0);
   $("edview").innerHTML="<p>Unfolding the edition…</p>";
   var e=await getEdition(id);
+  if(e&&e.__error){$("edview").innerHTML='<p>⚠ This edition could not be opened — its data file looks damaged ('+esc(e.__error)+'). The rest of the archive is fine. <a href="./">Back to the archive →</a></p>';return}
   if(!e){$("edview").innerHTML='<p>Edition not found. <a href="./">Back to the archive →</a></p>';return}
   curEdition=e;
   var p=PAPERS[e.paper]||{name:"",tagline:""};
