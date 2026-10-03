@@ -511,16 +511,16 @@ async function openEdition(id){
       '<button class="btn ghost" data-adl="'+i+'">⬇ Article .json</button></div></article>'}).join("")+
     '</div>'+
     '<div class="eactions">'+
-    '<button class="btn red" id="rded">🔊 Read edition aloud</button>'+
-    '<button class="btn ghost" id="cped">📋 Copy edition</button>'+
-    '<button class="btn ghost" id="dled">⬇ Download .txt</button>'+
-    '<button class="btn ghost" id="dledj">⬇ Download .json</button>'+
-    '<button class="btn ghost" id="rdmode">📖 Reading mode</button>'+
+    '<button type="button" class="btn red" id="rded">🔊 Read edition aloud</button>'+
+    '<button type="button" class="btn ghost" id="cped">📋 Copy edition</button>'+
+    '<button type="button" class="btn ghost" id="dled">⬇ Download .txt</button>'+
+    '<button type="button" class="btn ghost" id="dledj">⬇ Download .json</button>'+
+    '<button type="button" class="btn ghost" id="rdmode">📖 Reading mode</button>'+
     '<a class="btn ghost" href="./" style="text-decoration:none">← Back to archive</a>'+
     '</div>'+
     '<div class="qa"><h4>❓ Ask about this edition</h4><div id="aiidcard"></div><div id="qalog"></div>'+
     '<div class="qchips" id="qachips"></div>'+
-    '<div class="qrow"><input id="qin" placeholder="Ask anything about this edition…" aria-label="Ask about this edition"><button class="btn" id="qgo">Ask</button></div></div>';
+    '<div class="qrow"><input id="qin" placeholder="Ask anything about this edition…" aria-label="Ask about this edition"><button type="button" class="btn" id="qgo">Ask</button></div></div>';
   $("edview").innerHTML=html;
   history.replaceState(null,"","?edition="+e.id);
   document.title=e.id+" · "+p.name+" · "+fmtDate(e.date)+" — The Signature Global Newspaper Archive";
@@ -735,11 +735,46 @@ function qaInit(e){
   var g=(typeof JAHtalk!=="undefined")?JAHtalk.greet(P):("Hello — I'm the "+p.name+" desk assistant.");
   qsay(esc(g)+" I'm your desk assistant for the <b>"+fmtDate(e.date)+"</b> edition ("+e.id+"). Ask me about any story in this paper — I answer only from what's printed here. 📰","ai");
   var chips=["What are the headlines?","Summarize this edition","Who wrote the stories?","What sections are inside?"];
-  $("qachips").innerHTML=chips.map(function(c){return '<button class="qchip">'+esc(c)+'</button>'}).join("");
-  Array.prototype.forEach.call($("qachips").children,function(b){b.onclick=function(){$("qin").value=b.textContent;qaAsk(e)}});
-  $("qgo").onclick=function(){qaAsk(e)};
-  $("qin").addEventListener("keydown",function(ev){if(ev.key==="Enter")qaAsk(e)});
+  $("qachips").innerHTML=chips.map(function(c){return '<button type="button" class="qchip">'+esc(c)+'</button>'}).join("");
+  /* Hardened bindings (2026-10-03): addEventListener instead of onclick, every
+     invocation wrapped so a failure can never die silently — the user always
+     gets an answer. A document-level delegated listener below is the final
+     backstop for WebViews where direct bindings misbehave. */
+  function qaSafe(fn){return function(ev){try{
+    /* If the document-level delegated backstop already handled this tap, skip. */
+    var t=ev.target&&ev.target.closest?ev.target.closest(".qchip,#qgo"):null;
+    if(t&&t.getAttribute("data-qa-delegated")==="1")return;
+    fn(ev)}catch(err){qaFallback(e,err)}}}
+  Array.prototype.forEach.call($("qachips").children,function(b){
+    b.addEventListener("click",qaSafe(function(){$("qin").value=b.textContent;qaAsk(e)}));
+  });
+  $("qgo").addEventListener("click",qaSafe(function(){qaAsk(e)}));
+  $("qin").addEventListener("keydown",qaSafe(function(ev){if(ev.key==="Enter")qaAsk(e)}));
 }
+/* Never-silent fallback: if answer generation ever throws, the user still gets
+   the edition's headlines instead of nothing. */
+function qaFallback(e,err){
+  try{
+    if(window.console&&console.error)console.error("newspaper qaAsk failed:",err&&err.message||err);
+  }catch(x){}
+  try{
+    var a="<b>Headlines, "+fmtDate(e.date)+":</b><br>• "+e.articles.map(function(x){return esc(x.h)}).join("<br>• ");
+    qsay(a,"ai");
+  }catch(x2){}
+}
+/* Document-level delegated backstop for the edition Q&A. Bound once at load;
+   survives re-renders and odd WebViews. Uses curEdition (set by openEdition).
+   Guarded against double-fire: the direct bindings above stop propagation. */
+document.addEventListener("click",function(ev){
+  var t=ev.target&&ev.target.closest?ev.target.closest(".qchip,#qgo"):null;
+  if(!t||!curEdition||t.getAttribute("data-qa-delegated")==="1")return;
+  t.setAttribute("data-qa-delegated","1");
+  setTimeout(function(){t.removeAttribute("data-qa-delegated")},0);
+  try{
+    if(t.className&&t.className.indexOf("qchip")>=0){$("qin").value=t.textContent;}
+    qaAsk(curEdition);
+  }catch(err){qaFallback(curEdition,err)}
+},true);
 function qaAsk(e){
   var inp=$("qin"),q=inp.value.trim();
   if(!q)return;qsay(esc(q),"you");inp.value="";
