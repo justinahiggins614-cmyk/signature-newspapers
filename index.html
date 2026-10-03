@@ -403,7 +403,7 @@ function edProvHTML(e){
   return '<div class="prov">Provenance: made by the Newspaper Archive edition generator (code/gen_editions.py) · deterministic record seed '+edSeed(e)+' · edition dated '+fmtDate(e.date)+' (the edition\u2019s own fictional Signature-world publication date)</div>';
 }
 function edPanelHTML(e){
-  return '<div class="recpanel" role="group" aria-label="Record actions"><span class="rpid">'+esc(e.id)+'</span><span class="rpver">v1.0</span>'+
+  return '<div class="recpanel" role="group" aria-label="Record actions"><span class="rpid">ID: '+esc(e.id)+'</span><span class="rpver">VERSION v1.0</span>'+
   '<button data-rp="open">OPEN</button><button data-rp="src">SOURCE</button><button data-rp="share">SHARE</button>'+
   '<button data-rp="copy">COPY</button><button data-rp="dl">DOWNLOAD</button><button data-rp="read">READ ALOUD</button></div>';
 }
