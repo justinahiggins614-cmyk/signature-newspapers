@@ -12,6 +12,9 @@
 "url":"https://justinahiggins614-cmyk.github.io/signature-newspapers/",
 "description":"Original generated newspapers of the Signature world: daily editions from six regional papers, updated daily. All content is invented Signature-world reporting."}
 </script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Dataset","name":"The Signature Global Newspaper Archive","creator":{"@type":"Person","name":"Justin Addam Higgins"}}
+</script>
 <style>
 :root{--paper:#f6f1e2;--paper2:#efe8d2;--ink:#1c1a15;--mut:#6b6353;--red:#9c2b2b;--rule:#2b2820;--gold:#8a6d1f}
 *{box-sizing:border-box}
@@ -102,10 +105,17 @@ footer a{color:#3a5a9c}
 .note-provisional{color:var(--red);font-style:italic}
 .lateststatic{font-size:.9em}
 .lateststatic a{color:#3a5a9c}
+/* FIX-03: stat tickers collapse on mobile (<768px); desktop unchanged */
+.statscollapse{border:0;margin:0;padding:0}
+.statscollapse>summary{list-style:none;cursor:pointer;font-family:Arial,Helvetica,sans-serif;font-size:.85em;color:var(--mut);text-align:center;padding:9px 12px;border:1px dashed #b9ac86;border-radius:8px;background:#fffdf4;max-width:340px;margin:12px auto}
+.statscollapse>summary::-webkit-details-marker{display:none}
+.statscollapse>summary::before{content:"\25B8  "}
+.statscollapse[open]>summary::before{content:"\25BE  "}
+@media(min-width:768px){.statscollapse>summary{display:none}}
 </style>
 </head>
 <body>
-<div class="jahnet"><span class="jahnet-t">THE JAH NETWORK</span><a href="https://justinahiggins614-cmyk.github.io/jah-ai-models/">The Signature AI Phone Book</a><a href="https://justinahiggins614-cmyk.github.io/jah-calculator/">Calculator</a><a href="https://justinahiggins614-cmyk.github.io/jah-dictionary/">Dictionary</a><a href="https://justinahiggins614-cmyk.github.io/jah-wiki/">JAH Wiki</a><a href="https://justinahiggins614-cmyk.github.io/jah-n-wiki-leaks/">JAH-N Wiki</a><a href="https://justinahiggins614-cmyk.github.io/cyber-patent-catalog/">Patent Catalog</a><a href="https://justinahiggins614-cmyk.github.io/signature-one-archive/specs.html">Spec Catalog</a><a href="https://justinahiggins614-cmyk.github.io/signature-llama/">Signature Llama</a><a href="https://justinahiggins614-cmyk.github.io/jah-computer-systems/">PC Depository</a><a href="https://justinahiggins614-cmyk.github.io/signature-cyber-mega-mall/">Cyber Mega-Mall</a><a href="https://justinahiggins614-cmyk.github.io/signature-university/">Signature University</a><a href="https://justinahiggins614-cmyk.github.io/signature-books/">Book Depository</a><a href="https://justinahiggins614-cmyk.github.io/signature-comics/">Comic Store</a><span class="cur" aria-current="page">YOU ARE HERE: NEWSPAPER ARCHIVE</span><a href="https://justinahiggins614-cmyk.github.io/signature-3d-print/">3D Print Depository</a><a href="https://justinahiggins614-cmyk.github.io/signature-backend/">Mad Scientist Lab</a><a href="https://justinahiggins614-cmyk.github.io/signature-boundless-generators/">Boundless Generator Archive</a><a href="https://justinahiggins614-cmyk.github.io/signature-ai-mixlab/">AI Mix Lab</a><a href="https://justinahiggins614-cmyk.github.io/signature-ai-olypics/">AI Olypics</a><a href="https://justinahiggins614-cmyk.github.io/signature-chip-maker/">Chip Maker and Archive</a><a href="https://justinahiggins614-cmyk.github.io/signature-app-archive/">App Archive</a><a href="https://justinahiggins614-cmyk.github.io/signature-ai-robot-matcher/">AI Robot Matcher</a><a href="https://justinahiggins614-cmyk.github.io/signature-experiment-solver/">Experiment Solver</a><a href="https://justinahiggins614-cmyk.github.io/signature-ai-image-video-maker/">Signature AI Pixel</a><a href="https://justinahiggins614-cmyk.github.io/signature-ai-song-maker/">Signature Music Studio</a></div>
+<nav class="jahnet" aria-label="JAH Network Global Ecosystem" role="navigation"><span class="jahnet-t">THE JAH NETWORK</span><a href="https://justinahiggins614-cmyk.github.io/jah-ai-models/">The Signature AI Phone Book</a><a href="https://justinahiggins614-cmyk.github.io/jah-calculator/">Calculator</a><a href="https://justinahiggins614-cmyk.github.io/jah-dictionary/">Dictionary</a><a href="https://justinahiggins614-cmyk.github.io/jah-wiki/">JAH Wiki</a><a href="https://justinahiggins614-cmyk.github.io/jah-n-wiki-leaks/">JAH-N Wiki</a><a href="https://justinahiggins614-cmyk.github.io/cyber-patent-catalog/">Patent Catalog</a><a href="https://justinahiggins614-cmyk.github.io/signature-one-archive/specs.html">Spec Catalog</a><a href="https://justinahiggins614-cmyk.github.io/signature-llama/">Signature Llama</a><a href="https://justinahiggins614-cmyk.github.io/jah-computer-systems/">PC Depository</a><a href="https://justinahiggins614-cmyk.github.io/signature-cyber-mega-mall/">Cyber Mega-Mall</a><a href="https://justinahiggins614-cmyk.github.io/signature-university/">Signature University</a><a href="https://justinahiggins614-cmyk.github.io/signature-books/">Book Depository</a><a href="https://justinahiggins614-cmyk.github.io/signature-comics/">Comic Store</a><span class="cur" aria-current="page">YOU ARE HERE: NEWSPAPER ARCHIVE</span><a href="https://justinahiggins614-cmyk.github.io/signature-3d-print/">3D Print Depository</a><a href="https://justinahiggins614-cmyk.github.io/signature-backend/">Mad Scientist Lab</a><a href="https://justinahiggins614-cmyk.github.io/signature-boundless-generators/">Boundless Generator Archive</a><a href="https://justinahiggins614-cmyk.github.io/signature-ai-mixlab/">AI Mix Lab</a><a href="https://justinahiggins614-cmyk.github.io/signature-ai-olypics/">AI Olypics</a><a href="https://justinahiggins614-cmyk.github.io/signature-chip-maker/">Chip Maker and Archive</a><a href="https://justinahiggins614-cmyk.github.io/signature-app-archive/">App Archive</a><a href="https://justinahiggins614-cmyk.github.io/signature-ai-robot-matcher/">AI Robot Matcher</a><a href="https://justinahiggins614-cmyk.github.io/signature-experiment-solver/">Experiment Solver</a><a href="https://justinahiggins614-cmyk.github.io/signature-ai-image-video-maker/">Signature AI Pixel</a><a href="https://justinahiggins614-cmyk.github.io/signature-ai-song-maker/">Signature Music Studio</a></nav>
 
 <div class="honesty"><b>Signature press.</b> Every edition below is an original generated newspaper of the Signature world — all people, places, teams, organizations, and events are invented. It reports no real-world news and names no real persons.</div>
 
@@ -113,8 +123,10 @@ footer a{color:#3a5a9c}
 <header class="hero wrap">
 <div class="masthead"><span class="sig">The Signature</span> Global Newspaper Archive</div>
 <div class="dateline">Daily editions from six regional papers of the Signature world · past dates on file · new editions every morning</div>
+<details class="statscollapse"><summary>Site stats</summary>
 <div class="stats" id="stats"><div class="stat"><b>…</b><span>loading</span></div></div>
 <div class="march"><div class="bar"><div class="fill" id="marchfill"></div></div><small id="marchtxt">Marching to 1,000,000 editions + articles</small></div>
+</details>
 </header>
 
 <div class="controls"><div class="wrap">
@@ -165,7 +177,7 @@ footer a{color:#3a5a9c}
 <div class="wrap">
 <p><b>The Signature Global Newspaper Archive</b> — original generated newspapers of the Signature world, by <b>Justin Addam Higgins</b>. Every edition is generated by the Signature system: invented people, places, and events; no real-world news; no real persons named. New editions print every morning.</p>
 <p class="note-provisional">Site title provisional — Manon to confirm.</p>
-<div class="sites">THE JAH NETWORK ·
+<nav class="sites" aria-label="JAH Network footer sites" role="navigation">THE JAH NETWORK ·
 <a href="https://justinahiggins614-cmyk.github.io/jah-ai-models/">The Signature AI Phone Book</a> ·
 <a href="https://justinahiggins614-cmyk.github.io/jah-calculator/">Calculator</a> ·
 <a href="https://justinahiggins614-cmyk.github.io/jah-dictionary/">Dictionary</a> ·
@@ -190,7 +202,7 @@ footer a{color:#3a5a9c}
 <a href="https://justinahiggins614-cmyk.github.io/signature-ai-robot-matcher/">AI Robot Matcher</a> ·
 <a href="https://justinahiggins614-cmyk.github.io/signature-experiment-solver/">Experiment Solver</a> ·
 <a href="https://justinahiggins614-cmyk.github.io/signature-ai-image-video-maker/">Signature AI Pixel</a> ·
-<a href="https://justinahiggins614-cmyk.github.io/signature-ai-song-maker/">Signature Music Studio</a></div>
+<a href="https://justinahiggins614-cmyk.github.io/signature-ai-song-maker/">Signature Music Studio</a></nav>
 <p>Free forever. No login. Machine-readable: <a href="api.json">api.json</a> · <a href="data/index/editions.idx.json.gz">edition index</a> · <a href="sitemap.xml">sitemap</a></p>
 </div>
 </footer>
