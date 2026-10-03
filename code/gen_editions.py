@@ -20,7 +20,7 @@ Layout: weekly gz chunks data/volumes/editions-wNNNNN.jsonl.gz (7 days x 6
 papers = 42 editions/chunk). Compact search index data/index/editions.idx.json.gz
 rows: [id, date, paper_idx, n_articles, chunk, headlines+ledes joined].
 """
-import argparse, gzip, json, os, random, re, sys, datetime
+import argparse, gzip, hashlib, json, os, random, re, sys, datetime
 import record_std  # permanent record standard: IDs, hashes, fictionality
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -445,7 +445,8 @@ def write_sitemap(path, urls):
 
 def build_sub_sitemaps(meta, week_pages):
     """Per-paper (regional) + per-year (chronological) sitemap sub-indexes plus a
-    sitemap-index.xml tying them together. sitemap.xml stays flat for compat."""
+    sitemap-index.xml tying them together. sitemap.xml stays flat for compat.
+    Article URLs (one per JAH-ARTICLE) + entity URLs get their own shards."""
     refs = []
     for pi in range(len(PAPERS)):
         urls = [SITE + "?edition=" + eid_ for (eid_, d, ppi, n, wi, iss) in meta if ppi == pi]
@@ -457,6 +458,21 @@ def build_sub_sitemaps(meta, week_pages):
         fn = "sitemap-year-%s.xml" % y
         write_sitemap(os.path.join(ROOT, fn), urls)
         refs.append((fn, len(urls)))
+    # article shards, one per year (JAH-ARTICLE deep links)
+    art_rows = json.load(gzip.open(os.path.join(IDX, "articles.idx.json.gz"), "rt"))
+    for y in sorted({r[3][:4] for r in art_rows}):
+        urls = [SITE + "?article=" + r[0] for r in art_rows if r[3].startswith(y)]
+        fn = "sitemap-articles-%s.xml" % y
+        write_sitemap(os.path.join(ROOT, fn), urls)
+        refs.append((fn, len(urls)))
+    # entity shard (fictional-world entities, mined from content)
+    try:
+        ent_rows = json.load(gzip.open(os.path.join(IDX, "entities.idx.json.gz"), "rt"))
+        urls = [r[6] for r in ent_rows]
+        write_sitemap(os.path.join(ROOT, "sitemap-entities.xml"), urls)
+        refs.append(("sitemap-entities.xml", len(urls)))
+    except OSError:
+        pass
     for d0, fn, items in week_pages:
         refs.append(("archive/" + fn, len(items)))
     idx = ['<?xml version="1.0" encoding="UTF-8"?>',

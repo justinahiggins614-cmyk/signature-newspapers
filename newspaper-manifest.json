@@ -13,7 +13,7 @@
  "goal": "1,000,000 editions + articles",
  "schema_version": "JAH-NEWSPAPER-RECORD/1.0",
  "index_version": "1.0",
- "index_hash": "181013484f3d39d3b58cae1b1dadbb044e43370434c4b7d6a7ded42081eaf8e7",
+ "index_hash": "f0ad7b6f2765f430eaf66f01ffb4468d67ed0ed1dc43e589187a2e9010e579b5",
  "generator_version": "code/gen_editions.py (SALT 20261002)",
  "fictionality_status": "FICTIONAL_GENERATED",
  "fictionality_note": "Every record in this archive is an original generated newspaper of the fictional Signature world. All people, places, teams, organizations and events are invented. It reports no real-world news and names no real persons.",

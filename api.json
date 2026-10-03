@@ -78,6 +78,8 @@
   "editions": "data/index/editions.idx.json",
   "articles_gz": "data/index/articles.idx.json.gz",
   "articles": "data/index/articles.idx.json",
+  "entities_gz": "data/index/entities.idx.json.gz",
+  "entities": "data/index/entities.idx.json",
   "hash_manifest": "data/index/hash-manifest.json"
  },
  "feed": "data/index/newspapers-catalog.json",
