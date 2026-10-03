@@ -30,6 +30,17 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Georgia,'Time
 .wrap{max-width:1080px;margin:0 auto;padding:0 14px}
 .honesty{background:#fff8e1;border-top:3px double var(--rule);border-bottom:3px double var(--rule);padding:10px 14px;font-size:.88em;color:#4a4234;text-align:center;font-family:Arial,Helvetica,sans-serif}
 .honesty b{color:var(--red)}
+/* JAH NETWORK 10-FIX CONSISTENCY PASS (additive — no restyle of existing components) */
+.jnkicker{display:inline-block;font-size:.72em;letter-spacing:.28em;color:var(--red);border:1px solid var(--red);border-radius:20px;padding:5px 16px;margin:0 0 10px;font-weight:700;font-family:Arial,Helvetica,sans-serif}
+.stbadge{display:inline-block;background:#1e4d33;color:#b8f0cd;font-size:.68em;font-weight:800;letter-spacing:.1em;border-radius:6px;padding:3px 9px;text-transform:uppercase;white-space:nowrap;vertical-align:middle;font-family:Arial,Helvetica,sans-serif}
+.recpanel{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0;padding:9px 12px;border:1px solid var(--rule);border-radius:8px;background:#fffdf4;font-size:.8em;font-family:Arial,Helvetica,sans-serif}
+.recpanel .rpid{font-family:monospace;color:var(--red);font-weight:700}
+.recpanel .rpver{color:var(--mut)}
+.recpanel button{background:#fff;border:1px solid var(--rule);color:var(--ink);border-radius:6px;padding:4px 10px;font-size:.8em;cursor:pointer;font-weight:700;letter-spacing:.04em;font-family:inherit}
+.recpanel button:hover{border-color:var(--red);color:var(--red)}
+.prov{font-size:.78em;color:var(--mut);margin:8px 0;font-family:Arial,Helvetica,sans-serif}
+.jaicard{border:1px solid var(--rule);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.88em;background:#fffdf4;font-family:Arial,Helvetica,sans-serif}
+.jaicard b{color:var(--red)}
 header.hero{text-align:center;padding:26px 14px 14px;border-bottom:4px double var(--rule)}
 .masthead{font-size:2.4em;font-weight:900;letter-spacing:.04em;margin:.1em 0;text-transform:uppercase}
 .masthead .sig{color:var(--red)}
@@ -145,6 +156,7 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 
 <div id="home">
 <header class="hero wrap">
+<div class="jnkicker">SITE 14 OF 25 · THE JAH NETWORK</div>
 <div class="masthead"><span class="sig">The Signature</span> Global Newspaper Archive</div>
 <div class="dateline">Daily editions from six regional papers of the Signature world · past dates on file · new editions every morning</div>
 <details class="statscollapse"><summary>Site stats</summary>
@@ -278,7 +290,7 @@ function edCard(r){
   var heads=r[5].split("‖").slice(0,3);
   return '<div class="card" onclick="openEdition(\''+r[0]+'\')">'+
     '<div class="pmast pp'+r[2]+'">'+esc(p.name)+'</div>'+
-    '<div class="ficmini">Fictional Signature world · not real news</div>'+
+    '<div class="ficmini">Fictional Signature world · not real news · <span class="stbadge">GENERATED</span></div>'+
     '<div class="pdate">'+fmtDate(r[1])+' · '+r[0]+'</div>'+
     heads.map(function(h){h=h.split("—")[0].trim();return '<div class="ph">'+esc(h)+'</div>'}).join("")+
     '<div class="meta">'+r[3]+' articles · <span style="color:#9c2b2b">Read edition →</span></div></div>';
@@ -381,6 +393,44 @@ async function getEdition(id){
 }
 /* ============ edition view ============ */
 var SEC_TITLES={"lead":"Front Page","region":"Regional","science":"Science & Discovery","culture":"Arts & Culture","weather":"Weather","sports":"Sport","business":"Business","opinion":"Opinion"};
+/* ===== JAH NETWORK 10-FIX: record panel + provenance + AI identity card (additive) ===== */
+function edSeed(e){
+  var d=new Date(e.date+"T00:00:00Z"), ep=new Date("2025-10-03T00:00:00Z");
+  var days=Math.round((d-ep)/86400000);
+  return 20261002 + (e.paper||0)*100003 + days*7919;
+}
+function edProvHTML(e){
+  return '<div class="prov">Provenance: made by the Newspaper Archive edition generator (code/gen_editions.py) · deterministic record seed '+edSeed(e)+' · edition dated '+fmtDate(e.date)+' (the edition\u2019s own fictional Signature-world publication date)</div>';
+}
+function edPanelHTML(e){
+  return '<div class="recpanel" role="group" aria-label="Record actions"><span class="rpid">'+esc(e.id)+'</span><span class="rpver">v1.0</span>'+
+  '<button data-rp="open">OPEN</button><button data-rp="src">SOURCE</button><button data-rp="share">SHARE</button>'+
+  '<button data-rp="copy">COPY</button><button data-rp="dl">DOWNLOAD</button><button data-rp="read">READ ALOUD</button></div>';
+}
+function wireEdPanel(e,wi){
+  var panel=document.querySelector("#edview .recpanel");if(!panel)return;
+  var chunk="data/volumes/editions-w"+String(wi).padStart(5,"0")+".jsonl.gz";
+  var deep=location.href.split("?")[0]+"?edition="+e.id;
+  panel.querySelectorAll("button").forEach(function(b){
+    var a=b.getAttribute("data-rp");
+    b.onclick=function(){
+      if(a==="open"){location.href=deep;}
+      else if(a==="src"){if(!panel.querySelector(".srcnote")){var sn=document.createElement("span");sn.className="srcnote";sn.style.color="var(--mut)";sn.textContent="Source: Newspaper Archive catalog · "+chunk;panel.appendChild(sn);}}
+      else if(a==="share"){
+        if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(deep).then(function(){alert("Edition link copied.")},function(){prompt("Copy this edition link:",deep)});}
+        else prompt("Copy this edition link:",deep);}
+      else if(a==="copy"){copyEdition(e);}
+      else if(a==="dl"){downloadEdition(e);}
+      else if(a==="read"){readEdition(e);}
+    };
+  });
+}
+function aiCardHTML(prof){
+  var duties=(prof.abilities||[]).map(function(x){return esc(x)}).join("; ");
+  return '<div class="jaicard"><b>🤖 AI IDENTITY</b><br><b>Name:</b> '+esc(prof.name||"AI assistant")+' — '+esc(prof.description||"")+
+   (duties?'<br><b>Duties:</b> '+duties:"")+
+   '<br><b>Engine:</b> Signature Llama (live where available) with the built-in JAHtalk on-device fallback — it always answers.</div>';
+}
 async function openEdition(id){
   $("home").style.display="none";$("edview").style.display="block";window.scrollTo(0,0);
   $("edview").innerHTML="<p>Unfolding the edition…</p>";
@@ -392,12 +442,14 @@ async function openEdition(id){
   var html='<div class="sheet">'+
     '<div class="emast pp'+e.paper+'">'+esc(p.name)+'</div>'+
     '<div class="ficlabel">Fictional Signature world — not real-world news</div>'+
+    '<div style="margin:6px 0"><span class="stbadge">GENERATED</span></div>'+
+    edPanelHTML(e)+edProvHTML(e)+
     '<div class="etag">'+esc(p.tagline||"")+'</div>'+
     '<div class="edate">'+fmtDate(e.date)+' · Vol. '+e.volume+', Issue '+e.issue+' · '+e.id+'</div>'+
     '<div class="ehon"><b>Signature press:</b> '+esc(e.honesty)+'</div>'+
     e.articles.map(function(a,i){
       var aid=e.id+'-A'+(i+1);
-      return '<article class="story"><div class="artid">'+aid+' · Fictional Signature world</div><div class="kicker">'+esc(SEC_TITLES[a.sec]||a.sec)+'</div>'+
+      return '<article class="story"><div class="artid">'+aid+' · Fictional Signature world · <span class="stbadge">GENERATED</span></div><div class="kicker">'+esc(SEC_TITLES[a.sec]||a.sec)+'</div>'+
       '<h3>'+esc(a.h)+'</h3><div class="byline">'+esc(a.by)+' · '+fmtDate(e.date)+'</div>'+
       a.body.map(function(par){return '<p>'+esc(par)+'</p>'}).join("")+'</article>'}).join("")+
     '</div>'+
@@ -408,7 +460,7 @@ async function openEdition(id){
     '<button class="btn ghost" id="rdmode">📖 Reading mode</button>'+
     '<a class="btn ghost" href="./" style="text-decoration:none">← Back to archive</a>'+
     '</div>'+
-    '<div class="qa"><h4>❓ Ask about this edition</h4><div id="qalog"></div>'+
+    '<div class="qa"><h4>❓ Ask about this edition</h4><div id="aiidcard"></div><div id="qalog"></div>'+
     '<div class="qchips" id="qachips"></div>'+
     '<div class="qrow"><input id="qin" placeholder="Ask anything about this edition…" aria-label="Ask about this edition"><button class="btn" id="qgo">Ask</button></div></div>';
   $("edview").innerHTML=html;
@@ -445,6 +497,8 @@ async function openEdition(id){
     document.head.appendChild(sc);
   })();
   qaInit(e);
+  var edrow=IDX.find(function(r){return r[0]===e.id});
+  wireEdPanel(e,edrow?edrow[4]:0);
 }
 function editionText(e){
   var p=PAPERS[e.paper]||{name:""};
@@ -498,6 +552,7 @@ function qsay(html,who){
 function qaInit(e){
   var p=PAPERS[e.paper]||{name:""};
   var P=editionAIProfile(e);
+  $("aiidcard").innerHTML=aiCardHTML(P);
   var g=(typeof JAHtalk!=="undefined")?JAHtalk.greet(P):("Hello — I'm the "+p.name+" desk assistant.");
   qsay(esc(g)+" I'm your desk assistant for the <b>"+fmtDate(e.date)+"</b> edition ("+e.id+"). Ask me about any story in this paper — I answer only from what's printed here. 📰","ai");
   var chips=["What are the headlines?","Summarize this edition","Who wrote the stories?","What sections are inside?"];
