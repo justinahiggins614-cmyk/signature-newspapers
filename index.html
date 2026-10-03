@@ -67,6 +67,12 @@ input[type=search],input[type=date],select{background:#fffdf4;color:var(--ink);b
 input[type=search]{min-width:min(400px,88vw)}
 .finderbar{display:flex;gap:8px;justify-content:center;margin:0 0 10px;flex-wrap:wrap}
 .finderbar input[type=search]{flex:0 1 420px;min-width:min(400px,86vw)}
+.finder-note{text-align:center;font-size:.75em;color:var(--mut);margin:-2px 0 12px;font-family:Arial,Helvetica,sans-serif}
+.artbtns{margin:10px 0 4px}
+.artbtns .btn{font-size:.8em;padding:5px 10px}
+.vhash{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.76em;word-break:break-all;background:#f4efe0;padding:8px 10px;border:1px solid #c9bfa4;margin:8px 0}
+.vrow{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;font-size:.88em}
+.vrow b{min-width:150px}
 .fresults{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:2px 0 8px;font-family:Arial,Helvetica,sans-serif}
 .fcard{background:#fffdf4;border:1px solid #c9bfa4;border-radius:4px;padding:10px 14px;max-width:270px;font-size:.88em;box-shadow:2px 2px 0 #d8cfb2;text-align:left}
 .fcard .fdate{color:var(--mut);font-size:.8em;margin:.2em 0}
@@ -176,6 +182,7 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 
 <div class="controls"><div class="wrap">
 <div class="finderbar"><input type="search" id="fq" maxlength="140" placeholder="Describe what you're looking for… e.g. a lantern festival" aria-label="Describe what you're looking for"><button class="btn" id="fgo">Find it</button></div>
+<div class="finder-note">Deterministic keyword search over the archive's own index — not AI search. It returns only real indexed records.</div>
 <div id="fresults" class="fresults"></div>
 <div class="row">
 <input type="search" id="q" placeholder="Search headlines, articles, or JAH-ED-######…" aria-label="Search editions">
@@ -257,15 +264,30 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 <script>
 "use strict";
 /* ============ config & utils ============ */
-var IDX_URL="data/index/editions.idx.json.gz", API_URL="api.json";
+var IDX_URL="data/index/editions.idx.json.gz", API_URL="api.json",
+    ART_URL="data/index/articles.idx.json.gz", ENT_URL="data/index/entities.idx.json.gz";
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-async function gz(url){var r=await fetch(url);if(!r.ok)throw new Error("fetch "+r.status);
+async function gz(url,ms){var ctl=new AbortController();var to=setTimeout(function(){ctl.abort()},ms||20000);
+  try{var r=await fetch(url,{signal:ctl.signal});if(!r.ok)throw new Error("fetch "+r.status);
   var ds=new DecompressionStream("gzip"),buf=await new Response(r.body.pipeThrough(ds)).text();return buf}
+  finally{clearTimeout(to)}}
+/* Site-14 fix wave: index cache (localStorage) with timestamp — fallback when
+   the live index cannot be fetched. Never imply cached counts are current. */
+var IDX_CACHE_KEY="jah-news-idx-cache";
+function saveIdxCache(text){try{localStorage.setItem(IDX_CACHE_KEY,JSON.stringify({date:new Date().toISOString(),text:text}))}catch(e){}}
+function loadIdxCache(){try{var c=JSON.parse(localStorage.getItem(IDX_CACHE_KEY)||"null");return (c&&c.text)?c:null}catch(e){return null}}
 function fmtDate(d){var p=d.split("-");var M=["January","February","March","April","May","June","July","August","September","October","November","December"];return M[+p[1]-1]+" "+(+p[2])+", "+p[0]}
 var PAPERS=[], IDX=null, chunkCache={}, curEdition=null, grid=[], shown=0, PAGE=24;
 
-/* ============ boot ============ */
+/* ============ boot (hardened: timeout, explicit error, cached fallback, retry) ============ */
+function renderBootError(){
+  $("stats").innerHTML='<div class="stat"><b>⚠</b><span>index unavailable — <a href="#" id="retryboot">Retry</a></span></div>';
+  $("today").innerHTML="";
+  $("results").innerHTML='<p>The archive index could not be loaded. Check your connection, then <a href="#" id="retryboot2">try again</a>.</p>';
+  function rb(e){if(e)e.preventDefault();location.reload()}
+  var a=$("retryboot"),b=$("retryboot2");if(a)a.onclick=rb;if(b)b.onclick=rb;
+}
 async function boot(){
   var api=null;
   try{api=await(await fetch(API_URL)).json()}catch(e){}
@@ -274,25 +296,37 @@ async function boot(){
   PAPERS.forEach(function(p,i){var o=document.createElement("option");o.value=i;o.textContent=p.name;ps.appendChild(o)});
   $("paperlist").innerHTML=PAPERS.map(function(p){
     return '<div class="p"><b>'+esc(p.name)+'</b><span>'+esc(p.region)+' · '+esc(p.tagline)+'</span><br><a href="?paper='+(PAPERS.indexOf(p))+'">Browse its editions →</a></div>'}).join("");
-  try{IDX=JSON.parse(await gz(IDX_URL))}catch(e){IDX=[]}
-  renderStats(api);renderToday();fillYearMonth();
+  /* index load: 20s timeout, then cached fallback, then explicit error — never
+     an indefinite "…loading" */
+  var cached=false,cacheDate="";
+  try{var txt=await gz(IDX_URL,20000);IDX=JSON.parse(txt);saveIdxCache(txt)}
+  catch(e){
+    var c=loadIdxCache();
+    if(c){try{IDX=JSON.parse(c.text);cached=true;cacheDate=c.date}catch(e2){IDX=null}}
+    else{IDX=null}
+  }
+  if(!IDX||!IDX.length){renderBootError();return}
+  renderStats(api,cached,cacheDate);renderToday();fillYearMonth();
   if(window.__wantLatest){window.__wantLatest=false;goLatest()}
   var qp=new URLSearchParams(location.search);
-  if(qp.get("edition")){openEdition(qp.get("edition"))}
+  if(qp.get("verify")){openVerify(qp.get("verify"))}
+  else if(qp.get("article")){openArticle(qp.get("article"))}
+  else if(qp.get("entity")){openEntity(qp.get("entity"))}
+  else if(qp.get("edition")){openEdition(qp.get("edition"))}
   else{applyPaperParam(qp);resetGrid()}
   if(api&&api.date_range&&api.date_range[1]){$("day").max=api.date_range[1]}
 }
-function renderStats(api){
+function renderStats(api,cached,cacheDate){
   var nEd=IDX.length,nArt=IDX.reduce(function(a,r){return a+r[3]},0);
   var dr=api&&api.date_range?api.date_range:["",""];
+  var note=cached?'<div class="stat"><b>⚠</b><span>cached index — last verified '+esc((cacheDate||"").slice(0,10))+'</span></div>':"";
   $("stats").innerHTML=
     '<div class="stat"><b>'+nEd.toLocaleString()+'</b><span>editions on file</span></div>'+
     '<div class="stat"><b>'+nArt.toLocaleString()+'</b><span>articles printed</span></div>'+
     '<div class="stat"><b>'+PAPERS.length+'</b><span>regional papers</span></div>'+
-    '<div class="stat"><b>'+esc(dr[0]||"—")+'</b><span>archive begins</span></div>';
-  var march=nEd+nArt;
-  $("marchfill").style.width=Math.min(100,march/10000)+"%";
-  $("marchtxt").textContent=march.toLocaleString()+" / 1,000,000 editions + articles";
+    '<div class="stat"><b>'+esc(dr[0]||"—")+'</b><span>archive begins</span></div>'+note;
+  $("marchfill").style.width=Math.min(100,nEd/10000)+"%";
+  $("marchtxt").textContent=nEd.toLocaleString()+" / 1,000,000 EDITIONS · "+nArt.toLocaleString()+" ARTICLES";
 }
 function edCard(r){
   var p=PAPERS[r[2]]||{name:""};
@@ -343,7 +377,10 @@ function renderMore(){
 }
 function applyPaperParam(qp){
   var pi=qp.get("paper");
-  if(pi!==null&&PAPERS[+pi]){$("paper").value=pi}
+  if(pi===null)return;
+  var m=/^JAH-PAPER-(\d+)$/.exec(pi);   /* permanent paper IDs also accepted */
+  if(m)pi=String(parseInt(m[1],10)-1);
+  if(PAPERS[+pi]){$("paper").value=pi}
 }
 /* Site-14 diagnostic FIX-05: populate the chronological year filter from the index */
 function fillYearMonth(){
@@ -414,7 +451,7 @@ function edProvHTML(e){
 function edPanelHTML(e){
   return '<div class="recpanel" role="group" aria-label="Record actions"><span class="rpid">ID: '+esc(e.id)+'</span><span class="rpver">VERSION v1.0</span>'+
   '<button data-rp="open">OPEN</button><button data-rp="src">SOURCE</button><button data-rp="share">SHARE</button>'+
-  '<button data-rp="copy">COPY</button><button data-rp="dl">DOWNLOAD</button><button data-rp="read">READ ALOUD</button></div>';
+  '<button data-rp="copy">COPY</button><button data-rp="dl">DOWNLOAD</button><button data-rp="read">READ ALOUD</button><button data-rp="verify">VERIFY</button></div>';
 }
 function wireEdPanel(e,wi){
   var panel=document.querySelector("#edview .recpanel");if(!panel)return;
@@ -431,6 +468,7 @@ function wireEdPanel(e,wi){
       else if(a==="copy"){copyEdition(e);}
       else if(a==="dl"){downloadEdition(e);}
       else if(a==="read"){readEdition(e);}
+      else if(a==="verify"){location.href=location.href.split("?")[0]+"?verify="+e.id;}
     };
   });
 }
@@ -457,15 +495,18 @@ async function openEdition(id){
     '<div class="edate">'+fmtDate(e.date)+' · Vol. '+e.volume+', Issue '+e.issue+' · '+e.id+'</div>'+
     '<div class="ehon"><b>Signature press:</b> '+esc(e.honesty)+'</div>'+
     e.articles.map(function(a,i){
-      var aid=e.id+'-A'+(i+1);
-      return '<article class="story"><div class="artid">'+aid+' · Fictional Signature world · <span class="stbadge">GENERATED</span></div><div class="kicker">'+esc(SEC_TITLES[a.sec]||a.sec)+'</div>'+
+      var aid=a.id||(e.id+'-A'+(i+1));
+      return '<article class="story" id="'+aid+'"><div class="artid">'+aid+' · Fictional Signature world · <span class="stbadge">GENERATED</span></div><div class="kicker">'+esc(SEC_TITLES[a.sec]||a.sec)+'</div>'+
       '<h3>'+esc(a.h)+'</h3><div class="byline">'+esc(a.by)+' · '+fmtDate(e.date)+'</div>'+
-      a.body.map(function(par){return '<p>'+esc(par)+'</p>'}).join("")+'</article>'}).join("")+
+      a.body.map(function(par){return '<p>'+esc(par)+'</p>'}).join("")+
+      '<div class="artbtns"><button class="btn ghost" data-acopy="'+i+'">📋 Copy article</button> '+
+      '<button class="btn ghost" data-adl="'+i+'">⬇ Article .json</button></div></article>'}).join("")+
     '</div>'+
     '<div class="eactions">'+
     '<button class="btn red" id="rded">🔊 Read edition aloud</button>'+
     '<button class="btn ghost" id="cped">📋 Copy edition</button>'+
     '<button class="btn ghost" id="dled">⬇ Download .txt</button>'+
+    '<button class="btn ghost" id="dledj">⬇ Download .json</button>'+
     '<button class="btn ghost" id="rdmode">📖 Reading mode</button>'+
     '<a class="btn ghost" href="./" style="text-decoration:none">← Back to archive</a>'+
     '</div>'+
@@ -478,6 +519,22 @@ async function openEdition(id){
   $("rded").onclick=function(){readEdition(e)};
   $("cped").onclick=function(){copyEdition(e)};
   $("dled").onclick=function(){downloadEdition(e)};
+  $("dledj").onclick=function(){downloadEditionJSON(e)};
+  /* per-article copy / download (stable JAH-ARTICLE IDs in filenames) */
+  function artText(a){
+    return "FICTIONAL SIGNATURE WORLD — NOT REAL-WORLD NEWS\n\n["+a.id+"] "+a.h+"\n"+a.by+" · "+fmtDate(e.date)+"\n\n"+a.body.join("\n")+"\n\nFrom "+e.id+" · "+p.name+", "+fmtDate(e.date)+".\nFICTIONAL SIGNATURE WORLD — NOT REAL-WORLD NEWS.";
+  }
+  Array.prototype.forEach.call($("edview").querySelectorAll("[data-acopy]"),function(b){
+    b.onclick=function(){var a=e.articles[+b.getAttribute("data-acopy")];var t=artText(a);
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){alert("Article copied.")},function(){prompt("Copy this article:",t)})}
+      else prompt("Copy this article:",t);};
+  });
+  Array.prototype.forEach.call($("edview").querySelectorAll("[data-adl]"),function(b){
+    b.onclick=function(){var a=e.articles[+b.getAttribute("data-adl")];
+      var blob=new Blob([JSON.stringify(a,null,1)],{type:"application/json"});
+      var x=document.createElement("a");x.href=URL.createObjectURL(blob);x.download=a.id+".json";
+      document.body.appendChild(x);x.click();setTimeout(function(){URL.revokeObjectURL(x.href);x.remove()},500);};
+  });
   /* Site-14 diagnostic FIX-04: single-column reading mode toggle (persisted) */
   (function(){
     var KEY="jahnews.reading";
@@ -530,6 +587,111 @@ function downloadEdition(e){
   var a=document.createElement("a");a.href=URL.createObjectURL(blob);
   a.download=e.id+".txt";document.body.appendChild(a);a.click();
   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+}
+function downloadEditionJSON(e){
+  var blob=new Blob([JSON.stringify(e,null,1)],{type:"application/json"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download=e.id+".json";document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+}
+/* ============ ?article= deep link: open the edition at the article ============ */
+var ART_IDX=null, ENT_IDX=null;
+async function loadArtIdx(){
+  if(ART_IDX)return ART_IDX;
+  try{ART_IDX=JSON.parse(await gz(ART_URL,20000))}
+  catch(e){
+    try{var r=await fetch(ART_URL.replace(".json.gz",".json"));ART_IDX=await r.json()}
+    catch(e2){ART_IDX=[]}
+  }
+  return ART_IDX;
+}
+async function openArticle(aid){
+  $("home").style.display="none";$("edview").style.display="block";window.scrollTo(0,0);
+  $("edview").innerHTML="<p>Finding the article…</p>";
+  var rows=await loadArtIdx();
+  var row=null;
+  for(var i=0;i<rows.length;i++){if(rows[i][0]===aid){row=rows[i];break}}
+  if(!row){
+    $("edview").innerHTML='<p><b>ARTICLE_NOT_FOUND.</b> No article with ID '+esc(aid)+' exists in the archive index. <a href="./">Back to the archive →</a></p>';
+    document.title="Article not found — The Signature Global Newspaper Archive";return;
+  }
+  await openEdition(row[1]);
+  history.replaceState(null,"","?article="+aid);
+  document.title=aid+" · "+row[1]+" — The Signature Global Newspaper Archive";
+  var el=document.getElementById(aid);
+  if(el){setTimeout(function(){el.scrollIntoView({block:"start"});el.style.outline="3px solid #9c2b2b";el.style.outlineOffset="4px"},150)}
+}
+/* ============ ?verify= : VERIFY EDITION with real SHA-256 recomputation ============ */
+function canonJSON(o){
+  if(o===null||typeof o!=="object")return JSON.stringify(o);
+  if(Array.isArray(o))return "["+o.map(canonJSON).join(",")+"]";
+  var ks=Object.keys(o).sort();
+  return "{"+ks.map(function(k){return JSON.stringify(k)+":"+canonJSON(o[k])}).join(",")+"}";
+}
+async function sha256hex(s){
+  var d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));
+  return Array.prototype.map.call(new Uint8Array(d),function(x){return("0"+x.toString(16)).slice(-2)}).join("");
+}
+function stripHash(o){var c={};Object.keys(o).forEach(function(k){if(k!=="content_hash")c[k]=o[k]});return c}
+async function openVerify(id){
+  $("home").style.display="none";$("edview").style.display="block";window.scrollTo(0,0);
+  $("edview").innerHTML="<p>Checking the record…</p>";
+  document.title="Verify "+id+" — The Signature Global Newspaper Archive";
+  var e=await getEdition(id);
+  if(e&&e.__error){$("edview").innerHTML='<p>⚠ This edition could not be opened — its data file looks damaged. <a href="./">Back to the archive →</a></p>';return}
+  if(!e){$("edview").innerHTML='<p><b>EDITION_NOT_FOUND.</b> No edition with ID '+esc(id)+' exists in the archive index. <a href="./">Back to the archive →</a></p>';return}
+  var p=PAPERS[e.paper]||{name:""};
+  var recomputed=await sha256hex(canonJSON(stripHash(e)));
+  var match=recomputed===(e.content_hash||"");
+  var artChecks=[];
+  for(var i=0;i<e.articles.length;i++){
+    (function(a){
+      artChecks.push(sha256hex(canonJSON(stripHash(a))).then(function(rh){
+        return '<div class="vrow"><b>'+esc(a.id)+'</b><span>'+(rh===a.content_hash?"✓ hash matches":"✗ HASH MISMATCH")+'</span></div>';
+      }));
+    })(e.articles[i]);
+  }
+  var artHtml=(await Promise.all(artChecks)).join("");
+  history.replaceState(null,"","?verify="+e.id);
+  $("edview").innerHTML='<div class="sheet">'+
+    '<div class="emast">Record verification</div>'+
+    '<div class="ficlabel">Fictional Signature world — not real-world news</div>'+
+    '<h3 style="margin:12px 0 4px">'+esc(e.id)+'</h3>'+
+    '<div class="vrow"><b>Paper</b><span>'+esc(p.name)+' ('+esc(e.paper_id||"")+')</span></div>'+
+    '<div class="vrow"><b>Publication date</b><span>'+esc(fmtDate(e.date))+' (Signature-world date, UTC)</span></div>'+
+    '<div class="vrow"><b>Volume / Issue</b><span>Vol. '+e.volume+', Issue '+e.issue+'</span></div>'+
+    '<div class="vrow"><b>Version</b><span>'+esc(e.version||"v1.0")+'</span></div>'+
+    '<div class="vrow"><b>Status</b><span>'+esc(e.status||"PUBLISHED")+'</span></div>'+
+    '<div class="vrow"><b>Creation mode</b><span>'+esc(e.creation_mode||"GENERATED")+'</span></div>'+
+    '<div class="vrow"><b>Fictionality</b><span>FICTIONAL_GENERATED — all people, places and events invented</span></div>'+
+    '<div class="vrow"><b>Canonical URL</b><span><a href="?edition='+esc(e.id)+'">'+esc(location.href.split("?")[0]+'?edition='+e.id)+'</a></span></div>'+
+    '<div class="vrow"><b>Stored SHA-256</b></div><div class="vhash">'+esc(e.content_hash||"—")+'</div>'+
+    '<div class="vrow"><b>Recomputed SHA-256</b></div><div class="vhash">'+esc(recomputed)+'</div>'+
+    '<div class="vrow"><b>Integrity</b><span style="font-weight:700;color:'+(match?"#2e6b34":"#9c2b2b")+'">'+(match?"✓ HASH MATCHES — the record is intact as published":"✗ HASH MISMATCH — the record differs from its published hash")+'</span></div>'+
+    '<h4 style="margin:14px 0 4px">Articles ('+e.articles.length+')</h4>'+artHtml+
+    '<div class="eactions"><a class="btn ghost" href="?edition='+esc(e.id)+'" style="text-decoration:none">Open edition →</a> '+
+    '<a class="btn ghost" href="./" style="text-decoration:none">← Back to archive</a></div></div>';
+}
+/* ============ ?entity= : fictional-world entity record ============ */
+async function openEntity(id){
+  $("home").style.display="none";$("edview").style.display="block";window.scrollTo(0,0);
+  $("edview").innerHTML="<p>Looking up the entity…</p>";
+  document.title=id+" — The Signature Global Newspaper Archive";
+  try{if(!ENT_IDX)ENT_IDX=JSON.parse(await gz(ENT_URL,20000))}catch(e){ENT_IDX=[]}
+  var row=null;
+  for(var i=0;i<ENT_IDX.length;i++){if(ENT_IDX[i][0]===id){row=ENT_IDX[i];break}}
+  if(!row){$("edview").innerHTML='<p><b>ENTITY_NOT_FOUND.</b> No world entity with ID '+esc(id)+' exists in the archive index. <a href="./">Back to the archive →</a></p>';return}
+  history.replaceState(null,"","?entity="+id);
+  $("edview").innerHTML='<div class="sheet">'+
+    '<div class="emast">World entity</div>'+
+    '<div class="ficlabel">Fictional Signature world — not real-world news</div>'+
+    '<h3 style="margin:12px 0 4px">'+esc(row[1])+'</h3>'+
+    '<div class="vrow"><b>Entity ID</b><span>'+esc(row[0])+'</span></div>'+
+    '<div class="vrow"><b>Type</b><span>'+esc(row[2])+'</span></div>'+
+    '<div class="vrow"><b>First appearance</b><span><a href="?edition='+esc(row[3])+'">'+esc(row[3])+'</a> · '+esc(row[4])+'</span></div>'+
+    '<div class="vrow"><b>Editions mentioning</b><span>'+row[5]+'</span></div>'+
+    '<div class="vrow"><b>Fictionality</b><span>FICTIONAL_GENERATED — invented for the Signature world; not a real person, place or organization</span></div>'+
+    '<div class="eactions"><a class="btn ghost" href="./" style="text-decoration:none">← Back to archive</a></div></div>';
 }
 /* ============ per-edition Q&A (grounded in the edition's articles) ============
    JAHtalk voice (js/jah-talk-fallback.js): shared human-talk layer. The
