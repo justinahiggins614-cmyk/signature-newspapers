@@ -409,8 +409,8 @@ def stamp_static():
         heads = "".join("<li>%s</li>" % h for h in
                         [a["h"].replace("&", "&amp;").replace("<", "&lt;") for a in e["articles"][:3]])
         parts.append(
-            '<p><b><a href="?edition=%s">%s</a></b> — %s, Vol. %d Issue %d<ul>%s</ul></p>' %
-            (eid_, PAPERS[pi]["name"], date, e["volume"], e["issue"], heads))
+            '<p itemscope itemtype="https://schema.org/NewsArticle"><b><a itemprop="url" href="?edition=%s"><span itemprop="headline">%s</span></a></b> — <time itemprop="datePublished" datetime="%s">%s</time>, Vol. %d Issue %d<ul>%s</ul></p>' %
+            (eid_, PAPERS[pi]["name"], date, date, e["volume"], e["issue"], heads))
     html = "\n".join(parts)
     p = os.path.join(ROOT, "index.html")
     with open(p, encoding="utf-8") as f:
@@ -421,6 +421,156 @@ def stamp_static():
     with open(p, "w", encoding="utf-8") as f:
         f.write(src)
     print("stamped latest editions into index.html")
+
+
+# ---------------- Site-14 diagnostic: feed, sub-sitemaps, static archive ------
+def build_catalog_feed(meta):
+    """data/index/newspapers-catalog.json: standardized machine-readable edition feed."""
+    return [{"id": eid_, "date": date, "paper": PAPERS[pi]["name"],
+             "paper_idx": pi, "issue": iss, "url": SITE + "?edition=" + eid_}
+            for eid_, date, pi, n, wi, iss in meta]
+
+def write_sitemap(path, urls):
+    sm = ['<?xml version="1.0" encoding="UTF-8"?>',
+          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for u in urls:
+        sm.append("<url><loc>%s</loc></url>" % u)
+    sm.append("</urlset>")
+    with open(path, "w") as f:
+        f.write("\n".join(sm))
+
+def build_sub_sitemaps(meta, week_pages):
+    """Per-paper (regional) + per-year (chronological) sitemap sub-indexes plus a
+    sitemap-index.xml tying them together. sitemap.xml stays flat for compat."""
+    refs = []
+    for pi in range(len(PAPERS)):
+        urls = [SITE + "?edition=" + eid_ for (eid_, d, ppi, n, wi, iss) in meta if ppi == pi]
+        fn = "sitemap-paper-%d.xml" % pi
+        write_sitemap(os.path.join(ROOT, fn), urls)
+        refs.append((fn, len(urls)))
+    for y in sorted({d[:4] for _, d, _, _, _, _ in meta}):
+        urls = [SITE + "?edition=" + eid_ for (eid_, d, ppi, n, wi, iss) in meta if d.startswith(y)]
+        fn = "sitemap-year-%s.xml" % y
+        write_sitemap(os.path.join(ROOT, fn), urls)
+        refs.append((fn, len(urls)))
+    for d0, fn, items in week_pages:
+        refs.append(("archive/" + fn, len(items)))
+    idx = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for fn, n in refs:
+        idx.append("<sitemap><loc>%s%s</loc></sitemap>" % (SITE, fn))
+    idx.append("</sitemapindex>")
+    with open(os.path.join(ROOT, "sitemap-index.xml"), "w") as f:
+        f.write("\n".join(idx))
+    return refs
+
+WEEK_CSS = ("body{margin:0;background:#f6f1e2;color:#1c1a15;font-family:Georgia,serif}"
+ ".wrap{max-width:860px;margin:0 auto;padding:0 14px}"
+ "header{border-bottom:4px double #2b2820;padding:18px 0;text-align:center}"
+ "h1{font-size:1.6em;text-transform:uppercase;margin:.2em 0}"
+ ".hon{background:#fff8e1;border-top:3px double #2b2820;border-bottom:3px double #2b2820;"
+ "padding:8px 12px;font-size:.85em;text-align:center;font-family:Arial,sans-serif}"
+ "article.ed{background:#fffdf4;border:1px solid #c9bfa4;margin:22px 0;padding:20px 24px}"
+ ".emast{font-size:1.4em;font-weight:900;text-transform:uppercase;border-bottom:4px double #2b2820;"
+ "padding-bottom:8px;text-align:center}.edate{text-align:center;color:#6b6353;font-size:.85em;"
+ "font-family:Arial,sans-serif;margin:6px 0 12px}h3{font-size:1.15em;margin:1em 0 .2em}"
+ ".byline{font-size:.82em;color:#6b6353;font-style:italic}p{line-height:1.65}"
+ ".back{font-family:Arial,sans-serif;font-size:.85em;margin:18px 0}"
+ "ul.weeks{line-height:2;font-family:Arial,sans-serif}")
+
+def edition_jsonld(e, paper_name):
+    lead = e["articles"][0]["h"] if e["articles"] else paper_name
+    secs = sorted({a["sec"] for a in e["articles"]})
+    return {"@context": "https://schema.org", "@type": "NewsArticle",
+            "headline": lead, "datePublished": e["date"],
+            "author": {"@type": "Person", "name": "Justin Addam Higgins"},
+            "isPartOf": {"@type": "Periodical", "name": paper_name},
+            "identifier": e["id"], "url": SITE + "?edition=" + e["id"],
+            "articleSection": secs}
+
+def esc_h(s):
+    return str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+def write_week_digest(adir, d0, fn, items, chunk_of):
+    """Static weekly digest: headline summaries + full transcript blocks for every
+    edition in the week. Crawler / no-JS friendly."""
+    parts = []
+    for eid_, date, pi, n, wi, iss in sorted(items, key=lambda t: (t[1], t[2])):
+        e = chunk_of(wi, eid_)
+        p = PAPERS[pi]
+        arts = []
+        for a in e["articles"]:
+            arts.append('<h3 itemprop="headline">%s</h3><div class="byline">%s</div>%s' % (
+                esc_h(a["h"]), esc_h(a["by"]),
+                "".join("<p>%s</p>" % esc_h(par) for par in a["body"])))
+        ld = json.dumps(edition_jsonld(e, p["name"]), ensure_ascii=False)
+        parts.append(
+            '<article class="ed" itemscope itemtype="https://schema.org/NewsArticle">'
+            '<div class="emast">%s</div>'
+            '<div class="edate"><time itemprop="datePublished" datetime="%s">%s</time>'
+            ' &middot; Vol. %d, Issue %d &middot; <span itemprop="identifier">%s</span></div>'
+            '<div class="hon">Signature press: %s</div>'
+            '<script type="application/ld+json">%s</script>%s'
+            '<p><a href="%s?edition=%s">Read the interactive edition &rarr;</a></p>'
+            '</article>' % (esc_h(p["name"]), date, date, e["volume"], e["issue"],
+                             eid_, esc_h(e["honesty"]), ld, "".join(arts), SITE, eid_))
+    html = ("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">"
+            "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
+            "<title>Signature press digest &mdash; week of %s</title>"
+            "<meta name=\"description\" content=\"Static digest of Signature-world newspaper "
+            "editions for the week of %s. All people, places, and events are invented.\">"
+            "<link rel=\"canonical\" href=\"%sarchive/%s\">"
+            "<style>%s</style></head><body><div class=\"wrap\">"
+            "<header><h1>The Signature Global Newspaper Archive</h1>"
+            "<p>Static press digest &mdash; week of %s</p></header>"
+            "<div class=\"hon\"><b>Signature press.</b> Every edition below is an original "
+            "generated newspaper of the Signature world &mdash; all people, places, teams, "
+            "organizations, and events are invented. It reports no real-world news and names "
+            "no real persons.</div>"
+            "%s<p class=\"back\"><a href=\"%s\">&larr; Back to the Newspaper Archive</a>"
+            " &middot; <a href=\"%sarchive/\">All digest weeks</a></p>"
+            "</div></body></html>" % (d0, d0, SITE, fn, WEEK_CSS, d0, "".join(parts), SITE, SITE))
+    with open(os.path.join(adir, fn), "w", encoding="utf-8") as f:
+        f.write(html)
+
+def build_static_archive(meta):
+    """Weekly digest pages + archive index. Returns [(week_start, filename, items)]."""
+    adir = os.path.join(ROOT, "archive")
+    os.makedirs(adir, exist_ok=True)
+    by_week = {}
+    for t in meta:
+        by_week.setdefault(t[4], []).append(t)
+    cache = {}
+    def chunk_of(wi, eid_):
+        if wi not in cache:
+            cache[wi] = {x["id"]: x for x in read_chunk(wi)}
+        return cache[wi][eid_]
+    weeks = []
+    for wi in sorted(by_week):
+        d0 = (EPOCH_START + datetime.timedelta(days=wi * 7)).isoformat()
+        fn = "week-%s.html" % d0
+        weeks.append((d0, fn, by_week[wi]))
+        write_week_digest(adir, d0, fn, by_week[wi], chunk_of)
+    lis = "".join('<li><a href="%s">Week of %s</a> &mdash; %d editions</li>' % (
+        fn, d0, len(items)) for d0, fn, items in weeks)
+    idx_html = ("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">"
+        "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
+        "<title>Static press digests &mdash; The Signature Global Newspaper Archive</title>"
+        "<style>%s</style></head><body><div class=\"wrap\">"
+        "<header><h1>The Signature Global Newspaper Archive</h1>"
+        "<p>Static press digests &mdash; every edition, plain HTML</p></header>"
+        "<div class=\"hon\"><b>Signature press.</b> All people, places, teams, organizations, "
+        "and events are invented; no real-world news.</div>"
+        "<ul class=\"weeks\">%s</ul>"
+        "<p class=\"back\"><a href=\"%s\">&larr; Back to the Newspaper Archive</a></p>"
+        "</div></body></html>" % (WEEK_CSS, lis, SITE))
+    with open(os.path.join(adir, "index.html"), "w", encoding="utf-8") as f:
+        f.write(idx_html)
+    want = {fn for _, fn, _ in weeks} | {"index.html"}
+    for fn in os.listdir(adir):
+        if fn.startswith("week-") and fn.endswith(".html") and fn not in want:
+            os.remove(os.path.join(adir, fn))
+    return weeks
 
 def build_all():
     meta = all_editions_meta()
@@ -464,6 +614,9 @@ def build_all():
         "date_range": [dates[0], dates[-1]] if dates else [None, None],
         "deep_link_pattern": SITE + "?edition=JAH-ED-000001",
         "index": "data/index/editions.idx.json.gz",
+        "feed": "data/index/newspapers-catalog.json",
+        "sitemap_index": "sitemap-index.xml",
+        "static_archive": "archive/index.html",
         "honesty": HONESTY,
     }
     with open(os.path.join(ROOT, "api.json"), "w") as f:
@@ -472,7 +625,14 @@ def build_all():
         json.dump(api, f, indent=1)
     # --- robots.txt ---
     with open(os.path.join(ROOT, "robots.txt"), "w") as f:
-        f.write("User-agent: *\nAllow: /\nSitemap: %ssitemap.xml\n" % SITE)
+        f.write("User-agent: *\nAllow: /\nSitemap: %ssitemap.xml\nSitemap: %ssitemap-index.xml\n" % (SITE, SITE))
+    # --- newspapers-catalog.json feed (AI-USER fix 2) ---
+    with open(os.path.join(IDX, "newspapers-catalog.json"), "w", encoding="utf-8") as f:
+        json.dump(build_catalog_feed(meta), f, ensure_ascii=False)
+    # --- static weekly digest archive: headlines + transcripts (AI-USER fix 3) ---
+    week_pages = build_static_archive(meta)
+    # --- sitemap sub-indexes: per-paper + per-year + digest weeks (AI-USER fix 2) ---
+    build_sub_sitemaps(meta, week_pages)
     # --- static latest-editions stamp (crawler/no-JS friendly) ---
     stamp_static()
     # --- data size guard ---

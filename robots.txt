@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
 Sitemap: https://justinahiggins614-cmyk.github.io/signature-newspapers/sitemap.xml
+Sitemap: https://justinahiggins614-cmyk.github.io/signature-newspapers/sitemap-index.xml

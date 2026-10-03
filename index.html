@@ -15,6 +15,9 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Dataset","name":"The Signature Global Newspaper Archive","creator":{"@type":"Person","name":"Justin Addam Higgins"}}
 </script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Periodical","name":"The Signature Global Newspaper Archive","url":"https://justinahiggins614-cmyk.github.io/signature-newspapers/","creator":{"@type":"Person","name":"Justin Addam Higgins"},"publisher":{"@type":"NewsMediaOrganization","name":"The Signature Global Newspaper Archive"},"description":"Original generated newspapers of the Signature world: daily editions from six regional papers, updated daily. All people, places, and events are invented; no real-world news.","hasPart":[{"@type":"NewsMediaOrganization","name":"The Signature Daily Globe"},{"@type":"NewsMediaOrganization","name":"The Meridian Herald"},{"@type":"NewsMediaOrganization","name":"The Argent Post"},{"@type":"NewsMediaOrganization","name":"The Northlight Times"},{"@type":"NewsMediaOrganization","name":"The Sunspire Gazette"},{"@type":"NewsMediaOrganization","name":"The Tidewater Chronicle"}]}
+</script>
 <style>
 :root{--paper:#f6f1e2;--paper2:#efe8d2;--ink:#1c1a15;--mut:#6b6353;--red:#9c2b2b;--rule:#2b2820;--gold:#8a6d1f}
 *{box-sizing:border-box}
@@ -112,6 +115,17 @@ footer a{color:#3a5a9c}
 .statscollapse>summary::before{content:"\25B8  "}
 .statscollapse[open]>summary::before{content:"\25BE  "}
 @media(min-width:768px){.statscollapse>summary{display:none}}
+/* Site-14 diagnostic FIX-04: single-column reading mode for long reads */
+.sheet.reading{max-width:44em;margin-left:auto;margin-right:auto}
+.sheet.reading .emast{font-size:1.5em}
+.sheet.reading article.story{margin-bottom:30px}
+.sheet.reading .story h3{font-size:1.3em;line-height:1.35}
+.sheet.reading .story p{font-size:1.12em;line-height:1.8;text-align:left;max-width:70ch}
+/* Site-14 diagnostic FIX-06: strict aspect-ratio placeholders on scans/images (CLS prevention) */
+.pagescan,.pageimg{aspect-ratio:3/4;width:100%;background:#e4dcc2;display:block;overflow:hidden;border:1px solid #c9bfa4}
+.pagescan img,.pageimg img{width:100%;height:100%;object-fit:cover;display:block}
+img{max-width:100%;height:auto}
+img[width][height]{aspect-ratio:attr(width)/attr(height)}
 </style>
 </head>
 <body>
@@ -135,6 +149,8 @@ footer a{color:#3a5a9c}
 <div class="row">
 <input type="search" id="q" placeholder="Search headlines, articles, or JAH-ED-######…" aria-label="Search editions">
 <select id="paper" aria-label="Paper filter"><option value="">All six papers</option></select>
+<select id="yr" aria-label="Filter by year"><option value="">Year</option></select>
+<select id="mo" aria-label="Filter by month"><option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
 <input type="date" id="day" aria-label="Pick a date" min="2025-10-03">
 <button class="btn ghost" id="goday">Go to date</button>
 <button class="btn ghost" id="golatest">Latest</button>
@@ -158,12 +174,12 @@ footer a{color:#3a5a9c}
 <div class="about lateststatic">
 <h3>Fresh off the press</h3>
 <!-- LATEST-EDITIONS -->
-<p><b><a href="?edition=JAH-ED-002179">The Signature Daily Globe</a></b> — 2026-10-01, Vol. 3 Issue 991<ul><li>Record Crowds Gather for Lantern Festival in Glimmerwick</li><li>Quillhaven Council Votes to Plant Ten Thousand Trees</li><li>Engineers Tune the Great Bell of Marlowe Bay</li></ul></p>
-<p><b><a href="?edition=JAH-ED-002180">The Meridian Herald</a></b> — 2026-10-01, Vol. 3 Issue 974<ul><li>Thousands Turn Out as the Tide Gala Opens in Lumenport</li><li>Halcyon Reach Market Hall Reopens After Restoration</li><li>Observatory at Frostgate Spots Distant Light</li></ul></p>
-<p><b><a href="?edition=JAH-ED-002181">The Argent Post</a></b> — 2026-10-01, Vol. 3 Issue 936<ul><li>Record Crowds Gather for Harvest of Inks in Argent Falls</li><li>Borealia Harbor Council Votes to Plant Ten Thousand Trees</li><li>The Meridian Transit Authority Charts a New Comet Over Meridian City</li></ul></p>
-<p><b><a href="?edition=JAH-ED-002182">The Northlight Times</a></b> — 2026-10-01, Vol. 3 Issue 893<ul><li>Juniper Quay Breaks Ground on The Lantern District Renewal</li><li>The Observatory at Frostgate Funds The Civic Athenaeum Across the Region</li><li>Halloway Researchers Bottle a self-inking survey compass</li></ul></p>
-<p><b><a href="?edition=JAH-ED-002183">The Sunspire Gazette</a></b> — 2026-10-01, Vol. 3 Issue 849<ul><li>Alistair Fenwick Named Steward of The Grand Concourse Extension</li><li>Cadence Vale Library Extends Hours for Readers</li><li>New Study: Cinderwick Air Sweetest at Dawn</li></ul></p>
-<p><b><a href="?edition=JAH-ED-002184">The Tidewater Chronicle</a></b> — 2026-10-01, Vol. 3 Issue 805<ul><li>The Archive of Weights and Measures Opens New Chapter With a fold-flat market stall Debut</li><li>Meridian City Market Hall Reopens After Restoration</li><li>Botanists Catalog Rare Blooms Near Quillhaven</li></ul></p>
+<p itemscope itemtype="https://schema.org/NewsArticle"><b><a itemprop="url" href="?edition=JAH-ED-002179"><span itemprop="headline">The Signature Daily Globe</span></a></b> — <time itemprop="datePublished" datetime="2026-10-01">2026-10-01</time>, Vol. 3 Issue 991<ul><li>Record Crowds Gather for Lantern Festival in Glimmerwick</li><li>Quillhaven Council Votes to Plant Ten Thousand Trees</li><li>Engineers Tune the Great Bell of Marlowe Bay</li></ul></p>
+<p itemscope itemtype="https://schema.org/NewsArticle"><b><a itemprop="url" href="?edition=JAH-ED-002180"><span itemprop="headline">The Meridian Herald</span></a></b> — <time itemprop="datePublished" datetime="2026-10-01">2026-10-01</time>, Vol. 3 Issue 974<ul><li>Thousands Turn Out as the Tide Gala Opens in Lumenport</li><li>Halcyon Reach Market Hall Reopens After Restoration</li><li>Observatory at Frostgate Spots Distant Light</li></ul></p>
+<p itemscope itemtype="https://schema.org/NewsArticle"><b><a itemprop="url" href="?edition=JAH-ED-002181"><span itemprop="headline">The Argent Post</span></a></b> — <time itemprop="datePublished" datetime="2026-10-01">2026-10-01</time>, Vol. 3 Issue 936<ul><li>Record Crowds Gather for Harvest of Inks in Argent Falls</li><li>Borealia Harbor Council Votes to Plant Ten Thousand Trees</li><li>The Meridian Transit Authority Charts a New Comet Over Meridian City</li></ul></p>
+<p itemscope itemtype="https://schema.org/NewsArticle"><b><a itemprop="url" href="?edition=JAH-ED-002182"><span itemprop="headline">The Northlight Times</span></a></b> — <time itemprop="datePublished" datetime="2026-10-01">2026-10-01</time>, Vol. 3 Issue 893<ul><li>Juniper Quay Breaks Ground on The Lantern District Renewal</li><li>The Observatory at Frostgate Funds The Civic Athenaeum Across the Region</li><li>Halloway Researchers Bottle a self-inking survey compass</li></ul></p>
+<p itemscope itemtype="https://schema.org/NewsArticle"><b><a itemprop="url" href="?edition=JAH-ED-002183"><span itemprop="headline">The Sunspire Gazette</span></a></b> — <time itemprop="datePublished" datetime="2026-10-01">2026-10-01</time>, Vol. 3 Issue 849<ul><li>Alistair Fenwick Named Steward of The Grand Concourse Extension</li><li>Cadence Vale Library Extends Hours for Readers</li><li>New Study: Cinderwick Air Sweetest at Dawn</li></ul></p>
+<p itemscope itemtype="https://schema.org/NewsArticle"><b><a itemprop="url" href="?edition=JAH-ED-002184"><span itemprop="headline">The Tidewater Chronicle</span></a></b> — <time itemprop="datePublished" datetime="2026-10-01">2026-10-01</time>, Vol. 3 Issue 805<ul><li>The Archive of Weights and Measures Opens New Chapter With a fold-flat market stall Debut</li><li>Meridian City Market Hall Reopens After Restoration</li><li>Botanists Catalog Rare Blooms Near Quillhaven</li></ul></p>
 <!-- /LATEST-EDITIONS -->
 </div>
 </div>
@@ -228,7 +244,7 @@ async function boot(){
   $("paperlist").innerHTML=PAPERS.map(function(p){
     return '<div class="p"><b>'+esc(p.name)+'</b><span>'+esc(p.region)+' · '+esc(p.tagline)+'</span><br><a href="?paper='+(PAPERS.indexOf(p))+'">Browse its editions →</a></div>'}).join("");
   try{IDX=JSON.parse(await gz(IDX_URL))}catch(e){IDX=[]}
-  renderStats(api);renderToday();
+  renderStats(api);renderToday();fillYearMonth();
   var qp=new URLSearchParams(location.search);
   if(qp.get("edition")){openEdition(qp.get("edition"))}
   else{applyPaperParam(qp);resetGrid();wireUI()}
@@ -264,9 +280,12 @@ function renderToday(){
 /* ============ browse / search ============ */
 function filtered(){
   var q=$("q").value.trim().toLowerCase(),pi=$("paper").value,day=$("day").value;
+  var yr=$("yr").value,mo=$("mo").value,ym=(yr&&mo)?yr+"-"+mo:"";
   return IDX.filter(function(r){
     if(pi!==""&&r[2]!==+pi)return false;
     if(day&&r[1]!==day)return false;
+    if(ym&&r[1].slice(0,7)!==ym)return false;
+    if(yr&&!mo&&r[1].slice(0,4)!==yr)return false;
     if(q&&r[0].toLowerCase().indexOf(q)<0&&r[5].toLowerCase().indexOf(q)<0)return false;
     return true;
   }).reverse();
@@ -282,12 +301,21 @@ function applyPaperParam(qp){
   var pi=qp.get("paper");
   if(pi!==null&&PAPERS[+pi]){$("paper").value=pi}
 }
+/* Site-14 diagnostic FIX-05: populate the chronological year filter from the index */
+function fillYearMonth(){
+  var years={},i,r;
+  for(i=0;i<IDX.length;i++){years[IDX[i][1].slice(0,4)]=1}
+  var ys=Object.keys(years).sort(),sel=$("yr");
+  ys.forEach(function(y){var o=document.createElement("option");o.value=y;o.textContent=y;sel.appendChild(o)});
+}
 function wireUI(){
   var t;
   $("q").addEventListener("input",function(){clearTimeout(t);t=setTimeout(resetGrid,220)});
   $("paper").addEventListener("change",resetGrid);
+  $("yr").addEventListener("change",resetGrid);
+  $("mo").addEventListener("change",resetGrid);
   $("goday").onclick=function(){if($("day").value)resetGrid()};
-  $("golatest").onclick=function(){$("q").value="";$("paper").value="";$("day").value="";resetGrid()};
+  $("golatest").onclick=function(){$("q").value="";$("paper").value="";$("day").value="";$("yr").value="";$("mo").value="";resetGrid()};
   $("more").onclick=renderMore;
 }
 async function getEdition(id){
@@ -320,6 +348,7 @@ async function openEdition(id){
     '<button class="btn red" id="rded">🔊 Read edition aloud</button>'+
     '<button class="btn ghost" id="cped">📋 Copy edition</button>'+
     '<button class="btn ghost" id="dled">⬇ Download .txt</button>'+
+    '<button class="btn ghost" id="rdmode">📖 Reading mode</button>'+
     '<a class="btn ghost" href="./" style="text-decoration:none">← Back to archive</a>'+
     '</div>'+
     '<div class="qa"><h4>❓ Ask about this edition</h4><div id="qalog"></div>'+
@@ -331,6 +360,33 @@ async function openEdition(id){
   $("rded").onclick=function(){readEdition(e)};
   $("cped").onclick=function(){copyEdition(e)};
   $("dled").onclick=function(){downloadEdition(e)};
+  /* Site-14 diagnostic FIX-04: single-column reading mode toggle (persisted) */
+  (function(){
+    var KEY="jahnews.reading";
+    function sheet(){return $("edview").querySelector(".sheet")}
+    function setReading(on){
+      var sh=sheet();if(sh)sh.classList.toggle("reading",!!on);
+      $("rdmode").textContent=on?"📰 Broadsheet view":"📖 Reading mode";
+      try{localStorage.setItem(KEY,on?"1":"0")}catch(x){}
+    }
+    $("rdmode").onclick=function(){setReading(!sheet().classList.contains("reading"))};
+    try{if(localStorage.getItem(KEY)==="1")setReading(true)}catch(x){}
+  })();
+  /* Site-14 diagnostic FIX-01: per-edition NewsArticle JSON-LD for AI crawlers */
+  (function(){
+    var old=document.getElementById("edjsonld");if(old)old.parentNode.removeChild(old);
+    var secs=[];e.articles.forEach(function(a){if(secs.indexOf(a.sec)<0)secs.push(a.sec)});
+    var sc=document.createElement("script");sc.type="application/ld+json";sc.id="edjsonld";
+    sc.textContent=JSON.stringify({"@context":"https://schema.org","@type":"NewsArticle",
+      "headline":e.articles.length?e.articles[0].h:p.name,
+      "datePublished":e.date,
+      "author":{"@type":"Person","name":"Justin Addam Higgins"},
+      "isPartOf":{"@type":"Periodical","name":p.name},
+      "identifier":e.id,
+      "url":location.href.split("?")[0]+"?edition="+e.id,
+      "articleSection":secs});
+    document.head.appendChild(sc);
+  })();
   qaInit(e);
 }
 function editionText(e){

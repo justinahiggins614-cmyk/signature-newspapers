@@ -3,7 +3,7 @@
  "site_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/",
  "title_provisional": true,
  "description": "Original generated newspapers of the Signature world: daily editions from six regional papers across past dates, updated daily. All people, places, and events are invented; no real-world news.",
- "updated": "2026-10-02",
+ "updated": "2026-10-03",
  "counts": {
   "editions": 2184,
   "articles": 13104,
@@ -53,5 +53,8 @@
  ],
  "deep_link_pattern": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?edition=JAH-ED-000001",
  "index": "data/index/editions.idx.json.gz",
+ "feed": "data/index/newspapers-catalog.json",
+ "sitemap_index": "sitemap-index.xml",
+ "static_archive": "archive/index.html",
  "honesty": "Signature press: this edition is an original generated newspaper of the Signature world. All people, places, teams, organizations, and events named herein are invented. It reports no real-world news and names no real persons."
 }
