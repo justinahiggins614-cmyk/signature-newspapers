@@ -427,6 +427,43 @@ def stamp_static():
     print("stamped latest editions into index.html")
 
 
+def stamp_stats():
+    """Stamp the last-known real counts into the hero stat chips (initial HTML
+    content — the drip re-stamps every run; JS overwrites live on boot).
+    Chips must NEVER boot as bare "…" (usability wave rule)."""
+    meta = all_editions_meta()
+    n_ed = len(meta)
+    n_art = 0
+    for eid_, date, pi, n, wi, iss in meta:
+        n_art += n
+    dates = sorted(set(m[1] for m in meta))
+    first = dates[0] if dates else ""
+    fill = min(100.0, n_ed / 10000.0)
+    march = "%s / 1,000,000 EDITIONS \u00b7 %s ARTICLES" % (
+        format(n_ed, ","), format(n_art, ","))
+    chips = (
+        '<div class="stat"><b>%s</b><span>editions on file</span></div>'
+        '<div class="stat"><b>%s</b><span>articles printed</span></div>'
+        '<div class="stat"><b>6</b><span>regional papers</span></div>'
+        '<div class="stat"><b>%s</b><span>archive begins</span></div>'
+        % (format(n_ed, ","), format(n_art, ","), first))
+    p = os.path.join(ROOT, "index.html")
+    with open(p, encoding="utf-8") as f:
+        src = f.read()
+    start = src.index("<!-- STAT-CHIPS -->") + len("<!-- STAT-CHIPS -->")
+    end = src.index("<!-- /STAT-CHIPS -->")
+    src = src[:start] + "\n" + chips + "\n" + src[end:]
+    start2 = src.index("<!-- MARCH-TXT -->") + len("<!-- MARCH-TXT -->")
+    end2 = src.index("<!-- /MARCH-TXT -->")
+    src = src[:start2] + march + src[end2:]
+    src = re.sub(r'<div class="fill" id="marchfill" style="width:[^"]*">',
+                 '<div class="fill" id="marchfill" style="width:%.2f%%">' % fill,
+                 src)
+    with open(p, "w", encoding="utf-8") as f:
+        f.write(src)
+    print("stamped stat chips into index.html (%d editions, %d articles)" % (n_ed, n_art))
+
+
 # ---------------- Site-14 diagnostic: feed, sub-sitemaps, static archive ------
 def build_catalog_feed(meta):
     """data/index/newspapers-catalog.json: standardized machine-readable edition feed."""
@@ -626,6 +663,10 @@ def build_all():
         json.dump(rows, f, ensure_ascii=False)
     with open(os.path.join(IDX, "articles.idx.json"), "w", encoding="utf-8") as f:
         json.dump(arows, f, ensure_ascii=False)
+    # --- compact article-BODY search index (lazy-loaded by the frontend only
+    #     when the user searches article text; keeps boot untouched) ---------
+    import build_body_search_index
+    build_body_search_index.build()
     # --- papers + regions (recomputed from the data) -----------------------
     papers, regions = [], []
     for i, p in enumerate(record_std.PAPERS):
@@ -710,6 +751,8 @@ def build_all():
                   "editions": "data/index/editions.idx.json",
                   "articles_gz": "data/index/articles.idx.json.gz",
                   "articles": "data/index/articles.idx.json",
+                  "articles_search_gz": "data/index/articles.search.json.gz",
+                  "articles_search": "data/index/articles.search.json",
                   "entities_gz": "data/index/entities.idx.json.gz",
                   "entities": "data/index/entities.idx.json",
                   "hash_manifest": "data/index/hash-manifest.json"},
@@ -780,6 +823,8 @@ def build_all():
     build_sub_sitemaps(meta, week_pages)
     # --- static latest-editions stamp (crawler/no-JS friendly) ---
     stamp_static()
+    # --- static stat-chip stamp (no bare "…" chips on first paint) ---
+    stamp_stats()
     # --- data size guard ---
     total = sum(os.path.getsize(os.path.join(dp, f))
                 for dp, _, fns in os.walk(DATA) for f in fns)

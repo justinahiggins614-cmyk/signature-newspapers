@@ -80,7 +80,9 @@
   "articles": "data/index/articles.idx.json",
   "entities_gz": "data/index/entities.idx.json.gz",
   "entities": "data/index/entities.idx.json",
-  "hash_manifest": "data/index/hash-manifest.json"
+  "hash_manifest": "data/index/hash-manifest.json",
+  "articles_search_gz": "data/index/articles.search.json.gz",
+  "articles_search": "data/index/articles.search.json"
  },
  "feed": "data/index/newspapers-catalog.json",
  "sitemap_index": "sitemap-index.xml",

@@ -161,6 +161,28 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 .pmast.pp4,.emast.pp4{color:#b06a00}
 .pmast.pp5,.emast.pp5{color:#0f6b6e}
 .artid{font-family:Arial,Helvetica,sans-serif;font-size:.72em;color:var(--mut);letter-spacing:.06em;margin-bottom:2px}
+/* ---- first-time user guide: spotlight tour + guide panel (additive) ---- */
+#touroverlay{position:fixed;inset:0;background:rgba(20,16,8,.62);z-index:200;display:none}
+#touroverlay.show{display:block}
+#tourcard{position:fixed;z-index:201;background:#fffdf4;color:#1c1a15;border:2px solid #2b2820;border-radius:10px;box-shadow:4px 4px 0 rgba(0,0,0,.35);max-width:min(430px,92vw);padding:18px 20px;font-family:Arial,Helvetica,sans-serif;display:none}
+#tourcard.show{display:block}
+#tourcard h3{margin:0 0 6px;font-size:1.05em;text-transform:uppercase;letter-spacing:.06em;color:#9c2b2b}
+#tourcard .tkind{font-size:.72em;font-weight:700;letter-spacing:.18em;color:#6b6353;text-transform:uppercase}
+#tourcard p{font-size:.92em;line-height:1.55;margin:.4em 0}
+#tourcard .tstep{font-size:.75em;color:#6b6353;margin-top:10px}
+#tourcard .tbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#tourcard .tbtns button{min-height:44px;padding:10px 16px;font-size:.9em;border-radius:8px;border:1px solid #2b2820;background:#1c1a15;color:#f6f1e2;font-family:inherit;font-weight:700;cursor:pointer}
+#tourcard .tbtns button.ghostbtn{background:transparent;color:#1c1a15}
+.tourhl{outline:3px solid #9c2b2b !important;outline-offset:3px;border-radius:6px}
+#guidemodal{position:fixed;inset:0;z-index:210;display:none;align-items:center;justify-content:center;background:rgba(20,16,8,.62);padding:16px}
+#guidemodal.show{display:flex}
+#guidebox{background:#fffdf4;color:#1c1a15;border:2px solid #2b2820;border-radius:10px;max-width:640px;width:100%;max-height:86vh;overflow-y:auto;padding:22px 24px;font-family:Arial,Helvetica,sans-serif}
+#guidebox h2{margin:0 0 4px;text-transform:uppercase;letter-spacing:.06em;font-size:1.2em}
+#guidebox h3{margin:16px 0 4px;font-size:1em;color:#9c2b2b}
+#guidebox p,#guidebox li{font-size:.9em;line-height:1.55}
+#guidebox ul{margin:.3em 0;padding-left:20px}
+#guidebox .gclose{position:sticky;top:0;float:right;min-height:44px;min-width:44px;font-size:1.1em;border-radius:8px;border:1px solid #2b2820;background:#1c1a15;color:#f6f1e2;cursor:pointer}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
 <style>html[data-theme="dark"]{filter:invert(1) hue-rotate(180deg)}html[data-theme="dark"] img,html[data-theme="dark"] video,html[data-theme="dark"] canvas,html[data-theme="dark"] svg{filter:invert(1) hue-rotate(180deg)}#jahThemeBtn{position:fixed;right:12px;bottom:12px;z-index:2147483647;width:42px;height:42px;border-radius:50%;border:1px solid rgba(128,128,128,.45);background:rgba(24,24,24,.6);color:#fff;font-size:19px;line-height:1;cursor:pointer;opacity:.55;padding:0}#jahThemeBtn:hover,#jahThemeBtn:focus{opacity:1;outline:none}</style>
 </head>
@@ -175,8 +197,10 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 <div class="masthead"><span class="sig">The Signature</span> Global Newspaper Archive</div>
 <div class="dateline">Daily editions from six regional papers of the Signature world · past dates on file · new editions every morning</div>
 <details class="statscollapse"><summary>Site stats</summary>
-<div class="stats" id="stats"><div class="stat"><b>…</b><span>loading</span></div></div>
-<div class="march"><div class="bar"><div class="fill" id="marchfill"></div></div><small id="marchtxt">Marching to 1,000,000 editions + articles</small></div>
+<div class="stats" id="stats"><!-- STAT-CHIPS -->
+<div class="stat"><b>2,190</b><span>editions on file</span></div><div class="stat"><b>13,140</b><span>articles printed</span></div><div class="stat"><b>6</b><span>regional papers</span></div><div class="stat"><b>2025-10-03</b><span>archive begins</span></div>
+<!-- /STAT-CHIPS --></div>
+<div class="march"><div class="bar"><div class="fill" id="marchfill" style="width:0.22%"></div></div><small id="marchtxt"><!-- MARCH-TXT -->2,190 / 1,000,000 EDITIONS · 13,140 ARTICLES<!-- /MARCH-TXT --></small></div>
 </details>
 </header>
 
@@ -186,12 +210,14 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 <div id="fresults" class="fresults"></div>
 <div class="row">
 <input type="search" id="q" placeholder="Search headlines, articles, or JAH-ED-######…" aria-label="Search editions">
+<select id="qscope" aria-label="Search scope"><option value="h">Headlines + IDs</option><option value="b">Article text</option><option value="both">Headlines + article text</option></select>
 <select id="paper" aria-label="Paper filter"><option value="">All six papers</option></select>
 <select id="yr" aria-label="Filter by year"><option value="">Year</option></select>
 <select id="mo" aria-label="Filter by month"><option value="">Month</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option></select>
 <input type="date" id="day" aria-label="Pick a date" min="2025-10-03">
 <button class="btn ghost" id="goday">Go to date</button>
 <button class="btn ghost" id="golatest">Latest</button>
+<button class="btn ghost" id="guidebtn" aria-haspopup="dialog">❓ Guide</button>
 </div>
 </div></div>
 
@@ -211,6 +237,7 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 
 <div class="about lateststatic">
 <h3>Fresh off the press</h3>
+<p class="ficmini" style="text-align:left">All editions below are fictional generated Signature-world news — not real-world news, no real persons.</p>
 <!-- LATEST-EDITIONS -->
 <p itemscope itemtype="https://schema.org/NewsArticle"><b><a itemprop="url" href="?edition=JAH-ED-002185"><span itemprop="headline">The Signature Daily Globe</span></a></b> — <time itemprop="datePublished" datetime="2026-10-03">2026-10-03</time>, Vol. 3 Issue 993<ul><li>Glimmerwick and Juniper Quay Linked by the New Modular Bookshelf Engine</li><li>Argent Falls Market Hall Reopens After Restoration</li><li>The Signature Council Launches Public Starwatch Season</li></ul></p>
 <p itemscope itemtype="https://schema.org/NewsArticle"><b><a itemprop="url" href="?edition=JAH-ED-002186"><span itemprop="headline">The Meridian Herald</span></a></b> — <time itemprop="datePublished" datetime="2026-10-03">2026-10-03</time>, Vol. 3 Issue 976<ul><li>The Observatory at Frostgate Unveils a tide-powered lantern in Vesper Crossing</li><li>Emberline Library Extends Hours for Readers</li><li>Botanists Catalog Rare Blooms Near Glimmerwick</li></ul></p>
@@ -224,6 +251,58 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 </div>
 
 <div id="edview" class="wrap"></div>
+
+<!-- first-time user guide: spotlight tour + permanent guide panel -->
+<div id="touroverlay" aria-hidden="true"></div>
+<div id="tourcard" role="dialog" aria-modal="true" aria-labelledby="tourtitle" tabindex="-1">
+  <div class="tkind" id="tourkind">Site tour</div>
+  <h3 id="tourtitle">Welcome</h3>
+  <p id="tourwhat"></p>
+  <p id="tourdoes"></p>
+  <p id="tourhow"></p>
+  <div class="tstep" id="tourstep"></div>
+  <div class="tbtns">
+    <button type="button" id="tstart">▶ Start the tour</button>
+    <button type="button" id="tskip" class="ghostbtn">Skip</button>
+    <button type="button" id="tback" class="ghostbtn" style="display:none">← Back</button>
+    <button type="button" id="tnext" style="display:none">Next →</button>
+    <button type="button" id="tdone" style="display:none">Done ✓</button>
+  </div>
+</div>
+<div id="guidemodal" role="dialog" aria-modal="true" aria-labelledby="guidetitle">
+  <div id="guidebox">
+    <button type="button" class="gclose" id="guideclose" aria-label="Close guide">✕</button>
+    <h2 id="guidetitle">❓ How to use this site</h2>
+    <p><b>The Signature Global Newspaper Archive</b> prints a fresh fictional newspaper from each of six regional papers every morning. Everything on this site is invented Signature-world reporting — no real-world news, no real persons. Here is what every button and box does, in plain language.</p>
+    <h3>📰 Today's editions</h3>
+    <p>The top cards are the newest editions — one per paper. Tap any card to open that full edition.</p>
+    <h3>🔎 Search</h3>
+    <ul><li>Type words to search <b>headlines</b>, or an edition ID like <b>JAH-ED-002190</b> to jump straight to it.</li>
+    <li>The <b>scope</b> menu next to the search box switches between <b>Headlines + IDs</b>, <b>Article text</b> (searches the full story text of every article), and both.</li>
+    <li><b>Find it</b> (the top finder bar) takes a plain description — e.g. "a lantern festival" — and returns the five best-matching editions.</li></ul>
+    <h3>🗂 Filters &amp; browsing</h3>
+    <ul><li><b>All six papers</b> menu: show one paper only, or all of them.</li>
+    <li><b>Year / Month / date</b>: pick a date and press <b>Go to date</b> to see what printed that day. (Papers print every morning; if a date has no editions the page says so plainly.)</li>
+    <li><b>Latest</b>: jumps back to the newest editions. <b>Load more editions</b>: shows older editions, 24 at a time.</li></ul>
+    <h3>📖 Reading an edition</h3>
+    <p>An edition opens like a broadsheet: masthead, date, volume and issue, then every story with its section, headline, byline and full text. Buttons under each story copy or download that single article.</p>
+    <h3>❓ Ask about this edition</h3>
+    <p>The <b>Ask-AI</b> box at the bottom of every edition answers questions using only that edition's printed stories — headlines, summaries, bylines, sections. Tap a suggestion chip or type your own question. It always answers; if something isn't printed here it says so.</p>
+    <h3>🔊 Read aloud · 📋 Copy · ⬇ Download</h3>
+    <ul><li><b>🔊 Read edition aloud</b>: the whole edition is read out loud, chunk by chunk, with a stop button.</li>
+    <li><b>📋 Copy edition</b>: copies the full edition text so you can paste it anywhere.</li>
+    <li><b>⬇ Download .txt / .json</b>: saves the edition as a plain-text or data file on your device.</li>
+    <li><b>📖 Reading mode</b>: switches the broadsheet to a single comfortable reading column.</li></ul>
+    <h3>🔗 Deep links</h3>
+    <p>Every edition, article and world entry has its own link you can bookmark or share:</p>
+    <ul><li><b>?edition=JAH-ED-002190</b> — opens that exact edition.</li>
+    <li><b>?article=JAH-ARTICLE-013140</b> — opens the edition scrolled to that article.</li>
+    <li><b>?verify=JAH-ED-002190</b> — recomputes the edition's SHA-256 hash and proves the record is intact.</li>
+    <li><b>?entity=JAH-ENTITY-000001</b> — a fictional Signature-world person, place or organization and where it appeared.</li></ul>
+    <h3>ℹ️ About the papers</h3>
+    <p>The <b>About the papers</b> section lists all six papers with their regions and taglines; <b>Fresh off the press</b> shows today's headlines for crawlers and no-script readers.</p>
+  </div>
+</div>
 
 <div id="rdbar"><span>🔊 <span id="rdprog">Reading…</span></span><button id="rdstop">⏹ Stop</button></div>
 
@@ -267,7 +346,8 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 "use strict";
 /* ============ config & utils ============ */
 var IDX_URL="data/index/editions.idx.json.gz", API_URL="api.json",
-    ART_URL="data/index/articles.idx.json.gz", ENT_URL="data/index/entities.idx.json.gz";
+    ART_URL="data/index/articles.idx.json.gz", ENT_URL="data/index/entities.idx.json.gz",
+    BODY_URL="data/index/articles.search.json.gz";
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 async function gz(url,ms){var ctl=new AbortController();var to=setTimeout(function(){ctl.abort()},ms||20000);
@@ -317,11 +397,13 @@ async function boot(){
   renderStats(api,cached,cacheDate);renderToday();fillYearMonth();
   if(window.__wantLatest){window.__wantLatest=false;goLatest()}
   var qp=new URLSearchParams(location.search);
+  var deepLink=!!(qp.get("verify")||qp.get("article")||qp.get("entity")||qp.get("edition"));
   if(qp.get("verify")){openVerify(qp.get("verify"))}
   else if(qp.get("article")){openArticle(qp.get("article"))}
   else if(qp.get("entity")){openEntity(qp.get("entity"))}
   else if(qp.get("edition")){openEdition(qp.get("edition"))}
   else{applyPaperParam(qp);resetGrid()}
+  maybeTour(!deepLink);
   if(api&&api.date_range&&api.date_range[1]){$("day").max=api.date_range[1]}
 }
 function renderStats(api,cached,cacheDate){
@@ -336,7 +418,7 @@ function renderStats(api,cached,cacheDate){
   $("marchfill").style.width=Math.min(100,nEd/10000)+"%";
   $("marchtxt").textContent=nEd.toLocaleString()+" / 1,000,000 EDITIONS · "+nArt.toLocaleString()+" ARTICLES";
 }
-function edCard(r){
+function edCard(r,matchHeads){
   var p=PAPERS[r[2]]||{name:""};
   var heads=r[5].split("‖").slice(0,3);
   return '<div class="card" onclick="openEdition(\''+r[0]+'\')">'+
@@ -344,6 +426,8 @@ function edCard(r){
     '<div class="ficmini">Fictional Signature world · not real news · <span class="stbadge">GENERATED</span></div>'+
     '<div class="pdate">'+fmtDate(r[1])+' · '+r[0]+'</div>'+
     heads.map(function(h){h=h.split("—")[0].trim();return '<div class="ph">'+esc(h)+'</div>'}).join("")+
+    (matchHeads&&matchHeads.length?'<div class="meta">📄 Article-text match: '+esc(matchHeads.slice(0,2).join(" · "))+(
+      matchHeads.length>2?" · +"+(matchHeads.length-2)+" more":"")+'</div>':"")+
     '<div class="meta">'+r[3]+' articles · <span style="color:#9c2b2b">Read edition →</span></div></div>';
 }
 function renderToday(){
@@ -353,25 +437,89 @@ function renderToday(){
   $("today").innerHTML=todays.map(edCard).join("")||"<p>No editions.</p>";
 }
 /* ============ browse / search ============ */
+function critOf(){
+  return {pi:$("paper").value,day:$("day").value,yr:$("yr").value,mo:$("mo").value};
+}
+function rowPasses(r,c){
+  if(c.pi!==""&&r[2]!==+c.pi)return false;
+  if(c.day&&r[1]!==c.day)return false;
+  var ym=(c.yr&&c.mo)?c.yr+"-"+c.mo:"";
+  if(ym&&r[1].slice(0,7)!==ym)return false;
+  if(c.yr&&!c.mo&&r[1].slice(0,4)!==c.yr)return false;
+  return true;
+}
 function filtered(){
-  var q=$("q").value.trim().toLowerCase(),pi=$("paper").value,day=$("day").value;
-  var yr=$("yr").value,mo=$("mo").value,ym=(yr&&mo)?yr+"-"+mo:"";
+  var q=$("q").value.trim().toLowerCase(),c=critOf();
   return IDX.filter(function(r){
-    if(pi!==""&&r[2]!==+pi)return false;
-    if(day&&r[1]!==day)return false;
-    if(ym&&r[1].slice(0,7)!==ym)return false;
-    if(yr&&!mo&&r[1].slice(0,4)!==yr)return false;
+    if(!rowPasses(r,c))return false;
     if(q&&r[0].toLowerCase().indexOf(q)<0&&r[5].toLowerCase().indexOf(q)<0)return false;
     return true;
   }).reverse();
 }
+/* ---- article-text search: compact body index, lazy-loaded on first use ---- */
+var BODY_IDX=null,bodyLoading=null;
+function loadBodyIdx(){
+  if(BODY_IDX)return Promise.resolve(BODY_IDX);
+  if(bodyLoading)return bodyLoading;
+  bodyLoading=gz(BODY_URL,30000).then(function(t){BODY_IDX=JSON.parse(t);return BODY_IDX})
+    .catch(function(){return gz(BODY_URL.replace(".json.gz",".json"),30000)})
+    .then(function(t){if(!BODY_IDX&&t){try{BODY_IDX=JSON.parse(t)}catch(e){BODY_IDX=[]}}
+      if(!BODY_IDX)BODY_IDX=[];return BODY_IDX})
+    .catch(function(){BODY_IDX=[];return BODY_IDX});
+  return bodyLoading;
+}
+function bodyGrid(q,includeHeadline,c){
+  var toks=q.toLowerCase().split(/\s+/).filter(function(w){return w.length>=3});
+  var seen={},items=[];
+  if(includeHeadline){
+    filtered().forEach(function(r){seen[r[0]]=1;items.push({row:r,match:null})});
+  }
+  if(toks.length&&BODY_IDX&&BODY_IDX.length){
+    var byEd={};
+    BODY_IDX.forEach(function(a){
+      if(c.pi!==""&&a[2]!==+c.pi)return;
+      if(c.day&&a[3]!==c.day)return;
+      var ym=(c.yr&&c.mo)?c.yr+"-"+c.mo:"";
+      if(ym&&a[3].slice(0,7)!==ym)return;
+      if(c.yr&&!c.mo&&a[3].slice(0,4)!==c.yr)return;
+      var head=a[5].toLowerCase(),hay=(a[5]+" "+a[6]).toLowerCase(),s=0;
+      toks.forEach(function(t){if(head.indexOf(t)>=0)s+=4;else if(hay.indexOf(t)>=0)s+=1});
+      if(s>0){
+        var m=byEd[a[1]]||(byEd[a[1]]={score:0,heads:[]});
+        m.score+=s;
+        if(m.heads.length<4&&m.heads.indexOf(a[5])<0)m.heads.push(a[5]);
+      }
+    });
+    var ranked=Object.keys(byEd).map(function(k){return{eid:k,m:byEd[k]}})
+      .sort(function(a,b){return b.m.score-a.m.score}).slice(0,60);
+    ranked.forEach(function(x){
+      if(seen[x.eid])return;seen[x.eid]=1;
+      var row=null;
+      for(var i=0;i<IDX.length;i++){if(IDX[i][0]===x.eid){row=IDX[i];break}}
+      if(row)items.push({row:row,match:x.m.heads});
+    });
+  }
+  return items;
+}
 function resetGrid(){
   if(!IDX){$("results").innerHTML="<p>Loading the press…</p>";return}
-  grid=filtered();shown=0;$("results").innerHTML="";renderMore();
+  var scope=$("qscope").value,q=$("q").value.trim();
+  if((scope==="b"||scope==="both")&&q&&!BODY_IDX){
+    $("results").innerHTML="<p>Loading the article-text index (one-time)…</p>";
+    loadBodyIdx().then(function(){doGrid()});
+    return;
+  }
+  doGrid();
+}
+function doGrid(){
+  var scope=$("qscope").value,q=$("q").value.trim(),c=critOf();
+  if((scope==="b"||scope==="both")&&q){grid=bodyGrid(q,scope==="both",c)}
+  else{grid=filtered().map(function(r){return{row:r,match:null}})}
+  shown=0;$("results").innerHTML="";renderMore();
 }
 function renderMore(){
   var slice=grid.slice(shown,shown+PAGE);shown+=PAGE;
-  $("results").insertAdjacentHTML("beforeend",slice.map(edCard).join(""));
+  $("results").insertAdjacentHTML("beforeend",slice.map(function(it){return edCard(it.row,it.match)}).join(""));
   $("more").style.display=shown<grid.length?"":"none";
   if(!grid.length){
     var d=$("day").value;
@@ -400,12 +548,16 @@ function fillYearMonth(){
 function wireUI(){
   var t;
   $("q").addEventListener("input",function(){clearTimeout(t);t=setTimeout(resetGrid,220)});
+  $("qscope").addEventListener("change",resetGrid);
   $("paper").addEventListener("change",resetGrid);
   $("yr").addEventListener("change",resetGrid);
   $("mo").addEventListener("change",resetGrid);
   $("goday").onclick=function(){if($("day").value)resetGrid()};
   $("golatest").onclick=goLatest;
   $("more").onclick=renderMore;
+  $("guidebtn").onclick=openGuide;
+  $("guideclose").onclick=closeGuide;
+  $("guidemodal").addEventListener("click",function(e){if(e.target===$("guidemodal"))closeGuide()});
 }
 /* Gemini correction 4: "Latest" works even when tapped before loading finishes —
    the request is queued and honored once the index is in. */
@@ -819,6 +971,122 @@ function qaAsk(e){
   if(typeof JAHtalk!=="undefined")a=JAHtalk.guard(a,P);
   qsay(a,"ai");
   }
+}
+/* ============ first-time user guide: spotlight tour + guide panel ============ */
+var TOUR_KEY="jah-tour-seen-news";
+var TOUR_STEPS=[
+ {sel:"#paper",title:"The six papers",
+  what:"Six regional papers serve the Signature world — the Daily Globe, Meridian Herald, Argent Post, Northlight Times, Sunspire Gazette and Tidewater Chronicle.",
+  does:"Each paper prints a fresh edition every morning, and every edition is fictional Signature-world reporting — never real-world news.",
+  how:"Use this menu to read one paper at a time, or leave it on \u201cAll six papers\u201d to browse everything."},
+ {sel:"#today",title:"Today's editions",
+  what:"These cards are the newest editions — one from each paper.",
+  does:"Each card shows the paper's masthead, the date, and the top headlines.",
+  how:"Tap any card to open the full edition and read every story."},
+ {sel:"#q",title:"Search the archive",
+  what:"The search box looks through every edition's headlines — or type an edition ID like JAH-ED-002190 to jump straight to it.",
+  does:"The scope menu next to it switches to Article text, which searches the full story text of all 13,000+ articles.",
+  how:"Type and the results filter as you type. Try a word from a headline, or an edition ID."},
+ {sel:".controls .row",title:"Dates and browsing",
+  what:"These controls move you through time.",
+  does:"Pick a date and press Go to date to see what printed that day; Latest jumps back to the newest editions; Load more editions shows older ones, 24 at a time.",
+  how:"The Year and Month menus narrow the browse; the paper menu still applies."},
+ {sel:"#fq",title:"The Finder",
+  what:"The Finder bar takes a plain description of what you're looking for.",
+  does:"It runs a deterministic keyword search over the archive's own index and returns the five best-matching editions — it only ever returns real indexed records.",
+  how:"Describe it in your own words — for example \u201ca lantern festival\u201d — and press Find it."},
+ {sel:"#results",title:"Inside an edition",
+  what:"Open any edition card to read it like a broadsheet: masthead, date, volume and issue, then every story with section, headline, byline and full text.",
+  does:"Inside each edition you'll find the Ask-AI box (answers only from that edition's stories), read-aloud, copy, download, a per-article copy/download, and a Verify view that recomputes the edition's hash.",
+  how:"Open any card below. And the \u2753 Guide button up top is always here if you ever need it."}
+];
+var tourIdx=-1,tourActive=false;
+function tourEl(i){var s=TOUR_STEPS[i];if(!s)return null;
+  try{return document.querySelector(s.sel)}catch(e){return null}}
+function tourShow(i){
+  tourIdx=i;var s=TOUR_STEPS[i];
+  var el=tourEl(i);
+  document.querySelectorAll(".tourhl").forEach(function(x){x.classList.remove("tourhl")});
+  if(!el){tourNext();return}
+  el.classList.add("tourhl");
+  try{el.scrollIntoView({block:"center",behavior:"smooth"})}catch(e){try{el.scrollIntoView()}catch(e2){}}
+  setTimeout(function(){
+    $("tourkind").textContent="Site tour · step "+(i+1)+" of "+TOUR_STEPS.length;
+    $("tourtitle").textContent=s.title;
+    $("tourwhat").innerHTML="<b>What it is:</b> "+esc(s.what);
+    $("tourdoes").innerHTML="<b>What it does:</b> "+esc(s.does);
+    $("tourhow").innerHTML="<b>How to use it:</b> "+esc(s.how);
+    $("tourstep").textContent="Step "+(i+1)+" of "+TOUR_STEPS.length;
+    $("tstart").style.display="none";$("tskip").style.display="";
+    $("tback").style.display=i>0?"":"none";
+    $("tnext").style.display=i<TOUR_STEPS.length-1?"":"none";
+    $("tdone").style.display=i===TOUR_STEPS.length-1?"":"none";
+    var card=$("tourcard");
+    card.classList.add("show");
+    var r=el.getBoundingClientRect();
+    card.style.visibility="hidden";card.style.left="8px";card.style.top="8px";
+    var cw=Math.min(430,window.innerWidth-16),ch=card.offsetHeight||320;
+    card.style.width=cw+"px";
+    var top=r.bottom+12+window.scrollY;
+    if(top+ch>window.scrollY+window.innerHeight-8)top=Math.max(8+window.scrollY,r.top-ch-12+window.scrollY);
+    var left=Math.max(8,Math.min(r.left+window.scrollX,window.innerWidth-cw-8));
+    card.style.left=left+"px";card.style.top=Math.max(8,top)+"px";
+    card.style.visibility="";card.focus();
+  },380);
+}
+function tourNext(){if(tourIdx<TOUR_STEPS.length-1)tourShow(tourIdx+1);else tourEnd()}
+function tourBack(){if(tourIdx>0)tourShow(tourIdx-1)}
+function tourEnd(){
+  tourActive=false;tourIdx=-1;
+  $("touroverlay").classList.remove("show");$("tourcard").classList.remove("show");
+  document.querySelectorAll(".tourhl").forEach(function(x){x.classList.remove("tourhl")});
+  try{localStorage.setItem(TOUR_KEY,"1")}catch(e){}
+}
+function tourIntro(){
+  tourActive=true;
+  $("touroverlay").classList.add("show");
+  var card=$("tourcard");card.classList.add("show");
+  card.style.left="50%";card.style.top="18%";card.style.transform="translateX(-50%)";
+  card.style.width=Math.min(430,window.innerWidth-32)+"px";
+  $("tourkind").textContent="Site tour";
+  $("tourtitle").textContent="Welcome to the press room";
+  $("tourwhat").innerHTML="<b>What it is:</b> a 1-minute walkthrough of this newspaper archive — papers, editions, search, the Finder, and what's inside an edition.";
+  $("tourdoes").innerHTML="<b>What it does:</b> it highlights each part of the page and explains it in plain language.";
+  $("tourhow").innerHTML="<b>How to use it:</b> press Start the tour, use Next and Back to move, or Skip any time. You can replay it from the \u2753 Guide button.";
+  $("tourstep").textContent="Takes about a minute";
+  $("tstart").style.display="";$("tskip").style.display="";
+  $("tback").style.display="none";$("tnext").style.display="none";$("tdone").style.display="none";
+  card.focus();
+}
+function maybeTour(homeView){
+  if(!homeView)return;
+  var seen=null;try{seen=localStorage.getItem(TOUR_KEY)}catch(e){seen="1"}
+  if(seen)return;
+  setTimeout(tourIntro,1200);
+}
+document.getElementById("tstart").onclick=function(){this.parentElement.parentElement.style.transform="";tourShow(0)};
+document.getElementById("tskip").onclick=tourEnd;
+document.getElementById("tback").onclick=tourBack;
+document.getElementById("tnext").onclick=tourNext;
+document.getElementById("tdone").onclick=tourEnd;
+document.addEventListener("keydown",function(e){
+  if($("guidemodal").classList.contains("show")){
+    if(e.key==="Escape")closeGuide();return;
+  }
+  if(!$("tourcard").classList.contains("show"))return;
+  if(e.key==="Escape"){tourEnd()}
+  else if(e.key==="ArrowRight"&&tourIdx>=0){tourNext()}
+  else if(e.key==="ArrowLeft"&&tourIdx>=0){tourBack()}
+});
+var guideReturnFocus=null;
+function openGuide(){
+  guideReturnFocus=document.activeElement;
+  $("guidemodal").classList.add("show");
+  $("guideclose").focus();
+}
+function closeGuide(){
+  $("guidemodal").classList.remove("show");
+  if(guideReturnFocus&&guideReturnFocus.focus)guideReturnFocus.focus();
 }
 /* ============ tiered read-aloud (ResponsiveVoice → 2× Google TTS) ============ */
 var RD={audio:null,queue:[],playing:false,stopped:true,timer:null,total:0};

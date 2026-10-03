@@ -124,12 +124,45 @@ try:
 except ET.ParseError as ex:
     fail("sitemap-index.xml invalid: %s" % ex)
 
-# 8. no hard-coded counts in served HTML
+# 8. stat chips stamped (never bare "…") AND assert-verified against real counts
 html = open(os.path.join(REPO, "index.html"), encoding="utf-8").read()
-if re.search(r">\s*2,190\s*<", html) or re.search(r">\s*13,140\s*<", html):
-    fail("index.html contains hard-coded counts")
+m = re.search(r"<!-- STAT-CHIPS -->(.*?)<!-- /STAT-CHIPS -->", html, re.S)
+if not m:
+    fail("index.html is missing the STAT-CHIPS stamp block")
 else:
-    ok("index.html carries no hard-coded counts")
+    stamped = [int(x.replace(",", "")) for x in
+               re.findall(r"<b>([\d,]+)</b><span>(?:editions on file|articles printed)</span>", m.group(1))]
+    n_ed = len(editions)
+    n_art = sum(len(e["articles"]) for e in editions)
+    if len(stamped) != 2 or stamped[0] != n_ed or stamped[1] != n_art:
+        fail("STAT-CHIPS counts %s do not match real counts (%d editions, %d articles)"
+             % (stamped, n_ed, n_art))
+    else:
+        ok("STAT-CHIPS stamped and verified: %d editions, %d articles" % (n_ed, n_art))
+    mm = re.search(r"<!-- MARCH-TXT -->(.*?)<!-- /MARCH-TXT -->", html, re.S)
+    if not mm or str(format(n_ed, ",")) not in mm.group(1):
+        fail("MARCH-TXT stamp missing or stale")
+    else:
+        ok("MARCH-TXT stamp verified")
+if re.search(r"<b>\s*…\s*</b>\s*<span>loading</span>", html):
+    fail("index.html still boots a bare \u2026 loading chip")
+else:
+    ok("no bare \u2026 loading chips in initial HTML")
+
+# 9. article body-search index exists, complete, and matches the article set
+spath = os.path.join(IDX, "articles.search.json.gz")
+if not os.path.exists(spath):
+    fail("data/index/articles.search.json.gz missing")
+else:
+    srows = json.load(gzip.open(spath, "rt"))
+    sids = set(r[0] for r in srows)
+    if sids != set(aids):
+        fail("articles.search index IDs do not match the article set (%d vs %d)" %
+             (len(sids), len(set(aids))))
+    elif any(len(r) != 7 or not r[6] for r in srows):
+        fail("articles.search index has malformed/empty rows")
+    else:
+        ok("articles.search index complete: %d rows with body text" % len(srows))
 
 print("---")
 if fails:
