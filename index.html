@@ -171,7 +171,7 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 
 <div id="home">
 <header class="hero wrap">
-<div class="jnkicker">SITE 14 OF 25 · THE JAH NETWORK</div>
+<div class="jnkicker" id="jnkicker">SITE 14 OF 25 · THE JAH NETWORK</div>
 <div class="masthead"><span class="sig">The Signature</span> Global Newspaper Archive</div>
 <div class="dateline">Daily editions from six regional papers of the Signature world · past dates on file · new editions every morning</div>
 <details class="statscollapse"><summary>Site stats</summary>
@@ -288,6 +288,12 @@ function renderBootError(){
   function rb(e){if(e)e.preventDefault();location.reload()}
   var a=$("retryboot"),b=$("retryboot2");if(a)a.onclick=rb;if(b)b.onclick=rb;
 }
+/* Site-14 fix wave: network kicker rendered from the manifest (static text is the fallback) */
+try{fetch("JAH-NETWORK-MANIFEST.json").then(function(r){return r.json()}).then(function(m){
+  if(m&&m.site_number&&m.site_count){
+    document.getElementById("jnkicker").textContent="SITE "+m.site_number+" OF "+m.site_count+" · THE JAH NETWORK";
+  }
+}).catch(function(){})}catch(e){}
 async function boot(){
   var api=null;
   try{api=await(await fetch(API_URL)).json()}catch(e){}
