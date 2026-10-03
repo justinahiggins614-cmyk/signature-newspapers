@@ -5,8 +5,8 @@
  "description": "Original generated newspapers of the Signature world: daily editions from six regional papers across past dates, updated daily. All people, places, and events are invented; no real-world news.",
  "updated": "2026-10-03",
  "counts": {
-  "editions": 2184,
-  "articles": 13104,
+  "editions": 2190,
+  "articles": 13140,
   "papers": 6
  },
  "papers": [
@@ -49,7 +49,7 @@
  ],
  "date_range": [
   "2025-10-03",
-  "2026-10-01"
+  "2026-10-03"
  ],
  "deep_link_pattern": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?edition=JAH-ED-000001",
  "index": "data/index/editions.idx.json.gz",
