@@ -58,6 +58,21 @@ button{cursor:pointer}
 .btn.red{background:var(--red);border-color:var(--red);color:#fff}
 .btn[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#fff}
 h2.sec{font-size:1.4em;border-bottom:2px solid var(--rule);padding-bottom:6px;margin:26px 0 12px;text-transform:uppercase;letter-spacing:.06em}
+/* BEST OF THE BEST — Manon's 2026-10-04 archive pattern: the AI's top pick pinned above the A–Z list */
+.bestofbest{border:3px double var(--rule);background:#fffdf4;padding:20px;margin:20px 0}
+.bestofbest h2{margin:0 0 4px;font-size:1.3em;text-transform:uppercase;letter-spacing:.06em}
+.bestofbest h2 .star{color:var(--red)}
+.bestofbest .whybest{background:#fff8e1;border-top:2px solid var(--rule);border-bottom:2px solid var(--rule);padding:10px 14px;margin:10px 0;font-size:.92em;font-family:Arial,Helvetica,sans-serif}
+.bestofbest .beststats{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;font-family:Arial,Helvetica,sans-serif}
+.bestofbest .beststat{background:var(--paper);border:1px solid #c9bfa4;border-radius:8px;padding:6px 12px;font-size:.82em}
+.bestofbest .beststat b{color:var(--red)}
+.bestofbest .toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;font-family:Arial,Helvetica,sans-serif}
+.bestofbest ul.headlines{margin:10px 0;padding-left:20px}
+.bestofbest ul.headlines li{margin:6px 0}
+.bestflow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:12px 0;justify-content:center;font-size:.8em;font-family:Arial,Helvetica,sans-serif}
+.bestflow .bnode{background:var(--paper);border:1px solid var(--rule);padding:8px 12px;text-align:center;max-width:150px}
+.bestflow .bnode b{display:block;color:var(--red);margin-bottom:2px}
+.bestflow .barrow{color:var(--red);font-size:18px;font-weight:700}
 .wgroup{border:1px solid #c9bfa4;border-radius:4px;background:#fffdf4;margin:10px 0;box-shadow:2px 2px 0 #d8cfb2}
 .wgroup>summary{cursor:pointer;padding:13px 16px;font-weight:700;list-style:none;display:flex;gap:10px;align-items:center;flex-wrap:wrap;min-height:48px}
 .wgroup>summary::-webkit-details-marker{display:none}
@@ -276,6 +291,60 @@ document.getElementById("jah-askai-q").addEventListener("keydown",function(e){if
 <div id="bypaper"></div>
 </div>
 
+<section class="bestofbest" aria-labelledby="besth">
+<h2 id="besth"><span class="star">★</span> Best of the Best</h2>
+<p class="prov" style="margin:4px 0">The AI's top pick from this archive — today's front page, the freshest real-news edition. Popped open for you.</p>
+<details open>
+<summary style="cursor:pointer;font-size:1.1em"><b>The Tidewater Chronicle</b> — 2026-10-04 <span class="stbadge">real news</span> <span style="font-size:.8em;color:var(--mut)">JAH-ED-002202 · Vol. 3 Issue 808</span></summary>
+<div style="padding-top:8px">
+<p class="whybest"><b>Why this is the best:</b> the newest edition on file — today's paper, reporting real events from the Signature network as they happened. This is the newspaper's promise in action: real ecosystem news, verified from the sites' own data, printed this morning.</p>
+<div class="bestflow" aria-hidden="true"><div class="bnode"><b>It happened</b>fixes ship on the network</div><div class="barrow">→</div><div class="bnode"><b>Verified</b>from the sites' own data</div><div class="barrow">→</div><div class="bnode"><b>Printed</b>6 articles, this morning</div><div class="barrow">→</div><div class="bnode"><b>You read it</b>front page below</div></div>
+<p><b>What it does:</b> six papers print a fresh edition every morning; this is today's Tidewater Chronicle — Vol. 3, Issue 808 — with 6 articles on what the network shipped.</p>
+<p><b>Implications:</b> this paper reports <b>only</b> real Signature-ecosystem news — drip milestones, fixes shipped, launches, records. No real-world news, no real persons, never invented.</p>
+<p><b>Today's headlines:</b></p>
+<ul class="headlines">
+<li>The Signature 3D Print Depository fix ships: replace spotlight tour with centered welcome overlay</li>
+<li>The Signature 3D Print Depository: hero banner at top, THE JAH NETWORK list moved above footer</li>
+<li>The Signature Cyber Mega-Mall: Product Archive A-Z with lazy department shelves</li>
+<li>Plus 3 more articles in the full edition.</li>
+</ul>
+<div class="beststats"><span class="beststat"><b>2,202</b> editions on file</span><span class="beststat">Edition <b>#2,202</b> — today's</span><span class="beststat"><b>6</b> articles · <b>real news</b></span><span class="beststat">Fiction: <b>none</b> — labeled real</span></div>
+<div class="toolbar">
+<button class="btn" id="best-speak" type="button">🔊 Read aloud</button>
+<button class="btn ghost" id="best-copy" type="button">⧉ Copy</button>
+<button class="btn ghost" id="best-dl" type="button">⤓ Download</button>
+<a class="btn red" href="?edition=JAH-ED-002202">Open the full edition →</a>
+</div>
+</div>
+</details>
+</section>
+<script>
+(function(){
+"use strict";
+var plain="Best of the Best — The Tidewater Chronicle, October 4th 2026, Volume 3 Issue 808, JAH-ED-002202. Today's front page: the newest edition on file, reporting real events from the Signature network. Lead story: The Signature 3D Print Depository fix ships — replace spotlight tour with centered welcome overlay. Also: hero banner at top, the network list moved above the footer, and the Cyber Mega-Mall product archive. Six articles, all real ecosystem news.";
+var dl="THE SIGNATURE GLOBAL NEWSPAPER ARCHIVE — BEST OF THE BEST\nThe Tidewater Chronicle — 2026-10-04 — Vol. 3 Issue 808 — JAH-ED-002202 (edition 2,202 of 2,202)\n\nWHY THIS IS THE BEST\nToday's front page: the newest edition on file, reporting real Signature-ecosystem events as they happened — verified from the sites' own data.\n\nHEADLINES\n- The Signature 3D Print Depository fix ships: replace spotlight tour with centered welcome overlay\n- The Signature 3D Print Depository: hero banner at top, THE JAH NETWORK list moved above footer\n- The Signature Cyber Mega-Mall: Product Archive A-Z with lazy department shelves\n- Plus 3 more articles in the full edition.\n\nIMPLICATIONS\nThis paper reports only real Signature-ecosystem news. No real-world news, no real persons, never invented.\n\nFull edition: https://justinahiggins614-cmyk.github.io/signature-newspapers/?edition=JAH-ED-002202";
+function copyText(t,btn){function done(ok){var o=btn.textContent;btn.textContent=ok?"Copied ✓":"Copy failed";setTimeout(function(){btn.textContent=o;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){done(true);},function(){done(false);});}else{var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done(true);}catch(e){done(false);}document.body.removeChild(ta);}}
+function download(name,text){try{var url=URL.createObjectURL(new Blob([text],{type:"text/plain"}));var a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);try{URL.revokeObjectURL(url);}catch(e){}},800);}catch(e){}}
+var speakTimer=null;
+function speakStop(){try{if(window.speechSynthesis)window.speechSynthesis.cancel();}catch(e){}if(speakTimer){clearTimeout(speakTimer);speakTimer=null;}}
+var speakBtn=document.getElementById("best-speak");
+speakBtn.onclick=function(){
+  speakStop();
+  try{
+    if(!("speechSynthesis" in window)){speakBtn.textContent="No voice on this device";setTimeout(function(){speakBtn.textContent="🔊 Read aloud";},1800);return;}
+    if(window.speechSynthesis.speaking){speakBtn.textContent="🔊 Read aloud";return;}
+    var u=new SpeechSynthesisUtterance(plain);
+    speakBtn.textContent="⏹ Stop";
+    u.onend=function(){speakBtn.textContent="🔊 Read aloud";};
+    u.onerror=function(){speakBtn.textContent="🔊 Read aloud";};
+    window.speechSynthesis.speak(u);
+    speakTimer=setTimeout(function(){speakBtn.textContent="🔊 Read aloud";},30000);
+  }catch(e){speakBtn.textContent="🔊 Read aloud";}
+};
+document.getElementById("best-copy").onclick=function(){copyText(dl,this);};
+document.getElementById("best-dl").onclick=function(){download("JAH-ED-002202-best.txt",dl);};
+})();
+</script>
 <div id="az">
 <h2 class="sec">A–Z by headline</h2>
 <p class="prov">Every edition on file, A–Z by its lead headline — <b id="azCount">…</b> editions. Open a letter; its list loads on demand. Every entry opens the edition on the front page.</p>
