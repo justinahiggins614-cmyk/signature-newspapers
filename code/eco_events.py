@@ -58,7 +58,7 @@ SITES = [
      "Signature-line generators for every field — every output fully solved, no assumptions."),
     ("mixlab", "The Signature AI Mix Lab", "signature-ai-mixlab", "ai", "hybrids",
      "The hybrid forge: mix-and-match Signature AIs."),
-    ("olypics", "AI Olympics", "signature-ai-olypics", "ai", "battles",
+    ("olympics", "AI Olympics", "signature-ai-olypics", "ai", "battles",
      "The battle dome where Signature AIs compete in Olympic-style events."),
     ("chips", "The Signature Computer Chip Maker and Archive", "signature-chip-maker", "builders", "chip designs",
      "Chip designs for any chip type, with full specs and board images."),
@@ -89,7 +89,7 @@ SITE_NUMBER = {
     "math": 1, "calculator": 2, "dictionary": 3, "jahwiki": 4, "leaks": 5,
     "llama": 6, "phonebook": 7, "patents": 8, "specs": 9, "pc": 10,
     "books": 11, "comics": 12, "news": 13, "lab": 14, "generators": 15,
-    "mixlab": 16, "olypics": 17, "chips": 18, "apps": 19, "robots": 20,
+    "mixlab": 16, "olympics": 17, "chips": 18, "apps": 19, "robots": 20,
     "experiments": 21, "pixel": 22, "music": 23, "fixit": 24,
     "university": 25, "mall": 26, "print3d": 27,
 }
