@@ -1083,6 +1083,13 @@ def build_all():
     stamp_stats()
     # --- browse.html catalog stamp (after the flush — never one run behind) ---
     stamp_browse()
+    # --- A-Z headline archive index (browse.html "A-Z by headline") -----------
+    # never one run behind: rebuilds data/index/az/<L>.json + manifest.json
+    try:
+        import build_az_index
+        build_az_index.main()
+    except Exception as e:
+        print("A-Z archive index skipped: %s" % e)
     # --- data size guard ---
     total = sum(os.path.getsize(os.path.join(dp, f))
                 for dp, _, fns in os.walk(DATA) for f in fns)

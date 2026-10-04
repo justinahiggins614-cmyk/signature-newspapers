@@ -81,6 +81,26 @@ footer{border-top:4px double var(--rule);margin-top:30px;padding:18px 14px 40px;
 footer .sites{line-height:2}
 footer a{color:#3a5a9c}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+/* A-Z BY HEADLINE — additive, does not restyle existing components */
+.azsec{background:#fffdf4;border:1px solid #c9bfa4;border-radius:4px;margin:8px 0}
+.azsec>summary{cursor:pointer;padding:12px 16px;list-style:none;display:flex;align-items:baseline;gap:14px}
+.azsec>summary::-webkit-details-marker{display:none}
+.azsec>summary::marker{content:""}
+.azsec>summary::before{content:"\25B8";color:var(--mut);font-size:.9em}
+.azsec[open]>summary::before{content:"\25BE";color:var(--red)}
+.azletter{font-size:1.25em;color:var(--red);min-width:34px;font-weight:800}
+.azcount{color:var(--mut);font-size:.78em;letter-spacing:.08em;margin-left:auto;text-align:right}
+.azbody{border-top:1px solid #e4dcc2;padding:10px 12px 14px}
+.azitem{display:flex;align-items:baseline;gap:10px;padding:8px 10px;border-bottom:1px solid #efe8d2;color:inherit;text-decoration:none;font-size:.88em}
+.azitem:hover{background:#f6f1e2}
+.azitem:hover .aztitle{color:var(--red)}
+.azdate{color:var(--gold);white-space:nowrap;font-size:.92em;font-family:Arial,Helvetica,sans-serif}
+.aztitle{color:var(--ink);flex:1;min-width:0}
+.azpaper{color:var(--mut);font-size:.85em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:30%}
+.azmore{display:block;margin:12px auto 4px;background:#fffdf4;color:var(--red);border:1px solid #c9bfa4;border-radius:4px;padding:9px 26px;cursor:pointer;font-size:.82em;letter-spacing:.08em;font-family:inherit}
+.azmore:hover{border-color:var(--red)}
+.azload{color:var(--mut);font-size:.85em;text-align:center;padding:14px}
+@media(max-width:560px){.azitem{flex-wrap:wrap;row-gap:2px}.azpaper{max-width:100%}.azletter{font-size:1.05em}}
 </style>
 <style>html[data-theme="dark"]{filter:invert(1) hue-rotate(180deg)}html[data-theme="dark"] img,html[data-theme="dark"] video,html[data-theme="dark"] canvas,html[data-theme="dark"] svg{filter:invert(1) hue-rotate(180deg)}</style>
 </head>
@@ -124,6 +144,12 @@ footer a{color:#3a5a9c}
 <h2 class="sec">By paper desk</h2>
 <p class="prov">Six papers, each printing a fresh edition every morning. Open a desk to browse its editions newest-first.</p>
 <div id="bypaper"></div>
+</div>
+
+<div id="az">
+<h2 class="sec">A–Z by headline</h2>
+<p class="prov">Every edition on file, A–Z by its lead headline — <b id="azCount">…</b> editions. Open a letter; its list loads on demand. Every entry opens the edition on the front page.</p>
+<div id="azletters"><p class="prov">Loading the A–Z index…</p></div>
 </div>
 
 <div class="about lateststatic">
@@ -326,6 +352,104 @@ function doSearch(){
   box.scrollIntoView({block:"nearest"});
 }
 document.addEventListener("DOMContentLoaded",boot);
+/* ---- A-Z BY HEADLINE ----
+   Per-letter index files at data/index/az/<LETTER>.json (+ manifest.json)
+   are built by code/build_az_index.py on every drip. A letter's file loads
+   only when its <details> opens, so phones never pull the whole catalog.
+   Every entry deep-links to ./?edition=<JAH-ED-id>. */
+(function(){
+"use strict";
+var AZLETTERS="ABCDEFGHIJKLMNOPQRSTUVWXYZ#".split("");
+var AZ={counts:null,rows:{},shown:{},loading:{}};
+var AZ_PAGE=250;
+function azEraTag(r){return r[4]==="ecosystem"?ECO_TAG:FIC_TAG;}
+function azItemHtml(r){
+  return '<a class="azitem" href="'+edURL(r[0])+'">'+
+    '<span class="azdate">'+esc(r[1])+'</span>'+
+    '<span class="aztitle">'+esc(r[3]||"")+'</span>'+
+    '<span class="azpaper">'+esc(r[0])+' \u00b7 '+esc(r[2]||"")+'</span>'+azEraTag(r)+'</a>';
+}
+function azRenderPage(L){
+  var rows=AZ.rows[L]||[],shown=AZ.shown[L]||0;
+  var body=document.querySelector('[data-azbody="'+L+'"]');
+  if(!body)return;
+  var h="",i;
+  for(i=0;i<shown&&i<rows.length;i++)h+=azItemHtml(rows[i]);
+  if(shown<rows.length){
+    h+='<button type="button" class="azmore" data-azmore="'+L+'">SHOW MORE ('+
+      (rows.length-shown).toLocaleString()+' REMAINING)</button>';
+  }else{
+    h+='<p class="azload">End of letter '+esc(L)+' \u2014 '+
+      rows.length.toLocaleString()+' editions shown.</p>';
+  }
+  body.innerHTML=h;
+}
+function azLoadLetter(L){
+  if(AZ.rows[L]||AZ.loading[L])return;
+  AZ.loading[L]=true;
+  var body=document.querySelector('[data-azbody="'+L+'"]');
+  fetch("data/index/az/"+L+".json").then(function(resp){
+    if(!resp.ok)throw new Error("HTTP "+resp.status);
+    return resp.json();
+  }).then(function(rows){
+    AZ.rows[L]=rows;
+    AZ.shown[L]=Math.min(AZ_PAGE,rows.length);
+    delete AZ.loading[L];
+    azRenderPage(L);
+  }).catch(function(){
+    delete AZ.loading[L];
+    if(body)body.innerHTML='<p class="azload">Could not load letter '+esc(L)+
+      ' \u2014 check your connection and try again.</p>';
+  });
+}
+function renderAzLetters(){
+  var box=$("azletters");
+  if(!box||!AZ.counts)return;
+  var h="";
+  AZLETTERS.forEach(function(L){
+    var n=AZ.counts[L]||0;
+    var bodyHtml=n
+      ?'<p class="azload">Open to load this letter&hellip;</p>'
+      :'<p class="azload">No editions in this letter.</p>';
+    h+='<details class="azsec" data-letter="'+L+'">'+
+      '<summary><span class="azletter">'+L+'</span>'+
+      '<span class="azcount">'+n.toLocaleString()+' EDITIONS</span></summary>'+
+      '<div class="azbody" data-azbody="'+L+'">'+bodyHtml+'</div></details>';
+  });
+  box.innerHTML=h;
+}
+function buildArchive(){
+  var box=$("azletters");
+  if(!box)return;
+  fetch("data/index/az/manifest.json").then(function(resp){
+    if(!resp.ok)throw new Error("HTTP "+resp.status);
+    return resp.json();
+  }).then(function(m){
+    AZ.counts=m.counts||{};
+    var el=$("azCount");
+    if(el&&m.total)el.textContent=Number(m.total).toLocaleString();
+    renderAzLetters();
+  }).catch(function(){
+    box.innerHTML='<p class="prov">The A–Z index could not be loaded \u2014 check your connection and reload.</p>';
+  });
+  box.addEventListener("toggle",function(e){
+    var d=e.target;
+    if(d&&d.tagName==="DETAILS"&&d.open)azLoadLetter(d.getAttribute("data-letter"));
+  },true);
+  box.addEventListener("click",function(e){
+    var b=e.target&&e.target.closest?e.target.closest("[data-azmore]"):null;
+    if(!b)return;
+    var L=b.getAttribute("data-azmore");
+    AZ.shown[L]=Math.min((AZ.shown[L]||0)+AZ_PAGE,(AZ.rows[L]||[]).length);
+    azRenderPage(L);
+  });
+  try{
+    var hash=(location.hash||"").replace("#","");
+    if(hash==="az")$("az").scrollIntoView();
+  }catch(x){}
+}
+document.addEventListener("DOMContentLoaded",buildArchive);
+})();
 </script>
 </body>
 </html>
