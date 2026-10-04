@@ -161,19 +161,17 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 .pmast.pp4,.emast.pp4{color:#b06a00}
 .pmast.pp5,.emast.pp5{color:#0f6b6e}
 .artid{font-family:Arial,Helvetica,sans-serif;font-size:.72em;color:var(--mut);letter-spacing:.06em;margin-bottom:2px}
-/* ---- first-time user guide: spotlight tour + guide panel (additive) ---- */
-#touroverlay{position:fixed;inset:0;background:rgba(20,16,8,.62);z-index:200;display:none}
-#touroverlay.show{display:block}
-#tourcard{position:fixed;z-index:201;background:#fffdf4;color:#1c1a15;border:2px solid #2b2820;border-radius:10px;box-shadow:4px 4px 0 rgba(0,0,0,.35);max-width:min(430px,92vw);padding:18px 20px;font-family:Arial,Helvetica,sans-serif;display:none}
-#tourcard.show{display:block}
-#tourcard h3{margin:0 0 6px;font-size:1.05em;text-transform:uppercase;letter-spacing:.06em;color:#9c2b2b}
-#tourcard .tkind{font-size:.72em;font-weight:700;letter-spacing:.18em;color:#6b6353;text-transform:uppercase}
-#tourcard p{font-size:.92em;line-height:1.55;margin:.4em 0}
-#tourcard .tstep{font-size:.75em;color:#6b6353;margin-top:10px}
-#tourcard .tbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-#tourcard .tbtns button{min-height:44px;padding:10px 16px;font-size:.9em;border-radius:8px;border:1px solid #2b2820;background:#1c1a15;color:#f6f1e2;font-family:inherit;font-weight:700;cursor:pointer}
-#tourcard .tbtns button.ghostbtn{background:transparent;color:#1c1a15}
-.tourhl{outline:3px solid #9c2b2b !important;outline-offset:3px;border-radius:6px}
+/* ---- first-time user guide: centered welcome overlay (additive; no auto-scroll) ---- */
+#welcomemodal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(20,16,8,.62);padding:16px}
+#welcomemodal.show{display:flex}
+#welcomebox{background:#fffdf4;color:#1c1a15;border:2px solid #2b2820;border-radius:10px;box-shadow:4px 4px 0 rgba(0,0,0,.35);max-width:480px;width:100%;max-height:88vh;overflow-y:auto;padding:22px 24px;font-family:Arial,Helvetica,sans-serif}
+#welcomebox h3{margin:0 0 4px;font-size:1.1em;text-transform:uppercase;letter-spacing:.06em;color:#9c2b2b}
+#welcomebox .wkind{font-size:.72em;font-weight:700;letter-spacing:.18em;color:#6b6353;text-transform:uppercase}
+#welcomebox ol{margin:.6em 0 .4em;padding-left:1.3em}
+#welcomebox li{font-size:.92em;line-height:1.55;margin:.5em 0}
+#welcomebox li b{color:#1c1a15}
+#welcomebox .wok{display:block;width:100%;min-height:52px;margin-top:12px;font-size:1em;font-weight:800;letter-spacing:.06em;border-radius:8px;border:1px solid #2b2820;background:#1c1a15;color:#f6f1e2;font-family:inherit;cursor:pointer}
+#welcomebox .wnote{font-size:.75em;color:#6b6353;margin-top:8px;text-align:center}
 #guidemodal{position:fixed;inset:0;z-index:210;display:none;align-items:center;justify-content:center;background:rgba(20,16,8,.62);padding:16px}
 #guidemodal.show{display:flex}
 #guidebox{background:#fffdf4;color:#1c1a15;border:2px solid #2b2820;border-radius:10px;max-width:640px;width:100%;max-height:86vh;overflow-y:auto;padding:22px 24px;font-family:Arial,Helvetica,sans-serif}
@@ -254,21 +252,19 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 
 <div id="edview" class="wrap"></div>
 
-<!-- first-time user guide: spotlight tour + permanent guide panel -->
-<div id="touroverlay" aria-hidden="true"></div>
-<div id="tourcard" role="dialog" aria-modal="true" aria-labelledby="tourtitle" tabindex="-1">
-  <div class="tkind" id="tourkind">Site tour</div>
-  <h3 id="tourtitle">Welcome</h3>
-  <p id="tourwhat"></p>
-  <p id="tourdoes"></p>
-  <p id="tourhow"></p>
-  <div class="tstep" id="tourstep"></div>
-  <div class="tbtns">
-    <button type="button" id="tstart">▶ Start the tour</button>
-    <button type="button" id="tskip" class="ghostbtn">Skip</button>
-    <button type="button" id="tback" class="ghostbtn" style="display:none">← Back</button>
-    <button type="button" id="tnext" style="display:none">Next →</button>
-    <button type="button" id="tdone" style="display:none">Done ✓</button>
+<!-- first-time user guide: centered welcome overlay (no auto-scroll, no spotlight) -->
+<div id="welcomemodal" role="dialog" aria-modal="true" aria-labelledby="welcometitle">
+  <div id="welcomebox">
+    <div class="wkind">Welcome</div>
+    <h3 id="welcometitle">The press room in 4 taps</h3>
+    <ol>
+      <li><b>Read today's editions.</b> Six papers print a fresh edition every morning about the Signature network. Tap any edition card to read the full story list.</li>
+      <li><b>Search the archive.</b> Type words in Search to find headlines, or an edition ID like JAH-ED-002190 to jump straight to it. The scope menu also searches full article text.</li>
+      <li><b>Browse by paper or date.</b> Use the paper menu to read one paper at a time, or pick a date and press Go to date.</li>
+      <li><b>Inside an edition.</b> Every story has copy and download buttons, read-aloud, and a Verify view that recomputes the edition's hash.</li>
+    </ol>
+    <button type="button" class="wok" id="welcomegotit">Got it ✓</button>
+    <div class="wnote">The ❓ Guide button up top brings this guide back any time.</div>
   </div>
 </div>
 <div id="guidemodal" role="dialog" aria-modal="true" aria-labelledby="guidetitle">
@@ -984,111 +980,32 @@ function qaAsk(e){
   qsay(a,"ai");
   }
 }
-/* ============ first-time user guide: spotlight tour + guide panel ============ */
+/* ============ first-time user guide: centered welcome overlay (no auto-scroll) ============ */
 var TOUR_KEY="jah-tour-seen-news";
-var TOUR_STEPS=[
- {sel:"#paper",title:"The six papers",
-  what:"Six papers cover the Signature ecosystem — the Daily Globe, Meridian Herald, Argent Post, Northlight Times, Sunspire Gazette and Tidewater Chronicle.",
-  does:"Each paper prints a fresh edition every morning reporting real events from the 27-site network — never real-world news. Early archive editions are retired fiction, clearly labeled.",
-  how:"Use this menu to read one paper at a time, or leave it on \u201cAll six papers\u201d to browse everything."},
- {sel:"#today",title:"Today's editions",
-  what:"These cards are the newest editions — one from each paper.",
-  does:"Each card shows the paper's masthead, the date, and the top headlines.",
-  how:"Tap any card to open the full edition and read every story."},
- {sel:"#q",title:"Search the archive",
-  what:"The search box looks through every edition's headlines — or type an edition ID like JAH-ED-002190 to jump straight to it.",
-  does:"The scope menu next to it switches to Article text, which searches the full story text of all 13,000+ articles.",
-  how:"Type and the results filter as you type. Try a word from a headline, or an edition ID."},
- {sel:".controls .row",title:"Dates and browsing",
-  what:"These controls move you through time.",
-  does:"Pick a date and press Go to date to see what printed that day; Latest jumps back to the newest editions; Load more editions shows older ones, 24 at a time.",
-  how:"The Year and Month menus narrow the browse; the paper menu still applies."},
- {sel:"#fq",title:"The Finder",
-  what:"The Finder bar takes a plain description of what you're looking for.",
-  does:"It runs a deterministic keyword search over the archive's own index and returns the five best-matching editions — it only ever returns real indexed records.",
-  how:"Describe it in your own words — for example \u201cspec catalog record\u201d — and press Find it."},
- {sel:"#results",title:"Inside an edition",
-  what:"Open any edition card to read it like a broadsheet: masthead, date, volume and issue, then every story with section, headline, byline and full text.",
-  does:"Inside each edition you'll find the Ask-AI box (answers only from that edition's stories), read-aloud, copy, download, a per-article copy/download, and a Verify view that recomputes the edition's hash.",
-  how:"Open any card below. And the \u2753 Guide button up top is always here if you ever need it."}
-];
-var tourIdx=-1,tourActive=false;
-function tourEl(i){var s=TOUR_STEPS[i];if(!s)return null;
-  try{return document.querySelector(s.sel)}catch(e){return null}}
-function tourShow(i){
-  tourIdx=i;var s=TOUR_STEPS[i];
-  var el=tourEl(i);
-  document.querySelectorAll(".tourhl").forEach(function(x){x.classList.remove("tourhl")});
-  if(!el){tourNext();return}
-  el.classList.add("tourhl");
-  try{el.scrollIntoView({block:"center",behavior:"smooth"})}catch(e){try{el.scrollIntoView()}catch(e2){}}
-  setTimeout(function(){
-    $("tourkind").textContent="Site tour · step "+(i+1)+" of "+TOUR_STEPS.length;
-    $("tourtitle").textContent=s.title;
-    $("tourwhat").innerHTML="<b>What it is:</b> "+esc(s.what);
-    $("tourdoes").innerHTML="<b>What it does:</b> "+esc(s.does);
-    $("tourhow").innerHTML="<b>How to use it:</b> "+esc(s.how);
-    $("tourstep").textContent="Step "+(i+1)+" of "+TOUR_STEPS.length;
-    $("tstart").style.display="none";$("tskip").style.display="";
-    $("tback").style.display=i>0?"":"none";
-    $("tnext").style.display=i<TOUR_STEPS.length-1?"":"none";
-    $("tdone").style.display=i===TOUR_STEPS.length-1?"":"none";
-    var card=$("tourcard");
-    card.classList.add("show");
-    var r=el.getBoundingClientRect();
-    card.style.visibility="hidden";card.style.left="8px";card.style.top="8px";
-    var cw=Math.min(430,window.innerWidth-16),ch=card.offsetHeight||320;
-    card.style.width=cw+"px";
-    var top=r.bottom+12+window.scrollY;
-    if(top+ch>window.scrollY+window.innerHeight-8)top=Math.max(8+window.scrollY,r.top-ch-12+window.scrollY);
-    var left=Math.max(8,Math.min(r.left+window.scrollX,window.innerWidth-cw-8));
-    card.style.left=left+"px";card.style.top=Math.max(8,top)+"px";
-    card.style.visibility="";card.focus();
-  },380);
+var welcomeReturnFocus=null;
+function welcomeShow(){
+  welcomeReturnFocus=document.activeElement;
+  $("welcomemodal").classList.add("show");
+  $("welcomegotit").focus();
 }
-function tourNext(){if(tourIdx<TOUR_STEPS.length-1)tourShow(tourIdx+1);else tourEnd()}
-function tourBack(){if(tourIdx>0)tourShow(tourIdx-1)}
-function tourEnd(){
-  tourActive=false;tourIdx=-1;
-  $("touroverlay").classList.remove("show");$("tourcard").classList.remove("show");
-  document.querySelectorAll(".tourhl").forEach(function(x){x.classList.remove("tourhl")});
+function welcomeDone(){
+  $("welcomemodal").classList.remove("show");
   try{localStorage.setItem(TOUR_KEY,"1")}catch(e){}
-}
-function tourIntro(){
-  tourActive=true;
-  $("touroverlay").classList.add("show");
-  var card=$("tourcard");card.classList.add("show");
-  card.style.left="50%";card.style.top="18%";card.style.transform="translateX(-50%)";
-  card.style.width=Math.min(430,window.innerWidth-32)+"px";
-  $("tourkind").textContent="Site tour";
-  $("tourtitle").textContent="Welcome to the press room";
-  $("tourwhat").innerHTML="<b>What it is:</b> a 1-minute walkthrough of this newspaper archive — papers, editions, search, the Finder, and what's inside an edition.";
-  $("tourdoes").innerHTML="<b>What it does:</b> it highlights each part of the page and explains it in plain language.";
-  $("tourhow").innerHTML="<b>How to use it:</b> press Start the tour, use Next and Back to move, or Skip any time. You can replay it from the \u2753 Guide button.";
-  $("tourstep").textContent="Takes about a minute";
-  $("tstart").style.display="";$("tskip").style.display="";
-  $("tback").style.display="none";$("tnext").style.display="none";$("tdone").style.display="none";
-  card.focus();
+  if(welcomeReturnFocus&&welcomeReturnFocus.focus)welcomeReturnFocus.focus();
 }
 function maybeTour(homeView){
   if(!homeView)return;
   var seen=null;try{seen=localStorage.getItem(TOUR_KEY)}catch(e){seen="1"}
   if(seen)return;
-  setTimeout(tourIntro,1200);
+  setTimeout(welcomeShow,900);
 }
-document.getElementById("tstart").onclick=function(){this.parentElement.parentElement.style.transform="";tourShow(0)};
-document.getElementById("tskip").onclick=tourEnd;
-document.getElementById("tback").onclick=tourBack;
-document.getElementById("tnext").onclick=tourNext;
-document.getElementById("tdone").onclick=tourEnd;
+document.getElementById("welcomegotit").onclick=welcomeDone;
 document.addEventListener("keydown",function(e){
   if($("guidemodal").classList.contains("show")){
     if(e.key==="Escape")closeGuide();return;
   }
-  if(!$("tourcard").classList.contains("show"))return;
-  if(e.key==="Escape"){tourEnd()}
-  else if(e.key==="ArrowRight"&&tourIdx>=0){tourNext()}
-  else if(e.key==="ArrowLeft"&&tourIdx>=0){tourBack()}
+  if(!$("welcomemodal").classList.contains("show"))return;
+  if(e.key==="Escape"){welcomeDone()}
 });
 var guideReturnFocus=null;
 function openGuide(){
