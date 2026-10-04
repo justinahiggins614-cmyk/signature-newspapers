@@ -34,7 +34,7 @@ SITES = [
      "The dictionary: headwords with original definitions, phonetic respellings, word programs and an AI teacher."),
     ("jahwiki", "JAH Wiki", "jah-wiki", "catalogs", "articles",
      "The Wikipedia-like encyclopedia written over all of the network's data."),
-    ("leaks", "JAH-N Wiki", "jah-n-wiki-leaks", "catalogs", "dossiers",
+    ("leaks", "Wiki Leaks", "jah-n-wiki-leaks", "catalogs", "dossiers",
      "The network's own declassified internal archive, publishing its own files."),
     ("llama", "Signature Llama", "sigllama", "ai", "model builds",
      "The network's own Llama — the chat engine behind every AI on every site."),

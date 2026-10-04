@@ -13,7 +13,7 @@
  "goal": "1,000,000 editions + articles",
  "schema_version": "JAH-NEWSPAPER-RECORD/1.0",
  "index_version": "1.0",
- "index_hash": "c00f9d0535a4be35add868481ec5047e43d03bac1c06607ae7fbd45aab8cf5f8",
+ "index_hash": "45282ad4be38dde0586ec75ffdbdb186ffaac1d5a31f36c93aef261d37c3d6d1",
  "generator_version": "code/gen_editions.py (SALT 20261002)",
  "fictionality_status": "FICTIONAL_GENERATED",
  "fictionality_note": "Two-era archive. Editions dated 2026-09-28 onward carry ECOSYSTEM_REPORTED: real news from the 27-website Signature network, every story grounded in the sites' own data. Editions before 2026-09-28 carry FICTIONAL_GENERATED: retired Signature-world fiction — invented people, places and events — kept in the archive and clearly labeled, never presented as fact. No real-world news, no real persons named.",
