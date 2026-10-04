@@ -2,7 +2,7 @@
 """Site-14: real Signature-ecosystem event harvest for the newspaper.
 
 Every story the paper prints about the ecosystem is grounded here — real
-dated events from Manon's 27 website repos: drip commits, fixes shipped,
+dated events from Manon's 31 website repos: drip commits, fixes shipped,
 features, launches, shard moves, and dated totals from drip logs.
 
 Nothing here is invented: headlines and bodies are built from real commit
@@ -80,11 +80,19 @@ SITES = [
      "The software mega-mall, '80s-'90s mall experience."),
     ("print3d", "The Signature 3D Print Mega Mall", "signature-3d-print", "markets", "print designs",
      "The tangible wing — 3D-printable keepsake emblems for the records."),
+    ("earth", "Signature Earth", "signature-earth", "builders", "places",
+     "Manon's own planet explorer — an interactive 3D globe with a real gazetteer."),
+    ("flightschool", "The Signature Flight School", "signature-flight-school", "builders", "flight paths",
+     "Pick any plane or jet and learn to fly with an AI pal instructor and a real simulator."),
+    ("gamestore", "The Signature Game Store", "signature-game-store", "culture", "games",
+     "Playable games from 1970s arcade-style to modern combat-style, each with cover and download."),
+    ("websitecreator", "The Signature Website Creator", "signature-website-creator", "builders", "built sites",
+     "The AI website builder — describe a website and get a real one, with mirror-a-website and a million options catalog."),
 ]
 
 SITE_BY_KEY = {s[0]: s for s in SITES}
 
-# Manon's official 27-site network order (1-based site numbers)
+# Manon's official 31-site network order (1-based site numbers)
 SITE_NUMBER = {
     "math": 1, "calculator": 2, "dictionary": 3, "jahwiki": 4, "leaks": 5,
     "llama": 6, "phonebook": 7, "patents": 8, "specs": 9, "pc": 10,
@@ -92,6 +100,7 @@ SITE_NUMBER = {
     "mixlab": 16, "olympics": 17, "chips": 18, "apps": 19, "robots": 20,
     "experiments": 21, "pixel": 22, "music": 23, "fixit": 24,
     "university": 25, "mall": 26, "print3d": 27,
+    "earth": 28, "flightschool": 29, "gamestore": 30, "websitecreator": 31,
 }
 
 BEAT_LABEL = {
