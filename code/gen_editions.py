@@ -6,22 +6,38 @@ Usage:
     python3 code/gen_editions.py --backfill   # seed ~365 past days x 6 papers
     python3 code/gen_editions.py --daily       # cron: add today's editions (idempotent)
     python3 code/gen_editions.py --rebuild     # rebuild index/sitemap/api only
+    python3 code/gen_editions.py --eco-rebuild  # replace ECO_START..today with
+                                              # real-ecosystem editions, then rebuild
 
 Determinism: edition content is seeded by SALT + paper + date, so re-running
 never changes an existing edition. IDs (JAH-ED-######) are assigned in
 chronological order; data/state.json tracks next_index and last_date.
 
-CONTENT HONESTY: every edition is original Signature-world reporting. All
-people, places, teams, and events are invented. Never real-world news, never
-real people's names, never copies of real mastheads. Each edition carries an
-honesty banner stating this.
+CONTENT HONESTY, TWO ERAS:
+  * 2025-10-03 .. 2026-09-27: retired Signature-world fiction editions. All
+    people, places, teams, and events invented; kept in the archive and
+    clearly labeled, never presented as fact.
+  * 2026-09-28 onward: real Signature-ecosystem news editions. Every story
+    is grounded in the 27 websites' own data (drip milestones, fixes
+    shipped, launches, records) via code/eco_events.py. Never real-world
+    news, never real persons' names, drafts never called filed patents.
 
 Layout: weekly gz chunks data/volumes/editions-wNNNNN.jsonl.gz (7 days x 6
 papers = 42 editions/chunk). Compact search index data/index/editions.idx.json.gz
-rows: [id, date, paper_idx, n_articles, chunk, headlines+ledes joined].
+rows: [id, date, paper_idx, n_articles, chunk, headlines+ledes joined, coverage].
 """
 import argparse, gzip, hashlib, json, os, random, re, sys, datetime
 import record_std  # permanent record standard: IDs, hashes, fictionality
+import eco_events
+import eco_stories
+
+ECO_START = datetime.date(2026, 9, 28)  # first day of real ecosystem coverage
+
+
+def local_today():
+    """Today in America/New_York — the network's timezone (the VM runs UTC)."""
+    import zoneinfo
+    return datetime.datetime.now(zoneinfo.ZoneInfo("America/New_York")).date()
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -297,6 +313,120 @@ def issue_no(paper, date):
     founded = datetime.date.fromisoformat(paper["founded"])
     return max(1, (date - founded).days + 1)
 
+
+def make_eco_edition(paper_idx, date):
+    """Real-ecosystem edition: 6 articles from that day's real network events.
+
+    Paper 0 (Daily Globe, flagship) leads with the day's biggest story and
+    covers one top story per beat. Beat desks lead with their beat's top
+    story, then fill from the rest of the day's real events.
+    """
+    events = eco_events.events_for_date(date)
+    beat = eco_events.PAPER_BEAT[paper_idx]
+    used = set()
+    site_n = {}
+    arts = []
+
+    def take(ev):
+        if ev is None or ev["subject"] in used:
+            return None
+        if site_n.get(ev["site_key"], 0) >= 2:
+            return None
+        used.add(ev["subject"])
+        site_n[ev["site_key"]] = site_n.get(ev["site_key"], 0) + 1
+        return ev
+
+    def top_of(beats, exclude=()):
+        for ev in events:
+            if ev["beat"] in beats and ev["subject"] not in used and ev not in exclude:
+                return ev
+        return None
+
+    others = []  # events not used in articles, for the roundup
+    if beat == "all":
+        ordered_beats = ["catalogs", "ai", "builders", "culture", "markets"]
+        lead = take(events[0]) if events else None
+        picks = [lead] if lead else []
+        for b in ordered_beats:
+            t = take(top_of([b]))
+            if t:
+                picks.append(t)
+        for ev in events:
+            if len(picks) >= 5:
+                break
+            t = take(ev)
+            if t:
+                picks.append(t)
+    else:
+        lead = take(top_of([beat])) or (take(events[0]) if events else None)
+        picks = [lead] if lead else []
+        for ev in events:
+            if len(picks) >= 5:
+                break
+            if ev["beat"] == beat:
+                t = take(ev)
+                if t:
+                    picks.append(t)
+        for ev in events:
+            if len(picks) >= 5:
+                break
+            t = take(ev)
+            if t:
+                picks.append(t)
+
+    picks = picks[:5]  # leave the 6th slot for the roundup
+    for i, ev in enumerate(picks):
+        sec = "lead" if i == 0 else (ev["beat"] if ev["beat"] in eco_events.BEAT_LABEL else "network")
+        arts.append(eco_stories.article_for(ev, sec))
+    # final slots: roundup(s) of the day's remaining real events
+    rest = [ev for ev in events if ev["subject"] not in used]
+    while len(arts) < 6 and rest:
+        arts.append(eco_stories.roundup_article(rest, date))
+        rest = rest[6:]
+    while len(arts) < 6:  # unreachable on real days; keep the 6-article shape
+        arts.append(eco_stories.roundup_article(events[len(arts):], date))
+    arts = arts[:6]
+
+    paper = PAPERS[paper_idx]
+    iss = issue_no(paper, date)
+    return {
+        "paper": paper_idx,
+        "date": date.isoformat(),
+        "issue": iss,
+        "volume": (date.year - datetime.date.fromisoformat(paper["founded"]).year) + 1,
+        "articles": arts,
+        "honesty": eco_stories.ECO_HONESTY,
+        "coverage": "ecosystem",
+    }
+
+
+def build_edition(pi, d):
+    """(edition_dict, fictionality_status) — eco for real dates, fiction before."""
+    if d >= ECO_START:
+        return make_eco_edition(pi, d), record_std.ECO_FICTIONALITY
+    return make_edition(pi, d), record_std.FICTIONALITY
+
+
+def restamp_rebuilt(e, article_ids):
+    """Re-stamp a rebuilt eco edition, preserving its edition + article IDs."""
+    e["fictionality_status"] = record_std.ECO_FICTIONALITY
+    e["honesty"] = eco_stories.ECO_HONESTY
+    e["coverage"] = "ecosystem"
+    e["status"] = "PUBLISHED"
+    e.setdefault("creation_mode", "GENERATED")
+    e.setdefault("version", "1.0")
+    e["updated"] = e["date"]
+    arts = []
+    for a, aid_ in zip(e["articles"], article_ids):
+        record_std.stamp_article(a, aid_, e["id"], record_std.ECO_FICTIONALITY)
+        arts.append(a)
+    e["articles"] = arts
+    e["article_ids"] = list(article_ids)
+    e["article_count"] = len(arts)
+    body = {k: v for k, v in e.items() if k != "content_hash"}
+    e["content_hash"] = record_std.sha256_hex(record_std.canon(body))
+    return e
+
 def make_edition(paper_idx, date):
     paper = PAPERS[paper_idx]
     seed = SALT + paper_idx * 100003 + (date - EPOCH_START).days * 7919
@@ -358,7 +488,9 @@ def eid(n):
     return "JAH-ED-%06d" % n
 
 def add_editions(ed_list, state):
-    """Assign IDs, append into weekly chunks. ed_list: [(paper_idx, date)] oldest-first."""
+    """Assign IDs, append into weekly chunks. ed_list: [(paper_idx, date)] oldest-first.
+    Dates before ECO_START get fiction editions; ECO_START onward get real
+    ecosystem editions. Existing (paper, date) pairs are never duplicated."""
     by_week = {}
     for pi, d in ed_list:
         wi = week_idx(d)
@@ -369,12 +501,12 @@ def add_editions(ed_list, state):
         for pi, d in by_week[wi]:
             if (pi, d.isoformat()) in have:
                 continue
-            e = make_edition(pi, d)
+            e, fic = build_edition(pi, d)
             e["id"] = eid(state["next_index"])
             state["next_index"] += 1
             # stamp the permanent record standard: paper/article IDs, hashes, fictionality
             state["next_article_index"] = record_std.stamp_edition(
-                e, state.get("next_article_index", 1))
+                e, state.get("next_article_index", 1), fic)
             state["total_articles"] = state.get("total_articles", 0) + len(e["articles"])
             existing.append(e)
         existing.sort(key=lambda e: (e["date"], e["paper"]))
@@ -382,6 +514,61 @@ def add_editions(ed_list, state):
     if ed_list:
         state["last_date"] = max(d for _, d in ed_list).isoformat()
     save_state(state)
+
+
+def cmd_eco_rebuild():
+    """Replace every edition from ECO_START..today with real-ecosystem
+    editions, preserving edition + article IDs (positional, 6 articles each).
+    Missing (paper, date) pairs are appended with fresh IDs. Then rebuild."""
+    state = load_state()
+    today = local_today()
+    # map (paper, date) -> (week_idx, edition)
+    loc = {}
+    weeks = {}
+    for fn in sorted(os.listdir(VOL)):
+        if not fn.startswith("editions-w") or not fn.endswith(".jsonl.gz"):
+            continue
+        wi = int(fn[len("editions-w"):len("editions-w") + 5])
+        eds = read_chunk(wi)
+        weeks[wi] = eds
+        for e in eds:
+            loc[(e["paper"], e["date"])] = (wi, e)
+    missing = []
+    replaced = 0
+    dirty = set()
+    d = ECO_START
+    while d <= today:
+        for pi in range(len(PAPERS)):
+            key = (pi, d.isoformat())
+            e, fic = build_edition(pi, d)
+            assert fic == record_std.ECO_FICTIONALITY
+            if key in loc:
+                wi, old = loc[key]
+                assert len(old["articles"]) == 6, "unexpected article count in %s" % old["id"]
+                aids = [a["id"] for a in old["articles"]]
+                e["id"] = old["id"]
+                e["paper_id"] = old.get("paper_id", record_std.PAPERS[pi]["paper_id"])
+                e["created"] = old.get("created", e["date"])
+                restamp_rebuilt(e, aids)
+                # swap into the week's list, preserving order
+                wl = weeks[wi]
+                for i, x in enumerate(wl):
+                    if x["id"] == old["id"]:
+                        wl[i] = e
+                        break
+                replaced += 1
+                dirty.add(wi)
+            else:
+                missing.append((pi, d))
+        d += datetime.timedelta(days=1)
+    for wi in sorted(dirty):
+        eds = weeks[wi]
+        eds.sort(key=lambda e: (e["date"], e["paper"]))
+        write_chunk(wi, eds)
+    print("eco-rebuild: replaced %d editions, %d missing pairs to append" % (replaced, len(missing)))
+    if missing:
+        add_editions(sorted(missing, key=lambda t: (t[1], t[0])), state)
+    build_all()
 
 def all_editions_meta():
     """Lightweight scan: (id, date, paper, n_articles, week) for every edition."""
@@ -405,7 +592,7 @@ def stamp_static():
     meta = all_editions_meta()
     if not meta:
         return
-    latest = meta[-1][1]
+    latest = max(m[1] for m in meta)
     todays = [m for m in meta if m[1] == latest][:6]
     parts = []
     for eid_, date, pi, n, wi, iss in todays:
@@ -554,47 +741,65 @@ def edition_jsonld(e, paper_name):
 def esc_h(s):
     return str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
+def _week_is_eco(d0):
+    return d0 >= ECO_START.isoformat()
+
+
 def write_week_digest(adir, d0, fn, items, chunk_of):
     """Static weekly digest: headline summaries + full transcript blocks for every
     edition in the week. Crawler / no-JS friendly."""
+    eco = _week_is_eco(d0)
+    fic_tag = "Signature ecosystem news" if eco else "Fictional Signature world"
     parts = []
     for eid_, date, pi, n, wi, iss in sorted(items, key=lambda t: (t[1], t[2])):
         e = chunk_of(wi, eid_)
         p = PAPERS[pi]
         arts = []
         for i, a in enumerate(e["articles"]):
-            arts.append('<div class="artid">%s-A%d &middot; Fictional Signature world</div>'
+            arts.append('<div class="artid">%s-A%d &middot; %s</div>'
                         '<h3 itemprop="headline">%s</h3><div class="byline">%s</div>%s' % (
-                eid_, i + 1, esc_h(a["h"]), esc_h(a["by"]),
+                eid_, i + 1, fic_tag, esc_h(a["h"]), esc_h(a["by"]),
                 "".join("<p>%s</p>" % esc_h(par) for par in a["body"])))
         ld = json.dumps(edition_jsonld(e, p["name"]), ensure_ascii=False)
+        fic_label = ("Signature ecosystem news &mdash; real events from the 27-site network"
+                     if eco else "Fictional Signature world &mdash; not real-world news")
         parts.append(
             '<article class="ed" itemscope itemtype="https://schema.org/NewsArticle">'
             '<div class="emast pp%d">%s</div>'
-            '<div class="ficlabel">Fictional Signature world &mdash; not real-world news</div>'
+            '<div class="ficlabel">%s</div>'
             '<div class="edate"><time itemprop="datePublished" datetime="%s">%s</time>'
             ' &middot; Vol. %d, Issue %d &middot; <span itemprop="identifier">%s</span></div>'
             '<div class="hon">Signature press: %s</div>'
             '<script type="application/ld+json">%s</script>%s'
             '<p><a href="%s?edition=%s">Read the interactive edition &rarr;</a></p>'
-            '</article>' % (pi, esc_h(p["name"]), date, date, e["volume"], e["issue"],
+            '</article>' % (pi, esc_h(p["name"]), fic_label, date, date, e["volume"], e["issue"],
                              eid_, esc_h(e["honesty"]), ld, "".join(arts), SITE, eid_))
+    hon_div = ("""<div class="hon"><b>Signature press.</b> Every edition below reports real """
+               """events from the 27-website Signature network &mdash; drip milestones, fixes """
+               """shipped, launches and records, verified from the sites' own data.</div>"""
+               if eco else
+               """<div class="hon"><b>Signature press.</b> Every edition below is a retired """
+               """Signature-world fiction edition &mdash; all people, places, teams, """
+               """organizations, and events are invented. It reports no real-world news and names """
+               """no real persons.</div>""")
+    meta_desc = ("Static digest of Signature-ecosystem newspaper editions for the week of %s. "
+                 "Real events from the 27-website network."
+                 if eco else
+                 "Static digest of retired Signature-world fiction newspaper editions for the "
+                 "week of %s. All people, places, and events are invented.")
     html = ("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">"
             "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
             "<title>Signature press digest &mdash; week of %s</title>"
-            "<meta name=\"description\" content=\"Static digest of Signature-world newspaper "
-            "editions for the week of %s. All people, places, and events are invented.\">"
+            "<meta name=\"description\" content=\"%s\">"
             "<link rel=\"canonical\" href=\"%sarchive/%s\">"
             "<style>%s</style></head><body><div class=\"wrap\">"
             "<header><h1>The Signature Global Newspaper Archive</h1>"
             "<p>Static press digest &mdash; week of %s</p></header>"
-            "<div class=\"hon\"><b>Signature press.</b> Every edition below is an original "
-            "generated newspaper of the Signature world &mdash; all people, places, teams, "
-            "organizations, and events are invented. It reports no real-world news and names "
-            "no real persons.</div>"
+            "%s"
             "%s<p class=\"back\"><a href=\"%s\">&larr; Back to the Newspaper Archive</a>"
             " &middot; <a href=\"%sarchive/\">All digest weeks</a></p>"
-            "</div></body></html>" % (d0, d0, SITE, fn, WEEK_CSS, d0, "".join(parts), SITE, SITE))
+            "</div></body></html>" % (d0, meta_desc % d0, SITE, fn, WEEK_CSS, d0, hon_div,
+                                      "".join(parts), SITE, SITE))
     with open(os.path.join(adir, fn), "w", encoding="utf-8") as f:
         f.write(html)
 
@@ -624,8 +829,10 @@ def build_static_archive(meta):
         "<style>%s</style></head><body><div class=\"wrap\">"
         "<header><h1>The Signature Global Newspaper Archive</h1>"
         "<p>Static press digests &mdash; every edition, plain HTML</p></header>"
-        "<div class=\"hon\"><b>Signature press.</b> All people, places, teams, organizations, "
-        "and events are invented; no real-world news.</div>"
+        "<div class=\"hon\"><b>Signature press.</b> Editions from 2026-09-28 onward report real "
+        "events from the 27-website Signature network. Earlier editions are retired "
+        "Signature-world fiction — invented people, places and events — and are labeled "
+        "as such on their pages. No real-world news.</div>"
         "<ul class=\"weeks\">%s</ul>"
         "<p class=\"back\"><a href=\"%s\">&larr; Back to the Newspaper Archive</a></p>"
         "</div></body></html>" % (WEEK_CSS, lis, SITE))
@@ -640,7 +847,7 @@ def build_static_archive(meta):
 def build_all():
     meta = all_editions_meta()
     # --- compact search indexes -------------------------------------------
-    # editions: [id, date, paper, n_art, week, headlines+ledes]
+    # editions: [id, date, paper, n_art, week, headlines+ledes, coverage]
     # articles: [article_id, edition_id, paper, date, section, week]
     cache = {}
     def _ed(wi, eid_):
@@ -651,7 +858,8 @@ def build_all():
     for eid_, date, pi, n, wi, iss in meta:
         e = _ed(wi, eid_)
         txt = " ‖ ".join(a["h"] + " — " + a["body"][0] for a in e["articles"])
-        rows.append([eid_, date, pi, n, wi, txt])
+        cov = "ecosystem" if date >= ECO_START.isoformat() else "fiction-archive"
+        rows.append([eid_, date, pi, n, wi, txt, cov])
         for a in e["articles"]:
             arows.append([a["id"], eid_, pi, date, a["sec"], wi])
     with gzip.open(os.path.join(IDX, "editions.idx.json.gz"), "wt", encoding="utf-8") as f:
@@ -683,14 +891,15 @@ def build_all():
             "creation_mode": "GENERATED", "version": "1.0",
             "fictionality_status": record_std.FICTIONALITY,
             "canonical_url": SITE + "?paper=" + p["paper_id"],
-            "created": p["founded"], "updated": datetime.date.today().isoformat(),
+            "created": p["founded"], "updated": local_today().isoformat(),
         })
         regions.append({
             "region_id": p["region_id"], "name": p["region"],
             "papers": [p["paper_id"]],
             "fictionality_status": record_std.FICTIONALITY,
-            "note": ("Fictional Signature-world region. Geography beyond the name is "
-                     "not defined in the archive; no real-world place is implied."),
+            "note": ("News desk beat, not a place: this paper covers one beat of "
+                     "the Signature website network (catalogs, AI, builders, "
+                     "culture, markets) plus the flagship all-network edition."),
         })
     with open(os.path.join(IDX, "papers.json"), "w", encoding="utf-8") as f:
         json.dump(papers, f, indent=1, ensure_ascii=False)
@@ -710,7 +919,7 @@ def build_all():
                     h.update(b)
             hashes[fn] = h.hexdigest()
     with open(os.path.join(IDX, "hash-manifest.json"), "w", encoding="utf-8") as f:
-        json.dump({"generated": datetime.date.today().isoformat(), "algorithm": "SHA-256",
+        json.dump({"generated": local_today().isoformat(), "algorithm": "SHA-256",
                    "files": hashes}, f, indent=1)
     # --- sitemap.xml ---
     urls = [SITE] + [SITE + "?edition=" + eid_ for eid_, _, _, _, _, _ in meta]
@@ -728,15 +937,16 @@ def build_all():
         "site": "The Signature Global Newspaper Archive",
         "site_url": SITE,
         "title_provisional": True,
-        "description": ("Original generated newspapers of the Signature world: daily editions "
-                        "from six regional papers across past dates, updated daily. All people, "
-                        "places, and events are invented; no real-world news."),
-        "updated": datetime.date.today().isoformat(),
+        "description": ("Real Signature-ecosystem news: daily editions from six papers "
+                        "covering the 27-website Signature network — drip milestones, fixes shipped, "
+                        "launches and records, verified from the sites' own data. "
+                        "Editions before 2026-09-28 are retired Signature-world fiction, clearly labeled."),
+        "updated": local_today().isoformat(),
         "counts": {"editions": n_ed, "articles": n_art,
                    "papers": len(PAPERS), "regions": len(PAPERS)},
         "schema_version": record_std.SCHEMA_VERSION,
-        "catalog_version": datetime.date.today().isoformat(),
-        "archive_version": datetime.date.today().isoformat(),
+        "catalog_version": local_today().isoformat(),
+        "archive_version": local_today().isoformat(),
         "papers": [{"paper_id": p["paper_id"], "name": p["name"],
                     "region_id": p["region_id"], "region": p["region"],
                     "tagline": p["tagline"], "founded": p["founded"]} for p in record_std.PAPERS],
@@ -759,7 +969,10 @@ def build_all():
         "feed": "data/index/newspapers-catalog.json",
         "sitemap_index": "sitemap-index.xml",
         "static_archive": "archive/index.html",
-        "honesty": HONESTY,
+        "honesty": ("Two-era archive. New editions (2026-09-28 onward) report real events from "
+                    "the 27-website Signature network, verified from the sites' own data. Earlier "
+                    "editions are retired Signature-world fiction, clearly labeled. "
+                    "No real-world news, no real persons named."),
         "fictionality_status": record_std.FICTIONALITY,
     }
     with open(os.path.join(ROOT, "api.json"), "w") as f:
@@ -772,7 +985,7 @@ def build_all():
         "site_id": "SIGNATURE-GLOBAL-NEWSPAPER-ARCHIVE",
         "site_name": "The Signature Global Newspaper Archive",
         "site_version": "1.0",
-        "archive_version": datetime.date.today().isoformat(),
+        "archive_version": local_today().isoformat(),
         "total_editions": n_ed, "total_articles": n_art,
         "total_papers": 6, "total_regions": 6, "total_entities": len(ents),
         "earliest_date": dates[0] if dates else None,
@@ -783,12 +996,15 @@ def build_all():
         "index_hash": hashes.get("editions.idx.json.gz"),
         "generator_version": "code/gen_editions.py (SALT 20261002)",
         "fictionality_status": record_std.FICTIONALITY,
-        "fictionality_note": ("Every record in this archive is an original generated newspaper of "
-            "the fictional Signature world. All people, places, teams, organizations and events "
-            "are invented. It reports no real-world news and names no real persons."),
+        "fictionality_note": ("Two-era archive. Editions dated 2026-09-28 onward carry "
+            "ECOSYSTEM_REPORTED: real news from the 27-website Signature network, every "
+            "story grounded in the sites' own data. Editions before 2026-09-28 carry "
+            "FICTIONAL_GENERATED: retired Signature-world fiction — invented people, "
+            "places and events — kept in the archive and clearly labeled, never "
+            "presented as fact. No real-world news, no real persons named."),
         "license": "Original Signature-generated content. Read, copy and download freely from this archive.",
         "created": "2025-10-03",
-        "updated": datetime.date.today().isoformat(),
+        "updated": local_today().isoformat(),
         "canonical_url": SITE,
         "records": {"edition_id": "JAH-ED-######", "article_id": "JAH-ARTICLE-######",
                     "paper_id": "JAH-PAPER-######", "region_id": "JAH-REGION-######",
@@ -841,7 +1057,7 @@ def build_all():
 
 def cmd_backfill(days=365):
     state = load_state()
-    today = datetime.date.today()
+    today = local_today()
     start = today - datetime.timedelta(days=days)
     if start < EPOCH_START:
         start = EPOCH_START
@@ -858,7 +1074,7 @@ def cmd_backfill(days=365):
 
 def cmd_daily():
     state = load_state()
-    today = datetime.date.today()
+    today = local_today()
     if state.get("last_date") == today.isoformat():
         print("daily: today's editions already on file; nothing to do")
         return
@@ -873,6 +1089,8 @@ if __name__ == "__main__":
     ap.add_argument("--days", type=int, default=365)
     ap.add_argument("--daily", action="store_true")
     ap.add_argument("--rebuild", action="store_true")
+    ap.add_argument("--eco-rebuild", action="store_true",
+                    help="replace ECO_START..today editions with real-ecosystem editions, then rebuild")
     a = ap.parse_args()
     if a.backfill:
         cmd_backfill(a.days)
@@ -880,5 +1098,7 @@ if __name__ == "__main__":
         cmd_daily()
     elif a.rebuild:
         build_all()
+    elif a.eco_rebuild:
+        cmd_eco_rebuild()
     else:
         ap.print_help()

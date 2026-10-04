@@ -1,56 +1,56 @@
 [
  {
   "region_id": "JAH-REGION-000001",
-  "name": "the Signature world",
+  "name": "the Signature ecosystem",
   "papers": [
    "JAH-PAPER-000001"
   ],
   "fictionality_status": "FICTIONAL_GENERATED",
-  "note": "Fictional Signature-world region. Geography beyond the name is not defined in the archive; no real-world place is implied."
+  "note": "News desk beat, not a place: this paper covers one beat of the Signature website network (catalogs, AI, builders, culture, markets) plus the flagship all-network edition."
  },
  {
   "region_id": "JAH-REGION-000002",
-  "name": "Meridia",
+  "name": "Catalogs & Records",
   "papers": [
    "JAH-PAPER-000002"
   ],
   "fictionality_status": "FICTIONAL_GENERATED",
-  "note": "Fictional Signature-world region. Geography beyond the name is not defined in the archive; no real-world place is implied."
+  "note": "News desk beat, not a place: this paper covers one beat of the Signature website network (catalogs, AI, builders, culture, markets) plus the flagship all-network edition."
  },
  {
   "region_id": "JAH-REGION-000003",
-  "name": "Argentia",
+  "name": "AI & Systems",
   "papers": [
    "JAH-PAPER-000003"
   ],
   "fictionality_status": "FICTIONAL_GENERATED",
-  "note": "Fictional Signature-world region. Geography beyond the name is not defined in the archive; no real-world place is implied."
+  "note": "News desk beat, not a place: this paper covers one beat of the Signature website network (catalogs, AI, builders, culture, markets) plus the flagship all-network edition."
  },
  {
   "region_id": "JAH-REGION-000004",
-  "name": "Borealia",
+  "name": "Builders & Labs",
   "papers": [
    "JAH-PAPER-000004"
   ],
   "fictionality_status": "FICTIONAL_GENERATED",
-  "note": "Fictional Signature-world region. Geography beyond the name is not defined in the archive; no real-world place is implied."
+  "note": "News desk beat, not a place: this paper covers one beat of the Signature website network (catalogs, AI, builders, culture, markets) plus the flagship all-network edition."
  },
  {
   "region_id": "JAH-REGION-000005",
-  "name": "Solara",
+  "name": "Library & Culture",
   "papers": [
    "JAH-PAPER-000005"
   ],
   "fictionality_status": "FICTIONAL_GENERATED",
-  "note": "Fictional Signature-world region. Geography beyond the name is not defined in the archive; no real-world place is implied."
+  "note": "News desk beat, not a place: this paper covers one beat of the Signature website network (catalogs, AI, builders, culture, markets) plus the flagship all-network edition."
  },
  {
   "region_id": "JAH-REGION-000006",
-  "name": "Pelagia",
+  "name": "Markets",
   "papers": [
    "JAH-PAPER-000006"
   ],
   "fictionality_status": "FICTIONAL_GENERATED",
-  "note": "Fictional Signature-world region. Geography beyond the name is not defined in the archive; no real-world place is implied."
+  "note": "News desk beat, not a place: this paper covers one beat of the Signature website network (catalogs, AI, builders, culture, markets) plus the flagship all-network edition."
  }
 ]

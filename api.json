@@ -2,11 +2,11 @@
  "site": "The Signature Global Newspaper Archive",
  "site_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/",
  "title_provisional": true,
- "description": "Original generated newspapers of the Signature world: daily editions from six regional papers across past dates, updated daily. All people, places, and events are invented; no real-world news.",
+ "description": "Real Signature-ecosystem news: daily editions from six papers covering the 27-website Signature network \u2014 drip milestones, fixes shipped, launches and records, verified from the sites' own data. Editions before 2026-09-28 are retired Signature-world fiction, clearly labeled.",
  "updated": "2026-10-03",
  "counts": {
-  "editions": 2190,
-  "articles": 13140,
+  "editions": 2196,
+  "articles": 13176,
   "papers": 6,
   "regions": 6
  },
@@ -18,48 +18,48 @@
    "paper_id": "JAH-PAPER-000001",
    "name": "The Signature Daily Globe",
    "region_id": "JAH-REGION-000001",
-   "region": "the Signature world",
-   "tagline": "All the world's Signature news, every morning",
+   "region": "the Signature ecosystem",
+   "tagline": "All the ecosystem's news, every morning",
    "founded": "2024-01-15"
   },
   {
    "paper_id": "JAH-PAPER-000002",
    "name": "The Meridian Herald",
    "region_id": "JAH-REGION-000002",
-   "region": "Meridia",
-   "tagline": "Meridia's morning voice since the first printing",
+   "region": "Catalogs & Records",
+   "tagline": "Patents, specs, wikis and dossiers, reported daily",
    "founded": "2024-02-01"
   },
   {
    "paper_id": "JAH-PAPER-000003",
    "name": "The Argent Post",
    "region_id": "JAH-REGION-000003",
-   "region": "Argentia",
-   "tagline": "Argentia, reported straight",
+   "region": "AI & Systems",
+   "tagline": "The AI fleet: models, phones, robots and systems",
    "founded": "2024-03-10"
   },
   {
    "paper_id": "JAH-PAPER-000004",
    "name": "The Northlight Times",
    "region_id": "JAH-REGION-000004",
-   "region": "Borealia",
-   "tagline": "News from under the northern lights",
+   "region": "Builders & Labs",
+   "tagline": "Generators, chips, apps, experiments and fixes",
    "founded": "2024-04-22"
   },
   {
    "paper_id": "JAH-PAPER-000005",
    "name": "The Sunspire Gazette",
    "region_id": "JAH-REGION-000005",
-   "region": "Solara",
-   "tagline": "Solara's sunlit record of the day",
+   "region": "Library & Culture",
+   "tagline": "Books, comics, music, images and learning",
    "founded": "2024-06-05"
   },
   {
    "paper_id": "JAH-PAPER-000006",
    "name": "The Tidewater Chronicle",
    "region_id": "JAH-REGION-000006",
-   "region": "Pelagia",
-   "tagline": "Pelagia's paper of record, tide in tide out",
+   "region": "Markets",
+   "tagline": "The mega-malls, where the ecosystem shops",
    "founded": "2024-07-19"
   }
  ],
@@ -78,15 +78,15 @@
   "editions": "data/index/editions.idx.json",
   "articles_gz": "data/index/articles.idx.json.gz",
   "articles": "data/index/articles.idx.json",
+  "articles_search_gz": "data/index/articles.search.json.gz",
+  "articles_search": "data/index/articles.search.json",
   "entities_gz": "data/index/entities.idx.json.gz",
   "entities": "data/index/entities.idx.json",
-  "hash_manifest": "data/index/hash-manifest.json",
-  "articles_search_gz": "data/index/articles.search.json.gz",
-  "articles_search": "data/index/articles.search.json"
+  "hash_manifest": "data/index/hash-manifest.json"
  },
  "feed": "data/index/newspapers-catalog.json",
  "sitemap_index": "sitemap-index.xml",
  "static_archive": "archive/index.html",
- "honesty": "Signature press: this edition is an original generated newspaper of the Signature world. All people, places, teams, organizations, and events named herein are invented. It reports no real-world news and names no real persons.",
+ "honesty": "Two-era archive. New editions (2026-09-28 onward) report real events from the 27-website Signature network, verified from the sites' own data. Earlier editions are retired Signature-world fiction, clearly labeled. No real-world news, no real persons named.",
  "fictionality_status": "FICTIONAL_GENERATED"
 }

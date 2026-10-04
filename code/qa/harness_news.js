@@ -132,13 +132,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   const IDX = sandbox.IDX;
 
   /* ---- 3/4. boot: loading->ready ---- */
-  eq("boot loaded edition index", Array.isArray(IDX) && IDX.length, 2190);
-  (S("stats").includes("2,190") && S("stats").includes("editions on file")) ? ok("stat chips rendered live (2,190 editions)") : bad("stat chips", S("stats").slice(0, 120));
+  eq("boot loaded edition index", Array.isArray(IDX) && IDX.length, apiData.counts.editions);
+  (S("stats").includes(apiData.counts.editions.toLocaleString()) && S("stats").includes("editions on file")) ? ok("stat chips rendered live ("+apiData.counts.editions+" editions)") : bad("stat chips", S("stats").slice(0, 120));
   (!S("stats").includes("…")) ? ok("no bare … chip after boot") : bad("bare … chip persists", "");
   const todayCards = (S("today").match(/class="card"/g) || []).length;
   eq("today's editions: 6 cards", todayCards, 6);
   (S("today").includes("October 3, 2026")) ? ok("today's editions dated October 3, 2026") : bad("today date", S("today").slice(0, 80));
-  (S("today").includes("ficmini") && S("today").includes("Fictional Signature world")) ? ok("cards carry fictionality label") : bad("card fictionality", "");
+  (S("today").includes("ficmini") && S("today").includes("Signature ecosystem news")) ? ok("today cards carry ecosystem label") : bad("card ecosystem label", "");
 
   /* ---- 6. six papers ---- */
   const popts=[...new Set(els["paper"].children.map(o=>o.textContent))];
@@ -170,7 +170,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
   /* ---- 7. Latest ---- */
   vm.runInContext("goLatest()", sandbox);
-  (sandbox.grid.length === 2190) ? ok("Latest resets grid to all 2190") : bad("Latest", "grid=" + sandbox.grid.length);
+  (sandbox.grid.length === apiData.counts.editions) ? ok("Latest resets grid to all "+apiData.counts.editions) : bad("Latest", "grid=" + sandbox.grid.length);
 
   /* ---- 8. Load More ---- */
   const before = sandbox.shown;
@@ -180,7 +180,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   /* ---- 10. article-body search ---- */
   await vm.runInContext("loadBodyIdx()", sandbox);
   const BODY = sandbox.BODY_IDX;
-  eq("body index loaded", BODY.length, 13140);
+  eq("body index loaded", BODY.length, apiData.counts.articles);
   // find a body-only word: word in body text but not in its headline
   let probe = null;
   for (const a of BODY) {
@@ -213,7 +213,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await vm.runInContext('openEdition("JAH-ED-002190")', sandbox);
   const ev = S("edview");
   (ev.includes('class="sheet"') && ev.includes("JAH-ED-002190") && ev.includes("Tidewater Chronicle")) ? ok("?edition= opens dedicated edition view") : bad("edition view", ev.slice(0, 120));
-  (ev.includes("ficlabel") && ev.includes("Fictional Signature world") && ev.includes("GENERATED")) ? ok("edition view fictionality labels") : bad("edition fictionality", "");
+  (ev.includes("ficlabel") && ev.includes("Signature ecosystem news") && ev.includes("GENERATED")) ? ok("edition view ecosystem labels (JAH-ED-002190)") : bad("edition ecosystem labels", "");
   (ev.includes("Ask about this edition") && ev.includes("qachips")) ? ok("edition view has Ask-AI") : bad("edition Ask-AI block", "");
   (ev.includes("Read edition aloud") && ev.includes("Copy edition") && ev.includes("Download .txt") && ev.includes("Download .json")) ? ok("edition actions present") : bad("edition actions", "");
   (sandbox.document.title.includes("JAH-ED-002190")) ? ok("document.title set for deep link") : bad("deep-link title", sandbox.document.title);
@@ -231,7 +231,10 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
   /* ---- edition text / fictionality in downloads ---- */
   const et = vm.runInContext('editionText(curEdition)', sandbox);
-  (et.startsWith("FICTIONAL SIGNATURE WORLD") && et.includes("FICTIONAL SIGNATURE WORLD — NOT REAL-WORLD NEWS.")) ? ok("editionText() fictionality headers/footers") : bad("editionText fictionality", et.slice(0, 60));
+  (et.startsWith("FICTIONAL SIGNATURE WORLD") && et.includes("FICTIONAL SIGNATURE WORLD — NOT REAL-WORLD NEWS.")) ? ok("editionText() fiction headers (JAH-ED-000001)") : bad("editionText fiction", et.slice(0, 60));
+  await vm.runInContext('openEdition("JAH-ED-002190")', sandbox);
+  const et2 = vm.runInContext('editionText(curEdition)', sandbox);
+  (et2.startsWith("SIGNATURE ECOSYSTEM NEWS") && et2.includes("SIGNATURE ECOSYSTEM NEWS — REAL EVENTS.")) ? ok("editionText() ecosystem headers (JAH-ED-002190)") : bad("editionText ecosystem", et2.slice(0, 60));
 
   /* ---- 15/16/17. read-aloud queue build, copy text, download blobs ---- */
   const chunks = vm.runInContext('rdChunks(editionText(curEdition),400)', sandbox);
@@ -261,13 +264,18 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   qalogMsgs.length = 0;
   els["qin"].value = "is this real news?";
   vm.runInContext('qaAsk(curEdition)', sandbox);
-  (qalogMsgs[1] && qalogMsgs[1].html.includes("none of it is real-world news")) ? ok("Ask-AI fictionality honesty") : bad("Ask-AI fictionality", "");
+  (qalogMsgs[1] && qalogMsgs[1].html.includes("retired fiction editions")) ? ok("Ask-AI fiction-era honesty") : bad("Ask-AI fiction honesty", "");
+  await vm.runInContext('openEdition("JAH-ED-002190")', sandbox);
+  qalogMsgs.length = 0;
+  els["qin"].value = "is this real news?";
+  vm.runInContext('qaAsk(curEdition)', sandbox);
+  (qalogMsgs[1] && qalogMsgs[1].html.includes("yes, this edition is real news")) ? ok("Ask-AI ecosystem honesty") : bad("Ask-AI ecosystem honesty", "");
 
   /* ---- verify view: real SHA-256 recompute ---- */
   await vm.runInContext('openVerify("JAH-ED-002185")', sandbox);
   const vv = S("edview");
   (vv.includes("HASH MATCHES") && vv.includes("Recomputed SHA-256")) ? ok("?verify= recomputes SHA-256, hash matches") : bad("verify view", vv.slice(0, 150));
-  (vv.includes("Fictional Signature world")) ? ok("verify view fictionality label") : bad("verify fictionality", "");
+  (vv.includes("ECOSYSTEM_REPORTED") && vv.includes("Signature ecosystem news")) ? ok("verify view ecosystem label") : bad("verify ecosystem", "");
 
   /* ---- entity view ---- */
   await vm.runInContext('openEntity("JAH-ENTITY-000001")', sandbox);
@@ -301,8 +309,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     ? ok("raw HTML: search-scope select present") : bad("scope select markup", "");
   (html.includes('id="tourcard"') && html.includes('id="guidemodal"'))
     ? ok("raw HTML: tour + guide markup present") : bad("tour/guide markup", "");
-  (html.includes("All editions below are fictional generated Signature-world news"))
-    ? ok("raw HTML: static fictionality line on Fresh-off-the-press") : bad("static fictionality", "");
+  (html.includes("New editions report real Signature-ecosystem events; early archive editions are labeled fiction."))
+    ? ok("raw HTML: static two-era line on Fresh-off-the-press") : bad("static two-era line", "");
 
   console.log("\n==== " + pass + " passed, " + fail + " failed ====");
   process.exit(fail ? 1 : 0);
