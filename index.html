@@ -1010,7 +1010,7 @@ var welcomeReturnFocus=null;
 function welcomeShow(){
   welcomeReturnFocus=document.activeElement;
   $("welcomemodal").classList.add("show");
-  $("welcomegotit").focus();
+  $("welcomegotit").focus({preventScroll:true});
 }
 function welcomeDone(){
   $("welcomemodal").classList.remove("show");
@@ -1035,7 +1035,7 @@ var guideReturnFocus=null;
 function openGuide(){
   guideReturnFocus=document.activeElement;
   $("guidemodal").classList.add("show");
-  $("guideclose").focus();
+  $("guideclose").focus({preventScroll:true});
 }
 function closeGuide(){
   $("guidemodal").classList.remove("show");
