@@ -78,7 +78,7 @@ SITES = [
      "The network's university."),
     ("mall", "The Signature Cyber Mega-Mall", "signature-cyber-mega-mall", "markets", "products",
      "The software mega-mall, '80s-'90s mall experience."),
-    ("print3d", "The Signature 3D Print Depository", "signature-3d-print", "markets", "print designs",
+    ("print3d", "The Signature 3D Print Mega Mall", "signature-3d-print", "markets", "print designs",
      "The tangible wing — 3D-printable keepsake emblems for the records."),
 ]
 
