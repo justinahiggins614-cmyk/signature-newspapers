@@ -651,6 +651,45 @@ def stamp_stats():
     print("stamped stat chips into index.html (%d editions, %d articles)" % (n_ed, n_art))
 
 
+def stamp_browse():
+    """Stamp the real counts + latest editions into browse.html (runs inside
+    build_all, AFTER the new edition flushes — never one run behind).
+    The drip re-stamps every run; browse.html JS overwrites live on boot."""
+    meta = all_editions_meta()
+    n_ed = len(meta)
+    n_art = sum(n for _, _, _, n, _, _ in meta)
+    n_eco = sum(1 for _, d, _, _, _, _ in meta if d >= ECO_START.isoformat())
+    n_fic = n_ed - n_eco
+    latest = max(m[1] for m in meta)
+    todays = [m for m in meta if m[1] == latest][:6]
+    parts = []
+    for eid_, date, pi, n, wi, iss in todays:
+        e = next(x for x in read_chunk(wi) if x["id"] == eid_)
+        heads = "".join("<li>%s</li>" % h for h in
+                        [a["h"].replace("&", "&amp;").replace("<", "&lt;") for a in e["articles"][:3]])
+        parts.append(
+            '<p itemscope itemtype="https://schema.org/NewsArticle"><b><a itemprop="url" href="?edition=%s"><span itemprop="headline">%s</span></a></b> — <time itemprop="datePublished" datetime="%s">%s</time>, Vol. %d Issue %d<ul>%s</ul></p>' %
+            (eid_, PAPERS[pi]["name"], date, date, e["volume"], e["issue"], heads))
+    chips = (
+        '<div class="stat"><b>%s</b><span>editions on file</span></div>'
+        '<div class="stat"><b>%s</b><span>articles printed</span></div>'
+        '<div class="stat"><b>%s</b><span>real-news editions</span></div>'
+        '<div class="stat"><b>%s</b><span>fiction-archive editions</span></div>'
+        % (format(n_ed, ","), format(n_art, ","), format(n_eco, ","), format(n_fic, ",")))
+    p = os.path.join(ROOT, "browse.html")
+    with open(p, encoding="utf-8") as f:
+        src = f.read()
+    start = src.index("<!-- BROWSE-STATS -->") + len("<!-- BROWSE-STATS -->")
+    end = src.index("<!-- /BROWSE-STATS -->")
+    src = src[:start] + "\n" + chips + "\n" + src[end:]
+    start2 = src.index("<!-- BROWSE-LATEST -->") + len("<!-- BROWSE-LATEST -->")
+    end2 = src.index("<!-- /BROWSE-LATEST -->")
+    src = src[:start2] + "\n" + "\n".join(parts) + "\n" + src[end2:]
+    with open(p, "w", encoding="utf-8") as f:
+        f.write(src)
+    print("stamped browse.html (%d editions, %d articles)" % (n_ed, n_art))
+
+
 # ---------------- Site-14 diagnostic: feed, sub-sitemaps, static archive ------
 def build_catalog_feed(meta):
     """data/index/newspapers-catalog.json: standardized machine-readable edition feed."""
@@ -921,8 +960,8 @@ def build_all():
     with open(os.path.join(IDX, "hash-manifest.json"), "w", encoding="utf-8") as f:
         json.dump({"generated": local_today().isoformat(), "algorithm": "SHA-256",
                    "files": hashes}, f, indent=1)
-    # --- sitemap.xml ---
-    urls = [SITE] + [SITE + "?edition=" + eid_ for eid_, _, _, _, _, _ in meta]
+    # --- sitemap.xml (flat: home + catalog browse page + every edition) ---
+    urls = [SITE, SITE + "browse.html"] + [SITE + "?edition=" + eid_ for eid_, _, _, _, _, _ in meta]
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
           '<urlset xmlns="http://www.smaps.org/schemas/sitemap/0.9">'.replace("smaps", "sitemaps")]
     for u in urls:
@@ -956,6 +995,7 @@ def build_all():
             "article": SITE + "?article=JAH-ARTICLE-000001",
             "paper": SITE + "?paper=JAH-PAPER-000001",
             "verify": SITE + "?verify=JAH-ED-000001",
+            "browse": SITE + "browse.html",
         },
         "index": {"editions_gz": "data/index/editions.idx.json.gz",
                   "editions": "data/index/editions.idx.json",
@@ -1041,6 +1081,8 @@ def build_all():
     stamp_static()
     # --- static stat-chip stamp (no bare "…" chips on first paint) ---
     stamp_stats()
+    # --- browse.html catalog stamp (after the flush — never one run behind) ---
+    stamp_browse()
     # --- data size guard ---
     total = sum(os.path.getsize(os.path.join(dp, f))
                 for dp, _, fns in os.walk(DATA) for f in fns)

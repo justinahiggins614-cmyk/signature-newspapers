@@ -149,6 +149,24 @@ if re.search(r"<b>\s*…\s*</b>\s*<span>loading</span>", html):
 else:
     ok("no bare \u2026 loading chips in initial HTML")
 
+# 8b. browse.html catalog page stamped with the real counts (never one run behind)
+bhtml = open(os.path.join(REPO, "browse.html"), encoding="utf-8").read()
+bm = re.search(r"<!-- BROWSE-STATS -->(.*?)<!-- /BROWSE-STATS -->", bhtml, re.S)
+if not bm:
+    fail("browse.html is missing the BROWSE-STATS stamp block")
+else:
+    bstamped = [int(x.replace(",", "")) for x in
+                re.findall(r"<b>([\d,]+)</b><span>(?:editions on file|articles printed)</span>", bm.group(1))]
+    if len(bstamped) != 2 or bstamped[0] != n_ed or bstamped[1] != n_art:
+        fail("BROWSE-STATS counts %s do not match real counts (%d editions, %d articles)"
+             % (bstamped, n_ed, n_art))
+    else:
+        ok("BROWSE-STATS stamped and verified: %d editions, %d articles" % (n_ed, n_art))
+if "editions.idx.json.gz" not in bhtml or "?edition=JAH-ED-" not in bhtml:
+    fail("browse.html is missing the catalog index hook or edition deep links")
+else:
+    ok("browse.html wires the compact edition index + ?edition= deep links")
+
 # 9. article body-search index exists, complete, and matches the article set
 spath = os.path.join(IDX, "articles.search.json.gz")
 if not os.path.exists(spath):
