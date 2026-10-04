@@ -58,7 +58,7 @@ SITES = [
      "Signature-line generators for every field — every output fully solved, no assumptions."),
     ("mixlab", "The Signature AI Mix Lab", "signature-ai-mixlab", "ai", "hybrids",
      "The hybrid forge: mix-and-match Signature AIs."),
-    ("olypics", "AI Olypics", "signature-ai-olypics", "ai", "battles",
+    ("olypics", "AI Olympics", "signature-ai-olypics", "ai", "battles",
      "The battle dome where Signature AIs compete in Olympic-style events."),
     ("chips", "The Signature Computer Chip Maker and Archive", "signature-chip-maker", "builders", "chip designs",
      "Chip designs for any chip type, with full specs and board images."),
