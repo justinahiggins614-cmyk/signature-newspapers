@@ -137,7 +137,10 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   (!S("stats").includes("…")) ? ok("no bare … chip after boot") : bad("bare … chip persists", "");
   const todayCards = (S("today").match(/class="card"/g) || []).length;
   eq("today's editions: 6 cards", todayCards, 6);
-  (S("today").includes("October 3, 2026")) ? ok("today's editions dated October 3, 2026") : bad("today date", S("today").slice(0, 80));
+  const latest = IDX.reduce((m, r) => (r[1] > m ? r[1] : m), "");
+  const M = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const p = latest.split("-"); const expDate = M[+p[1]-1] + " " + (+p[2]) + ", " + p[0];
+  (S("today").includes(expDate)) ? ok("today's editions dated " + expDate) : bad("today date", S("today").slice(0, 80));
   (S("today").includes("ficmini") && S("today").includes("Signature ecosystem news")) ? ok("today cards carry ecosystem label") : bad("card ecosystem label", "");
 
   /* ---- 6. six papers ---- */
@@ -288,14 +291,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   vm.runInContext("renderBootError()", sandbox);
   (S("results").includes("try again") && S("stats").includes("index unavailable")) ? ok("boot error -> explicit message + retry") : bad("boot error UI", "");
 
-  /* ---- tour ---- */
-  (typeof sandbox.tourShow === "function" && typeof sandbox.openGuide === "function") ? ok("tour/guide functions present") : bad("tour fns", "");
-  vm.runInContext("tourShow(2)", sandbox);
-  await sleep(600);
-  (els["tourcard"].classList.contains("show") && els["tourtitle"].textContent === "Search the archive") ? ok("tour step 3 shows with title") : bad("tour step", els["tourtitle"].textContent);
-  (els["q"].classList.contains("tourhl")) ? ok("tour highlights #q") : bad("tour highlight", "");
-  vm.runInContext("tourEnd()", sandbox);
-  (localStore["jah-tour-seen-news"] === "1" && !els["tourcard"].classList.contains("show")) ? ok("tour end persists jah-tour-seen-news") : bad("tour end", "");
+  /* ---- welcome overlay (spotlight tour replaced by centered welcome overlay, commit 7b9f06c) ---- */
+  (typeof sandbox.welcomeShow === "function" && typeof sandbox.welcomeDone === "function" && typeof sandbox.maybeTour === "function" && typeof sandbox.openGuide === "function") ? ok("tour/guide functions present") : bad("tour fns", "");
+  vm.runInContext("welcomeShow()", sandbox);
+  (els["welcomemodal"].classList.contains("show")) ? ok("welcome overlay shows") : bad("welcome show", "");
+  (html.includes('id="welcometitle"') && html.includes("The press room in 4 taps")) ? ok("welcome overlay static markup") : bad("welcome markup", "");
+  vm.runInContext("welcomeDone()", sandbox);
+  (localStore["jah-tour-seen-news"] === "1" && !els["welcomemodal"].classList.contains("show")) ? ok("welcome done persists jah-tour-seen-news") : bad("welcome done", "");
   vm.runInContext("openGuide()", sandbox);
   (els["guidemodal"].classList.contains("show")) ? ok("Guide modal opens") : bad("guide open", "");
   (html.includes('id="guidebox"') && html.includes("Article text") && html.includes("?verify=JAH-ED-002190") && html.includes("jah-tour-seen-news"))
@@ -307,7 +309,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     ? ok("raw HTML: stamped stat chips, no bare … loader") : bad("raw HTML stat chips", "");
   (html.includes('id="qscope"') && html.includes("Article text"))
     ? ok("raw HTML: search-scope select present") : bad("scope select markup", "");
-  (html.includes('id="tourcard"') && html.includes('id="guidemodal"'))
+  (html.includes('id="welcomemodal"') && html.includes('id="guidemodal"'))
     ? ok("raw HTML: tour + guide markup present") : bad("tour/guide markup", "");
   (html.includes("New editions report real Signature-ecosystem events; early archive editions are labeled fiction."))
     ? ok("raw HTML: static two-era line on Fresh-off-the-press") : bad("static two-era line", "");
