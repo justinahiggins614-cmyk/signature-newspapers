@@ -617,6 +617,15 @@
       return 'I only listed ' + list.length + ' things just now — which one did you mean? Name it and I will go deep.';
     }
     var item = list[idx];
+    /* The list came from a duties answer, or the item is one of this AI's
+       own abilities: expand the duty. findSite() must never hijack a duty
+       whose wording happens to match a site ("download links" -> site 19). */
+    var abs = P.abilities || [], isOwn = false, k;
+    for (k = 0; k < abs.length; k++) {
+      var ak = low(cleanAbility(abs[k])).replace(/[.;]+$/, '');
+      if (ak === low(trim(item.label))) { isOwn = true; break; }
+    }
+    if (isOwn || ctx._lastListKind === 'duties') return expandDuty(P, item.label, t);
     var site = findSite(item.label);
     if (site) return siteDeepAnswer(P, site, t);
     return expandDuty(P, item.label, t);
@@ -813,6 +822,7 @@
     this._turns = [];
     this._entities = [];
     this._lastList = null;
+    this._lastListKind = null;
     this._topic = null;
     this._restore();
   }
@@ -841,8 +851,11 @@
     for (i = 0; i < concepts.length; i++)
       this._pushEntity({ kind: 'concept', label: concepts[i], ref: null });
     var list = parseNumberedList(String(aiText));
-    if (list.length >= 2) this._lastList = list;
-    else if (newSiteFromUser) this._lastList = null;
+    if (list.length >= 2) {
+      this._lastList = list;
+      this._lastListKind = /(duties|what do you do|what can you do|your job|your role|your abilit|what are you good at|your purpose)/i.test(String(userText)) ? 'duties' : 'generic';
+    }
+    else if (newSiteFromUser) { this._lastList = null; this._lastListKind = null; }
   };
   ChatSession.prototype.reply = function (text) {
     var raw = trim(s(text));
@@ -857,7 +870,7 @@
   ChatSession.prototype.transcript = function () { return this._turns.slice(); };
   ChatSession.prototype.topic = function () { return this._topic; };
   ChatSession.prototype.reset = function () {
-    this._turns = []; this._entities = []; this._lastList = null; this._topic = null;
+    this._turns = []; this._entities = []; this._lastList = null; this._lastListKind = null; this._topic = null;
     lsDel(this._key);
   };
   ChatSession.prototype._save = function () {
