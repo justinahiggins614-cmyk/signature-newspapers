@@ -837,7 +837,7 @@ def write_week_digest(adir, d0, fn, items, chunk_of):
             "%s"
             "%s<p class=\"back\"><a href=\"%s\">&larr; Back to the Newspaper Archive</a>"
             " &middot; <a href=\"%sarchive/\">All digest weeks</a></p>"
-            "<script>(function () {  var mount = document.querySelector('header .booksearch') ||              document.querySelector('nav.jtabbar') ||              document.querySelector('header nav') ||              document.querySelector('header') ||              document.body;  if (window.JAHProfile && JAHProfile.ui) JAHProfile.ui.renderButton(mount);})();</script></div></body></html>" % (d0, meta_desc % d0, SITE, fn, WEEK_CSS, d0, hon_div,
+            "<script>(function () {  var mount = document.querySelector('header .booksearch') ||              document.querySelector('nav.jtabbar') ||              document.querySelector('header nav') ||              document.querySelector('header') ||              document.body;  if (window.JAHProfile && JAHProfile.ui) JAHProfile.ui.renderButton(mount);})();</script><script>(function () { if (window.JAHProfile && JAHProfile.ui) { var mount = document.querySelector('header') || document.body; JAHProfile.ui.renderGreeting(mount); } })();</script></div></body></html>" % (d0, meta_desc % d0, SITE, fn, WEEK_CSS, d0, hon_div,
                                       "".join(parts), SITE, SITE))
     with open(os.path.join(adir, fn), "w", encoding="utf-8") as f:
         f.write(html)
@@ -874,7 +874,7 @@ def build_static_archive(meta):
         "as such on their pages. No real-world news.</div>"
         "<ul class=\"weeks\">%s</ul>"
         "<p class=\"back\"><a href=\"%s\">&larr; Back to the Newspaper Archive</a></p>"
-        "<script>(function () {  var mount = document.querySelector('header .booksearch') ||              document.querySelector('nav.jtabbar') ||              document.querySelector('header nav') ||              document.querySelector('header') ||              document.body;  if (window.JAHProfile && JAHProfile.ui) JAHProfile.ui.renderButton(mount);})();</script></div></body></html>" % (WEEK_CSS, lis, SITE))
+        "<script>(function () {  var mount = document.querySelector('header .booksearch') ||              document.querySelector('nav.jtabbar') ||              document.querySelector('header nav') ||              document.querySelector('header') ||              document.body;  if (window.JAHProfile && JAHProfile.ui) JAHProfile.ui.renderButton(mount);})();</script><script>(function () { if (window.JAHProfile && JAHProfile.ui) { var mount = document.querySelector('header') || document.body; JAHProfile.ui.renderGreeting(mount); } })();</script></div></body></html>" % (WEEK_CSS, lis, SITE))
     with open(os.path.join(adir, "index.html"), "w", encoding="utf-8") as f:
         f.write(idx_html)
     want = {fn for _, fn, _ in weeks} | {"index.html"}

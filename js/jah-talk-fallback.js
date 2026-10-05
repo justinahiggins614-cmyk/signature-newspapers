@@ -456,8 +456,13 @@
 
   /* ---------- greeting ---------- */
   function greet(P) {
+    /* JAHProfile "Make it mine": when the signed-in user opted in and is in
+       My view, the AI greets them by name. Guarded — without signin.js this
+       behaves exactly as before. */
+    var _jahUN = (typeof JAHProfile !== 'undefined' && JAHProfile && typeof JAHProfile.userName === 'function') ? JAHProfile.userName() : '';
+    var _jahHi = _jahUN ? ('Hey ' + _jahUN + '! ') : 'Hey there! ';
     var openers = [
-      'Hey there! I am ' + P.name + '. ' + purposeLine(P),
+      _jahHi + 'I am ' + P.name + '. ' + purposeLine(P),
       'Hello! ' + P.name + ' here — ' + low(purposeLine(P)),
       'Hi! I am ' + P.name + ', ' + low(purposeLine(P))
     ];
@@ -733,8 +738,10 @@
       ]);
     }
     if (isGreet(t)) {
+      var _jahUN2 = (typeof JAHProfile !== 'undefined' && JAHProfile && typeof JAHProfile.userName === 'function') ? JAHProfile.userName() : '';
+      var _jahHey = _jahUN2 ? ('Hey ' + _jahUN2 + '! ') : 'Hey! ';
       return pickR('hello', [
-        'Hey! Good to hear from you. I am ' + P.name + ' — ' + purposeLine(P) + ' What is on your mind?',
+        _jahHey + 'Good to hear from you. I am ' + P.name + ' — ' + purposeLine(P) + ' What is on your mind?',
         'Hello there! ' + P.name + ' at your service. ' + purposeLine(P),
         'Hi! I am ' + P.name + '. ' + purposeLine(P) + ' Ask me anything, or ask me about my duties.'
       ]);
