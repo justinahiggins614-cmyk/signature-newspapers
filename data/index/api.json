@@ -2,17 +2,17 @@
  "site": "The Signature Global Newspaper Archive",
  "site_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/",
  "title_provisional": true,
- "description": "Real Signature-ecosystem news: daily editions from six papers covering the 27-website Signature network \u2014 drip milestones, fixes shipped, launches and records, verified from the sites' own data. Editions before 2026-09-28 are retired Signature-world fiction, clearly labeled.",
- "updated": "2026-10-04",
+ "description": "Real Signature-ecosystem news: daily editions from six papers covering the 35-website Signature network \u2014 drip milestones, fixes shipped, launches and records, verified from the sites' own data. Editions before 2026-09-28 are retired Signature-world fiction, clearly labeled.",
+ "updated": "2026-10-05",
  "counts": {
-  "editions": 2202,
-  "articles": 13212,
+  "editions": 2208,
+  "articles": 13248,
   "papers": 6,
   "regions": 6
  },
  "schema_version": "JAH-NEWSPAPER-RECORD/1.0",
- "catalog_version": "2026-10-04",
- "archive_version": "2026-10-04",
+ "catalog_version": "2026-10-05",
+ "archive_version": "2026-10-05",
  "papers": [
   {
    "paper_id": "JAH-PAPER-000001",
@@ -65,7 +65,7 @@
  ],
  "date_range": [
   "2025-10-03",
-  "2026-10-04"
+  "2026-10-05"
  ],
  "deep_links": {
   "edition": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?edition=JAH-ED-000001",
@@ -88,6 +88,6 @@
  "feed": "data/index/newspapers-catalog.json",
  "sitemap_index": "sitemap-index.xml",
  "static_archive": "archive/index.html",
- "honesty": "Two-era archive. New editions (2026-09-28 onward) report real events from the 27-website Signature network, verified from the sites' own data. Earlier editions are retired Signature-world fiction, clearly labeled. No real-world news, no real persons named.",
+ "honesty": "Two-era archive. New editions (2026-09-28 onward) report real events from the 35-website Signature network, verified from the sites' own data. Earlier editions are retired Signature-world fiction, clearly labeled. No real-world news, no real persons named.",
  "fictionality_status": "FICTIONAL_GENERATED"
 }

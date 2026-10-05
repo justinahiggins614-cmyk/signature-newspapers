@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
-"""Site-14: real-ecosystem story writer for the newspaper.
+"""Real-ecosystem story writer for the newspaper.
 
-Turns the dated events from eco_events.py into newspaper articles.
+Turns the dated events from real_events.py into newspaper articles.
 Every headline and paragraph is grounded in a real event (a real commit
-subject or a real dated log line). Numbers appear only when extracted
-from the source. No invented quotes, no invented people, no invented
-figures. Drafts are always called drafts — never filed patents.
+subject, a real dated log line, or the real million-mark watch record).
+Numbers appear only when extracted from the source. No invented quotes,
+no invented people, no invented figures. Drafts are always called
+drafts — never filed patents.
+
+MANON'S RULE — PROVABLE, WITH REFERENCES: every article ends with a
+visible "Sources:" line naming the source site and data file behind each
+claim, so any reader can verify every number themselves. No exceptions.
 """
 import re
 
-from eco_events import BEAT_LABEL, SITE_NUMBER
+from real_events import BEAT_LABEL, SITE_COUNT, SITE_NUMBER
 
 BYLINES = {
     "lead": "Signature News Desk",
@@ -22,9 +27,10 @@ BYLINES = {
 }
 
 ECO_HONESTY = ("Signature ecosystem press: this edition reports real events from "
-               "the 27-website Signature network — drip milestones, fixes shipped, "
+               "the %d-website Signature network — drip milestones, fixes shipped, "
                "launches and records, verified against the sites' own data. "
-               "It reports no real-world news and names no real-world persons.")
+               "Every article lists its sources so you can check every claim. "
+               "It reports no real-world news and names no real-world persons." % SITE_COUNT)
 
 
 def _the(site):
@@ -57,13 +63,25 @@ def _clean_subject(subject):
     return s
 
 
+def sources_line(ev):
+    """Visible citation line for the article — every claim traceable."""
+    parts = []
+    for s in ev.get("sources") or []:
+        parts.append("%s (%s)" % (s["label"], s["ref"]))
+    if not parts:
+        parts.append("site records (see the site's own data files)")
+    return "Sources: " + "; ".join(parts) + "."
+
+
 def headline_for(ev):
     site, noun = ev["site_name"], ev["noun"]
     kind = ev["kind"]
     added, total = ev.get("added"), ev.get("total")
     if kind == "launch":
         num = SITE_NUMBER.get(ev["site_key"])
-        return "%s opens its doors%s" % (site, " — site %d of 27" % num if num else "")
+        return "%s opens its doors%s" % (site, " — site %d of %d" % (num, SITE_COUNT) if num else "")
+    if kind == "milestone":
+        return "%s: %s" % (site, _short(_clean_subject(ev["subject"]), 100))
     if kind == "drip":
         if total:
             return "%s breaks its own record: %s %s and counting" % (site, fmt(total), noun)
@@ -82,7 +100,7 @@ def headline_for(ev):
 
 
 def body_for(ev):
-    """3-4 factual paragraphs. Only sourced facts; no invented quotes."""
+    """Factual paragraphs. Only sourced facts; no invented quotes."""
     site, noun, desc = ev["site_name"], ev["noun"], ev["desc"]
     kind = ev["kind"]
     added, total = ev.get("added"), ev.get("total")
@@ -94,7 +112,7 @@ def body_for(ev):
         paras.append(
             "%s launched today%s. %s" % (
                 _The(site),
-                ", joining the Signature network as site %d of 27" % num if num else "",
+                ", joining the Signature network as site %d of %d" % (num, SITE_COUNT) if num else "",
                 desc))
         paras.append(
             "Like every site in the network, it ships with its full apparatus: "
@@ -103,6 +121,15 @@ def body_for(ev):
         paras.append(
             "The launch is one more step in the network's standing order: "
             "expand and expand, with growth always sideways and no data ever cut.")
+    elif kind == "milestone":
+        paras.append(
+            "%s." % _short(ev["subject"], 220))
+        paras.append(
+            "The crossing is counted from the four flagship archives' own "
+            "count files — draft specs, word patents, public patents and "
+            "dossiers — added together, and it is the first time the "
+            "combined total has passed seven figures.")
+        paras.append(desc)
     elif kind == "drip":
         if total and added:
             paras.append(
@@ -153,6 +180,8 @@ def body_for(ev):
         paras.append(
             "The change is live on the site now, one of many the network "
             "ships every day on its march to one million files per archive.")
+    # Manon's rule: visible references on EVERY article, no exceptions.
+    paras.append(sources_line(ev))
     return paras
 
 
@@ -163,16 +192,29 @@ def roundup_article(events, date):
         lines.append("%s — %s." % (ev["site_name"], _short(_clean_subject(ev["subject"]), 120)))
     body = [
         "Beyond the front page, the network kept its usual pace today. "
-        "Here is what else shipped across the 27 sites.",
+        "Here is what else shipped across the %d sites." % SITE_COUNT,
     ] + lines + [
         "Every item above is drawn from the sites' own records for %s — "
         "commits, drip logs and the operations journal." % date.isoformat(),
     ]
+    srcs = []
+    for ev in events[:6]:
+        srcs.extend(ev.get("sources") or [])
+    seen = set()
+    uniq = []
+    for s in srcs:
+        k = (s["label"], s["ref"])
+        if k not in seen:
+            seen.add(k)
+            uniq.append("%s (%s)" % k)
+    body.append("Sources: " + ("; ".join(uniq[:8]) + "." if uniq else "the sites' own records."))
     return {"sec": "network", "h": "Around the network: %s" % date.strftime("%B %d, %Y"),
-            "by": BYLINES["network"], "body": body}
+            "by": BYLINES["network"], "body": body,
+            "sources": srcs}
 
 
 def article_for(ev, sec):
     return {"sec": sec, "h": headline_for(ev),
             "by": BYLINES.get(sec, "Signature News Desk"),
-            "body": body_for(ev)}
+            "body": body_for(ev),
+            "sources": ev.get("sources") or []}

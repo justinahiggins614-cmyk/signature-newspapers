@@ -18,8 +18,8 @@ CONTENT HONESTY, TWO ERAS:
     people, places, teams, and events invented; kept in the archive and
     clearly labeled, never presented as fact.
   * 2026-09-28 onward: real Signature-ecosystem news editions. Every story
-    is grounded in the 27 websites' own data (drip milestones, fixes
-    shipped, launches, records) via code/eco_events.py. Never real-world
+    is grounded in the 35 websites' own data (drip milestones, fixes
+    shipped, launches, records) via code/real_events.py. Never real-world
     news, never real persons' names, drafts never called filed patents.
 
 Layout: weekly gz chunks data/volumes/editions-wNNNNN.jsonl.gz (7 days x 6
@@ -28,7 +28,7 @@ rows: [id, date, paper_idx, n_articles, chunk, headlines+ledes joined, coverage]
 """
 import argparse, gzip, hashlib, json, os, random, re, sys, datetime
 import record_std  # permanent record standard: IDs, hashes, fictionality
-import eco_events
+import real_events as eco_events  # real, sourced events (was eco_events)
 import eco_stories
 
 ECO_START = datetime.date(2026, 9, 28)  # first day of real ecosystem coverage
@@ -814,7 +814,7 @@ def write_week_digest(adir, d0, fn, items, chunk_of):
             '</article>' % (pi, esc_h(p["name"]), fic_label, date, date, e["volume"], e["issue"],
                              eid_, esc_h(e["honesty"]), ld, "".join(arts), SITE, eid_))
     hon_div = ("""<div class="hon"><b>Signature press.</b> Every edition below reports real """
-               """events from the 27-website Signature network &mdash; drip milestones, fixes """
+               """events from the 35-website Signature network &mdash; drip milestones, fixes """
                """shipped, launches and records, verified from the sites' own data.</div>"""
                if eco else
                """<div class="hon"><b>Signature press.</b> Every edition below is a retired """
@@ -822,7 +822,7 @@ def write_week_digest(adir, d0, fn, items, chunk_of):
                """organizations, and events are invented. It reports no real-world news and names """
                """no real persons.</div>""")
     meta_desc = ("Static digest of Signature-ecosystem newspaper editions for the week of %s. "
-                 "Real events from the 27-website network."
+                 "Real events from the 35-website network."
                  if eco else
                  "Static digest of retired Signature-world fiction newspaper editions for the "
                  "week of %s. All people, places, and events are invented.")
@@ -869,7 +869,7 @@ def build_static_archive(meta):
         "<header><h1>The Signature Global Newspaper Archive</h1>"
         "<p>Static press digests &mdash; every edition, plain HTML</p></header>"
         "<div class=\"hon\"><b>Signature press.</b> Editions from 2026-09-28 onward report real "
-        "events from the 27-website Signature network. Earlier editions are retired "
+        "events from the 35-website Signature network. Earlier editions are retired "
         "Signature-world fiction — invented people, places and events — and are labeled "
         "as such on their pages. No real-world news.</div>"
         "<ul class=\"weeks\">%s</ul>"
@@ -977,7 +977,7 @@ def build_all():
         "site_url": SITE,
         "title_provisional": True,
         "description": ("Real Signature-ecosystem news: daily editions from six papers "
-                        "covering the 27-website Signature network — drip milestones, fixes shipped, "
+                        "covering the 35-website Signature network — drip milestones, fixes shipped, "
                         "launches and records, verified from the sites' own data. "
                         "Editions before 2026-09-28 are retired Signature-world fiction, clearly labeled."),
         "updated": local_today().isoformat(),
@@ -1010,7 +1010,7 @@ def build_all():
         "sitemap_index": "sitemap-index.xml",
         "static_archive": "archive/index.html",
         "honesty": ("Two-era archive. New editions (2026-09-28 onward) report real events from "
-                    "the 27-website Signature network, verified from the sites' own data. Earlier "
+                    "the 35-website Signature network, verified from the sites' own data. Earlier "
                     "editions are retired Signature-world fiction, clearly labeled. "
                     "No real-world news, no real persons named."),
         "fictionality_status": record_std.FICTIONALITY,
@@ -1037,7 +1037,7 @@ def build_all():
         "generator_version": "code/gen_editions.py (SALT 20261002)",
         "fictionality_status": record_std.FICTIONALITY,
         "fictionality_note": ("Two-era archive. Editions dated 2026-09-28 onward carry "
-            "ECOSYSTEM_REPORTED: real news from the 27-website Signature network, every "
+            "ECOSYSTEM_REPORTED: real news from the 35-website Signature network, every "
             "story grounded in the sites' own data. Editions before 2026-09-28 carry "
             "FICTIONAL_GENERATED: retired Signature-world fiction — invented people, "
             "places and events — kept in the archive and clearly labeled, never "

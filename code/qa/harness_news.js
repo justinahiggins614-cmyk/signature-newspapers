@@ -77,6 +77,15 @@ const localStorageStub = {
   setItem: (k, v) => { localStore[k] = String(v); },
   removeItem: k => { delete localStore[k]; },
 };
+// PS: the JAHProfile storage wrapper used by index.html's main script block.
+// In a real browser PS is defined by the head <script> (JAHProfile.store when
+// signed in, else localStorage); the harness only loads the main block, so we
+// shim it here with the same get/set/remove surface over the stub above.
+const PSStub = {
+  get: k => localStorageStub.getItem(k),
+  set: (k, v) => localStorageStub.setItem(k, v),
+  remove: k => localStorageStub.removeItem(k),
+};
 const apiData = JSON.parse(fs.readFileSync(path.join(REPO, "data/index/api.json"), "utf8"));
 function gzFileFor(url) {
   const map = {
@@ -94,6 +103,7 @@ const alerts = [];
 const sandbox = {
   console, setTimeout, clearTimeout, setInterval, clearInterval,
   document: documentStub, window: {}, localStorage: localStorageStub,
+  PS: PSStub,
   navigator: {}, location: { search: "", href: "https://x/", pathname: "/", hash: "" },
   scrollTo() {},
   history: { replaceState: (a, b, u) => { sandbox.__lastURL = u; } },
