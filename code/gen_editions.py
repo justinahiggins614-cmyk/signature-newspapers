@@ -826,7 +826,7 @@ def write_week_digest(adir, d0, fn, items, chunk_of):
                  if eco else
                  "Static digest of retired Signature-world fiction newspaper editions for the "
                  "week of %s. All people, places, and events are invented.")
-    html = ("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><script src='../js/signin.js'></script><script>/* JAHProfile storage: signed-out behavior is byte-identical to before; signed-in profiles get per-profile namespaced storage. */var PS = (typeof JAHProfile !== 'undefined') ? JAHProfile.store : localStorage;</script>"
+    html = ("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><script src='../js/signin.js'></script><script src='../js/godmode.js'></script><script>/* JAHProfile storage: signed-out behavior is byte-identical to before; signed-in profiles get per-profile namespaced storage. */var PS = (typeof JAHProfile !== 'undefined') ? JAHProfile.store : localStorage;</script>"
             "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
             "<title>Signature press digest &mdash; week of %s</title>"
             "<meta name=\"description\" content=\"%s\">"
@@ -862,7 +862,7 @@ def build_static_archive(meta):
         write_week_digest(adir, d0, fn, by_week[wi], chunk_of)
     lis = "".join('<li><a href="%s">Week of %s</a> &mdash; %d editions</li>' % (
         fn, d0, len(items)) for d0, fn, items in weeks)
-    idx_html = ("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><script src='../js/signin.js'></script><script>/* JAHProfile storage: signed-out behavior is byte-identical to before; signed-in profiles get per-profile namespaced storage. */var PS = (typeof JAHProfile !== 'undefined') ? JAHProfile.store : localStorage;</script>"
+    idx_html = ("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><script src='../js/signin.js'></script><script src='../js/godmode.js'></script><script>/* JAHProfile storage: signed-out behavior is byte-identical to before; signed-in profiles get per-profile namespaced storage. */var PS = (typeof JAHProfile !== 'undefined') ? JAHProfile.store : localStorage;</script>"
         "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
         "<title>Static press digests &mdash; The Signature Global Newspaper Archive</title>"
         "<style>%s</style></head><body><div class=\"wrap\">"
