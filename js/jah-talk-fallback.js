@@ -882,7 +882,12 @@
     try {
       d = JSON.parse(raw);
       if (!d || !d.turns || !d.turns.length) return;
-      if (d.ts && (Date.now() - d.ts) > 24 * 3600 * 1000) { lsDel(this._key); return; }
+      /* JAHProfile-aware expiry: public keeps 24h, signed-in profiles keep
+         chat memory with no expiry ("train once"). Without signin.js on the
+         page this behaves exactly as before. */
+      var _jahTTL = (typeof JAHProfile !== 'undefined' && JAHProfile && typeof JAHProfile.chatTTL === 'function')
+        ? JAHProfile.chatTTL() : 24 * 3600 * 1000;
+      if (_jahTTL !== Infinity && d.ts && (Date.now() - d.ts) > _jahTTL) { lsDel(this._key); return; }
       this._turns = d.turns.slice(-10);
       for (var i = 0; i + 1 < this._turns.length; i += 2) {
         var u = this._turns[i], a = this._turns[i + 1];

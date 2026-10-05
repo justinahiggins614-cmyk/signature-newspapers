@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>try{if(localStorage.getItem("jah-theme")==="dark"){document.documentElement.dataset.theme="dark"}}catch(e){}</script>
+<script src="js/signin.js"></script>
+<script>/* JAHProfile storage: signed-out behavior is byte-identical to before; signed-in profiles get per-profile namespaced storage. */
+var PS = (typeof JAHProfile !== 'undefined') ? JAHProfile.store : localStorage;</script>
+<script>try{if(PS.get("jah-theme")==="dark"){document.documentElement.dataset.theme="dark"}}catch(e){}</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Signature Global Newspaper Archive — Daily Signature-World Editions</title>
@@ -354,8 +357,8 @@ async function gz(url,ms){var ctl=new AbortController();var to=setTimeout(functi
 /* Site-14 fix wave: index cache (localStorage) with timestamp — fallback when
    the live index cannot be fetched. Never imply cached counts are current. */
 var IDX_CACHE_KEY="jah-news-idx-cache";
-function saveIdxCache(text){try{localStorage.setItem(IDX_CACHE_KEY,JSON.stringify({date:new Date().toISOString(),text:text}))}catch(e){}}
-function loadIdxCache(){try{var c=JSON.parse(localStorage.getItem(IDX_CACHE_KEY)||"null");return (c&&c.text)?c:null}catch(e){return null}}
+function saveIdxCache(text){try{PS.set(IDX_CACHE_KEY,JSON.stringify({date:new Date().toISOString(),text:text}))}catch(e){}}
+function loadIdxCache(){try{var c=JSON.parse(PS.get(IDX_CACHE_KEY)||"null");return (c&&c.text)?c:null}catch(e){return null}}
 function fmtDate(d){var p=d.split("-");var M=["January","February","March","April","May","June","July","August","September","October","November","December"];return M[+p[1]-1]+" "+(+p[2])+", "+p[0]}
 var PAPERS=[], IDX=null, chunkCache={}, curEdition=null, grid=[], shown=0, PAGE=24;
 
@@ -711,10 +714,10 @@ async function openEdition(id){
     function setReading(on){
       var sh=sheet();if(sh)sh.classList.toggle("reading",!!on);
       $("rdmode").textContent=on?"📰 Broadsheet view":"📖 Reading mode";
-      try{localStorage.setItem(KEY,on?"1":"0")}catch(x){}
+      try{PS.set(KEY,on?"1":"0")}catch(x){}
     }
     $("rdmode").onclick=function(){setReading(!sheet().classList.contains("reading"))};
-    try{if(localStorage.getItem(KEY)==="1")setReading(true)}catch(x){}
+    try{if(PS.get(KEY)==="1")setReading(true)}catch(x){}
   })();
   /* Site-14 diagnostic FIX-01: per-edition NewsArticle JSON-LD for AI crawlers */
   (function(){
@@ -943,7 +946,8 @@ function qaAsk(e){
   var t=q.toLowerCase(),p=PAPERS[e.paper]||{name:""};
   var P=editionAIProfile(e),a;
   if(editionConversational(t)&&typeof JAHtalk!=="undefined"){
-    a=esc(JAHtalk.chatFor(P,'ai:'+(P.id||P.name)).reply(q));
+    var _ck=(typeof JAHProfile!=="undefined")?JAHProfile.chatKey('ai:'+(P.id||P.name)):('ai:'+(P.id||P.name));
+    a=esc(JAHtalk.chatFor(P,_ck).reply(q));
   }else{
   function kwHits(kw){
     kw=kw.toLowerCase().split(/\s+/).filter(function(w){return w.length>3});
@@ -993,12 +997,12 @@ function welcomeShow(){
 }
 function welcomeDone(){
   $("welcomemodal").classList.remove("show");
-  try{localStorage.setItem(TOUR_KEY,"1")}catch(e){}
+  try{PS.set(TOUR_KEY,"1")}catch(e){}
   if(welcomeReturnFocus&&welcomeReturnFocus.focus)welcomeReturnFocus.focus();
 }
 function maybeTour(homeView){
   if(!homeView)return;
-  var seen=null;try{seen=localStorage.getItem(TOUR_KEY)}catch(e){seen="1"}
+  var seen=null;try{seen=PS.get(TOUR_KEY)}catch(e){seen="1"}
   if(seen)return;
   setTimeout(welcomeShow,900);
 }
@@ -1116,7 +1120,7 @@ $("rdstop").onclick=rdStop;
 wireUI();
 boot();
 </script>
-<button id="jahThemeBtn" title="Dark mode" aria-label="Toggle dark mode">◐</button><script>(function(){try{var b=document.getElementById("jahThemeBtn");function paint(){b.textContent=document.documentElement.dataset.theme==="dark"?"◑":"◐"}b.onclick=function(){var d=document.documentElement;if(d.dataset.theme==="dark"){d.dataset.theme="";try{localStorage.removeItem("jah-theme")}catch(e){}}else{d.dataset.theme="dark";try{localStorage.setItem("jah-theme","dark")}catch(e){}}paint()};paint()}catch(e){}})();</script>
+<button id="jahThemeBtn" title="Dark mode" aria-label="Toggle dark mode">◐</button><script>(function(){try{var b=document.getElementById("jahThemeBtn");function paint(){b.textContent=document.documentElement.dataset.theme==="dark"?"◑":"◐"}b.onclick=function(){var d=document.documentElement;if(d.dataset.theme==="dark"){d.dataset.theme="";try{PS.remove("jah-theme")}catch(e){}}else{d.dataset.theme="dark";try{PS.set("jah-theme","dark")}catch(e){}}paint()};paint()}catch(e){}})();</script>
 <script>/* jah-session-restore: localStorage only, nothing leaves the device */
 (function(){try{
 var SITE="signews",DEEP=["edition","paper"],path=location.pathname;
@@ -1130,18 +1134,18 @@ var deep=hasDeep();
 var lid=null;(function(){var q=new URLSearchParams(location.search),i;
  for(i=0;i<DEEP.length;i++){var v=q.get(DEEP[i]);if(v){lid=v;break}}
  if(!lid){var m=/[#&?](?:book|issue|course|print|edition|degree|college|paper|series|hero)=([A-Za-z0-9-_.]+)/.exec(location.hash||"");if(m)lid=m[1]}})();
-if(lid){try{localStorage.setItem("jah-last-"+SITE,lid)}catch(e){}}
+if(lid){try{PS.set("jah-last-"+SITE,lid)}catch(e){}}
 document.addEventListener("click",function(e){try{var t=e.target&&e.target.closest?e.target.closest("[data-id]"):null;
- if(t&&t.getAttribute("data-id")){localStorage.setItem("jah-last-"+SITE,t.getAttribute("data-id"));return}
+ if(t&&t.getAttribute("data-id")){PS.set("jah-last-"+SITE,t.getAttribute("data-id"));return}
  var a=e.target&&e.target.closest?e.target.closest("a[href]"):null;
- if(a){var hr=a.getAttribute("href")||"";for(var i=0;i<DEEP.length;i++){var m2=new RegExp("[?&]"+DEEP[i]+"=([A-Za-z0-9-_.]+)").exec(hr);if(m2){localStorage.setItem("jah-last-"+SITE,m2[1]);break}}}}catch(x){}},true);
+ if(a){var hr=a.getAttribute("href")||"";for(var i=0;i<DEEP.length;i++){var m2=new RegExp("[?&]"+DEEP[i]+"=([A-Za-z0-9-_.]+)").exec(hr);if(m2){PS.set("jah-last-"+SITE,m2[1]);break}}}}catch(x){}},true);
 /* (a) scroll save/restore per page path */
 var SK="jah-scroll-"+SITE+"-"+path,st=null;
-window.addEventListener("scroll",function(){clearTimeout(st);st=setTimeout(function(){try{localStorage.setItem(SK,String(window.scrollY))}catch(e){}},400)},{passive:true});
-if(!deep){var sv=null;try{sv=localStorage.getItem(SK)}catch(e){}
+window.addEventListener("scroll",function(){clearTimeout(st);st=setTimeout(function(){try{PS.set(SK,String(window.scrollY))}catch(e){}},400)},{passive:true});
+if(!deep){var sv=null;try{sv=PS.get(SK)}catch(e){}
  if(sv&&+sv>40){requestAnimationFrame(function(){window.scrollTo(0,+sv)})}}
 /* (c2) on listing page, scroll last-opened record into view */
-if(!deep){var rid=null;try{rid=localStorage.getItem("jah-last-"+SITE)}catch(e){}
+if(!deep){var rid=null;try{rid=PS.get("jah-last-"+SITE)}catch(e){}
  if(rid){var sel=document.querySelector('[data-id="'+rid+'"]')||document.querySelector('a[href*="'+rid+'"]');
   if(sel){var r=sel.getBoundingClientRect();
    if(r.top<0||r.bottom>window.innerHeight){setTimeout(function(){sel.scrollIntoView({block:"center"})},600)}}}}
@@ -1149,15 +1153,26 @@ if(!deep){var rid=null;try{rid=localStorage.getItem("jah-last-"+SITE)}catch(e){}
 var TK="jah-tabs-"+SITE+"-"+path;
 document.addEventListener("click",function(e){try{var b=e.target&&e.target.closest?e.target.closest(".tab,[data-tab]"):null;
  if(!b)return;var id=b.getAttribute("data-tab")||b.getAttribute("data-s")||b.id||(b.textContent||"").trim();
- var o={};try{o=JSON.parse(localStorage.getItem(TK)||"{}")}catch(x){}
+ var o={};try{o=JSON.parse(PS.get(TK)||"{}")}catch(x){}
  var c=b.closest(".tabs")||b.parentElement;
  o[c?(c.id||"i"+Array.prototype.indexOf.call((c.parentElement||document.body).children,c)):"x"]=id;
- localStorage.setItem(TK,JSON.stringify(o))}catch(x){}},true);
-if(!deep){(function(){var o=null;try{o=JSON.parse(localStorage.getItem(TK)||"{}")}catch(x){}
+ PS.set(TK,JSON.stringify(o))}catch(x){}},true);
+if(!deep){(function(){var o=null;try{o=JSON.parse(PS.get(TK)||"{}")}catch(x){}
  if(!o)return;Object.keys(o).forEach(function(k){var cont=document.getElementById(k),btn=null;
   if(cont){btn=cont.querySelector('[data-tab="'+o[k]+'"],[data-s="'+o[k]+'"]')}
   else{try{btn=document.querySelector('.tab[id="'+o[k]+'"]')}catch(x){}}
   if(btn&&!btn.classList.contains("on")&&btn.offsetParent!==null){btn.click()}})})()}
 }catch(e){}})();</script>
+<script>
+(function () {
+  /* mount into the header; falls back gracefully when the header markup differs */
+  var mount = document.querySelector('header .booksearch') ||
+              document.querySelector('nav.jtabbar') ||
+              document.querySelector('header nav') ||
+              document.querySelector('header') ||
+              document.body;
+  if (window.JAHProfile && JAHProfile.ui) JAHProfile.ui.renderButton(mount);
+})();
+</script>
 </body>
 </html>

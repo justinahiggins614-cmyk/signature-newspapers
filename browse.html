@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>try{if(localStorage.getItem("jah-theme")==="dark"){document.documentElement.dataset.theme="dark"}}catch(e){}</script>
+<script src="js/signin.js"></script>
+<script>/* JAHProfile storage: signed-out behavior is byte-identical to before; signed-in profiles get per-profile namespaced storage. */
+var PS = (typeof JAHProfile !== 'undefined') ? JAHProfile.store : localStorage;</script>
+<script>try{if(PS.get("jah-theme")==="dark"){document.documentElement.dataset.theme="dark"}}catch(e){}</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Browse the Full Edition Catalog — The Signature Global Newspaper Archive</title>
@@ -622,6 +625,17 @@ function buildArchive(){
   }catch(x){}
 }
 document.addEventListener("DOMContentLoaded",buildArchive);
+})();
+</script>
+<script>
+(function () {
+  /* mount into the header; falls back gracefully when the header markup differs */
+  var mount = document.querySelector('header .booksearch') ||
+              document.querySelector('nav.jtabbar') ||
+              document.querySelector('header nav') ||
+              document.querySelector('header') ||
+              document.body;
+  if (window.JAHProfile && JAHProfile.ui) JAHProfile.ui.renderButton(mount);
 })();
 </script>
 </body>

@@ -826,7 +826,7 @@ def write_week_digest(adir, d0, fn, items, chunk_of):
                  if eco else
                  "Static digest of retired Signature-world fiction newspaper editions for the "
                  "week of %s. All people, places, and events are invented.")
-    html = ("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">"
+    html = ("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><script src='../js/signin.js'></script><script>/* JAHProfile storage: signed-out behavior is byte-identical to before; signed-in profiles get per-profile namespaced storage. */var PS = (typeof JAHProfile !== 'undefined') ? JAHProfile.store : localStorage;</script>"
             "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
             "<title>Signature press digest &mdash; week of %s</title>"
             "<meta name=\"description\" content=\"%s\">"
@@ -837,7 +837,7 @@ def write_week_digest(adir, d0, fn, items, chunk_of):
             "%s"
             "%s<p class=\"back\"><a href=\"%s\">&larr; Back to the Newspaper Archive</a>"
             " &middot; <a href=\"%sarchive/\">All digest weeks</a></p>"
-            "</div></body></html>" % (d0, meta_desc % d0, SITE, fn, WEEK_CSS, d0, hon_div,
+            "<script>(function () {  var mount = document.querySelector('header .booksearch') ||              document.querySelector('nav.jtabbar') ||              document.querySelector('header nav') ||              document.querySelector('header') ||              document.body;  if (window.JAHProfile && JAHProfile.ui) JAHProfile.ui.renderButton(mount);})();</script></div></body></html>" % (d0, meta_desc % d0, SITE, fn, WEEK_CSS, d0, hon_div,
                                       "".join(parts), SITE, SITE))
     with open(os.path.join(adir, fn), "w", encoding="utf-8") as f:
         f.write(html)
@@ -862,7 +862,7 @@ def build_static_archive(meta):
         write_week_digest(adir, d0, fn, by_week[wi], chunk_of)
     lis = "".join('<li><a href="%s">Week of %s</a> &mdash; %d editions</li>' % (
         fn, d0, len(items)) for d0, fn, items in weeks)
-    idx_html = ("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">"
+    idx_html = ("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><script src='../js/signin.js'></script><script>/* JAHProfile storage: signed-out behavior is byte-identical to before; signed-in profiles get per-profile namespaced storage. */var PS = (typeof JAHProfile !== 'undefined') ? JAHProfile.store : localStorage;</script>"
         "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
         "<title>Static press digests &mdash; The Signature Global Newspaper Archive</title>"
         "<style>%s</style></head><body><div class=\"wrap\">"
@@ -874,7 +874,7 @@ def build_static_archive(meta):
         "as such on their pages. No real-world news.</div>"
         "<ul class=\"weeks\">%s</ul>"
         "<p class=\"back\"><a href=\"%s\">&larr; Back to the Newspaper Archive</a></p>"
-        "</div></body></html>" % (WEEK_CSS, lis, SITE))
+        "<script>(function () {  var mount = document.querySelector('header .booksearch') ||              document.querySelector('nav.jtabbar') ||              document.querySelector('header nav') ||              document.querySelector('header') ||              document.body;  if (window.JAHProfile && JAHProfile.ui) JAHProfile.ui.renderButton(mount);})();</script></div></body></html>" % (WEEK_CSS, lis, SITE))
     with open(os.path.join(adir, "index.html"), "w", encoding="utf-8") as f:
         f.write(idx_html)
     want = {fn for _, fn, _ in weeks} | {"index.html"}
