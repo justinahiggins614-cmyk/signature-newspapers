@@ -64,7 +64,7 @@ SITES = [
      "Chip designs for any chip type, with full specs and board images."),
     ("apps", "The Signature App Archive", "signature-app-archive", "builders", "apps",
      "Signature versions of every phone and PC app."),
-    ("robots", "The Signature AI Robot Matcher", "signature-ai-robot-matcher", "ai", "pairs",
+    ("robots", "The Signature AI to Robot Matcher", "signature-ai-robot-matcher", "ai", "pairs",
      "Matches Signature AIs with Signature robot bodies."),
     ("experiments", "The Signature Experiment Solver", "signature-experiment-solver", "builders", "solved experiments",
      "Enter any experiment — the Universal Matrix runs it full-scale."),
