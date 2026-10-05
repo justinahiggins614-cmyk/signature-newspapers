@@ -943,7 +943,7 @@ function qaAsk(e){
   var t=q.toLowerCase(),p=PAPERS[e.paper]||{name:""};
   var P=editionAIProfile(e),a;
   if(editionConversational(t)&&typeof JAHtalk!=="undefined"){
-    a=esc(JAHtalk.reply(P,q));
+    a=esc(JAHtalk.chatFor(P,'ai:'+(P.id||P.name)).reply(q));
   }else{
   function kwHits(kw){
     kw=kw.toLowerCase().split(/\s+/).filter(function(w){return w.length>3});
