@@ -8,16 +8,16 @@
   "description": "All the ecosystem's news, every morning",
   "founded": "2024-01-15",
   "status": "ACTIVE",
-  "edition_count": 368,
+  "edition_count": 369,
   "first_edition": "JAH-ED-000001",
-  "latest_edition": "JAH-ED-002203",
+  "latest_edition": "JAH-ED-002209",
   "editorial_model": "generated-daily",
   "creation_mode": "GENERATED",
   "version": "1.0",
   "fictionality_status": "FICTIONAL_GENERATED",
   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?paper=JAH-PAPER-000001",
   "created": "2024-01-15",
-  "updated": "2026-10-05"
+  "updated": "2026-10-06"
  },
  {
   "paper_id": "JAH-PAPER-000002",
@@ -28,16 +28,16 @@
   "description": "Patents, specs, wikis and dossiers, reported daily",
   "founded": "2024-02-01",
   "status": "ACTIVE",
-  "edition_count": 368,
+  "edition_count": 369,
   "first_edition": "JAH-ED-000002",
-  "latest_edition": "JAH-ED-002204",
+  "latest_edition": "JAH-ED-002210",
   "editorial_model": "generated-daily",
   "creation_mode": "GENERATED",
   "version": "1.0",
   "fictionality_status": "FICTIONAL_GENERATED",
   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?paper=JAH-PAPER-000002",
   "created": "2024-02-01",
-  "updated": "2026-10-05"
+  "updated": "2026-10-06"
  },
  {
   "paper_id": "JAH-PAPER-000003",
@@ -48,16 +48,16 @@
   "description": "The AI fleet: models, phones, robots and systems",
   "founded": "2024-03-10",
   "status": "ACTIVE",
-  "edition_count": 368,
+  "edition_count": 369,
   "first_edition": "JAH-ED-000003",
-  "latest_edition": "JAH-ED-002205",
+  "latest_edition": "JAH-ED-002211",
   "editorial_model": "generated-daily",
   "creation_mode": "GENERATED",
   "version": "1.0",
   "fictionality_status": "FICTIONAL_GENERATED",
   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?paper=JAH-PAPER-000003",
   "created": "2024-03-10",
-  "updated": "2026-10-05"
+  "updated": "2026-10-06"
  },
  {
   "paper_id": "JAH-PAPER-000004",
@@ -68,16 +68,16 @@
   "description": "Generators, chips, apps, experiments and fixes",
   "founded": "2024-04-22",
   "status": "ACTIVE",
-  "edition_count": 368,
+  "edition_count": 369,
   "first_edition": "JAH-ED-000004",
-  "latest_edition": "JAH-ED-002206",
+  "latest_edition": "JAH-ED-002212",
   "editorial_model": "generated-daily",
   "creation_mode": "GENERATED",
   "version": "1.0",
   "fictionality_status": "FICTIONAL_GENERATED",
   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?paper=JAH-PAPER-000004",
   "created": "2024-04-22",
-  "updated": "2026-10-05"
+  "updated": "2026-10-06"
  },
  {
   "paper_id": "JAH-PAPER-000005",
@@ -88,16 +88,16 @@
   "description": "Books, comics, music, images and learning",
   "founded": "2024-06-05",
   "status": "ACTIVE",
-  "edition_count": 368,
+  "edition_count": 369,
   "first_edition": "JAH-ED-000005",
-  "latest_edition": "JAH-ED-002207",
+  "latest_edition": "JAH-ED-002213",
   "editorial_model": "generated-daily",
   "creation_mode": "GENERATED",
   "version": "1.0",
   "fictionality_status": "FICTIONAL_GENERATED",
   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?paper=JAH-PAPER-000005",
   "created": "2024-06-05",
-  "updated": "2026-10-05"
+  "updated": "2026-10-06"
  },
  {
   "paper_id": "JAH-PAPER-000006",
@@ -108,15 +108,15 @@
   "description": "The mega-malls, where the ecosystem shops",
   "founded": "2024-07-19",
   "status": "ACTIVE",
-  "edition_count": 368,
+  "edition_count": 369,
   "first_edition": "JAH-ED-000006",
-  "latest_edition": "JAH-ED-002208",
+  "latest_edition": "JAH-ED-002214",
   "editorial_model": "generated-daily",
   "creation_mode": "GENERATED",
   "version": "1.0",
   "fictionality_status": "FICTIONAL_GENERATED",
   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?paper=JAH-PAPER-000006",
   "created": "2024-07-19",
-  "updated": "2026-10-05"
+  "updated": "2026-10-06"
  }
 ]
