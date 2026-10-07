@@ -326,21 +326,31 @@ var plain="Best of the Best — The Tidewater Chronicle, October 4th 2026, Volum
 var dl="THE SIGNATURE GLOBAL NEWSPAPER ARCHIVE — BEST OF THE BEST\nThe Tidewater Chronicle — 2026-10-04 — Vol. 3 Issue 808 — JAH-ED-002202 (edition 2,202 of 2,202)\n\nWHY THIS IS THE BEST\nToday's front page: the newest edition on file, reporting real Signature-ecosystem events as they happened — verified from the sites' own data.\n\nHEADLINES\n- The Signature 3D Print Depository fix ships: replace spotlight tour with centered welcome overlay\n- The Signature 3D Print Depository: hero banner at top, THE JAH NETWORK list moved above footer\n- The Signature Cyber Mega-Mall: Product Archive A-Z with lazy department shelves\n- Plus 3 more articles in the full edition.\n\nIMPLICATIONS\nThis paper reports only real Signature-ecosystem news. No real-world news, no real persons, never invented.\n\nFull edition: https://justinahiggins614-cmyk.github.io/signature-newspapers/?edition=JAH-ED-002202";
 function copyText(t,btn){function done(ok){var o=btn.textContent;btn.textContent=ok?"Copied ✓":"Copy failed";setTimeout(function(){btn.textContent=o;},1500);}if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){done(true);},function(){done(false);});}else{var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done(true);}catch(e){done(false);}document.body.removeChild(ta);}}
 function download(name,text){try{var url=URL.createObjectURL(new Blob([text],{type:"text/plain"}));var a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);try{URL.revokeObjectURL(url);}catch(e){}},800);}catch(e){}}
-var speakTimer=null;
-function speakStop(){try{if(window.speechSynthesis)window.speechSynthesis.cancel();}catch(e){}if(speakTimer){clearTimeout(speakTimer);speakTimer=null;}}
+var speakTimer=null, speakAudio=null;
+var TTS_URLS_BEST=[
+ function(t){return "https://code.responsivevoice.org/getvoice.php?t="+encodeURIComponent(t)+"&tl=en-US&sv=g2&vn=&pitch=0.5&rate=0.95";},
+ function(t){return "https://translate.google.com/translate_tts?ie=UTF-8&q="+encodeURIComponent(t)+"&tl=en&client=tw-ob";},
+ function(t){return "https://translate.googleapis.com/translate_tts?ie=UTF-8&q="+encodeURIComponent(t)+"&tl=en&client=tw-ob";}];
+function speakStop(){if(speakAudio){try{speakAudio.pause();}catch(e){}speakAudio=null;}if(speakTimer){clearTimeout(speakTimer);speakTimer=null;}var b=document.getElementById("best-speak");if(b)b.textContent="\uD83D\uDD0A Read aloud";}
 var speakBtn=document.getElementById("best-speak");
 speakBtn.onclick=function(){
-  speakStop();
-  try{
-    if(!("speechSynthesis" in window)){speakBtn.textContent="No voice on this device";setTimeout(function(){speakBtn.textContent="🔊 Read aloud";},1800);return;}
-    if(window.speechSynthesis.speaking){speakBtn.textContent="🔊 Read aloud";return;}
-    var u=new SpeechSynthesisUtterance(plain);
-    speakBtn.textContent="⏹ Stop";
-    u.onend=function(){speakBtn.textContent="🔊 Read aloud";};
-    u.onerror=function(){speakBtn.textContent="🔊 Read aloud";};
-    window.speechSynthesis.speak(u);
-    speakTimer=setTimeout(function(){speakBtn.textContent="🔊 Read aloud";},30000);
-  }catch(e){speakBtn.textContent="🔊 Read aloud";}
+  if(speakAudio){speakStop();return;}
+  speakBtn.textContent="\u23F9 Stop";
+  var chunks=[],cur="",parts=String(plain).split(/(?<=[.!?])\s+/);
+  parts.forEach(function(s){if((cur+" "+s).length>170){if(cur)chunks.push(cur);cur=s;}else cur=(cur?cur+" ":"")+s;});
+  if(cur)chunks.push(cur);chunks=chunks.slice(0,40);
+  var i=0;
+  (function audioChunk(tier){
+    if(i>=chunks.length){speakStop();return;}
+    if(tier>=TTS_URLS_BEST.length){i++;audioChunk(0);return;}
+    try{
+      var a=new Audio(TTS_URLS_BEST[tier](chunks[i]));speakAudio=a;
+      a.onended=function(){if(speakAudio===a)speakAudio=null;i++;audioChunk(0);};
+      a.onerror=function(){if(speakAudio===a)speakAudio=null;audioChunk(tier+1);};
+      var pr=a.play();if(pr&&pr.catch)pr.catch(function(){if(speakAudio===a)speakAudio=null;audioChunk(tier+1);});
+    }catch(e){audioChunk(tier+1);}
+  })(0);
+  speakTimer=setTimeout(function(){speakStop();},120000);
 };
 document.getElementById("best-copy").onclick=function(){copyText(dl,this);};
 document.getElementById("best-dl").onclick=function(){download("JAH-ED-002202-best.txt",dl);};

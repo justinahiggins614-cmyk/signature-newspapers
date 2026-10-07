@@ -197,7 +197,7 @@ img[width][height]{aspect-ratio:attr(width)/attr(height)}
 
 <div id="home">
 <header class="hero wrap">
-<div class="jnkicker" id="jnkicker">SITE 13 OF 35 · THE JAH NETWORK</div>
+<div class="jnkicker" id="jnkicker">SITE 13 OF 37 · THE JAH NETWORK</div>
 <h1 class="masthead"><span class="sig">The Signature</span> Global Newspaper Archive</h1>
 <div class="dateline">Daily editions from six regional papers of the Signature world · past dates on file · new editions every morning</div>
 <div style="display:flex;flex-direction:column;gap:10px;margin:12px 0 4px;max-width:480px"><a class="btn red" href="browse.html" style="text-decoration:none;font-size:1.05em;padding:12px 22px;text-align:center;display:block">📰 Browse the full edition catalog →</a><a class="btn ghost" href="browse.html#az" style="text-decoration:none;font-size:1.05em;padding:12px 22px;text-align:center;display:block">🗂 Browse all editions A–Z</a></div>
@@ -574,6 +574,7 @@ function goLatest(){
    edition…". Parse line-by-line inside try/catch; a corrupt chunk yields an
    honest error object instead of an unhandled rejection. */
 async function getEdition(id){
+  if(!IDX||!IDX.length)return null;
   var row=IDX.find(function(r){return r[0]===id});
   if(!row)return null;
   var wi=row[4],wname=String(wi).padStart(5,"0");
@@ -627,8 +628,8 @@ function wireEdPanel(e,wi){
       if(a==="open"){location.href=deep;}
       else if(a==="src"){if(!panel.querySelector(".srcnote")){var sn=document.createElement("span");sn.className="srcnote";sn.style.color="var(--mut)";sn.textContent="Source: Newspaper Archive catalog · "+chunk;panel.appendChild(sn);}}
       else if(a==="share"){
-        if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(deep).then(function(){jahToast("Edition link copied.")},function(){prompt("Copy this edition link:",deep)});}
-        else prompt("Copy this edition link:",deep);}
+        if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(deep).then(function(){jahToast("Edition link copied.")},function(){copyFallbackBox(deep,"Copy this edition link:")});}
+        else copyFallbackBox(deep,"Copy this edition link:");}
       else if(a==="copy"){copyEdition(e);}
       else if(a==="dl"){downloadEdition(e);}
       else if(a==="read"){readEdition(e);}
@@ -691,8 +692,8 @@ async function openEdition(id){
   }
   Array.prototype.forEach.call($("edview").querySelectorAll("[data-acopy]"),function(b){
     b.onclick=function(){var a=e.articles[+b.getAttribute("data-acopy")];var t=artText(a);
-      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){jahToast("Article copied.")},function(){prompt("Copy this article:",t)})}
-      else prompt("Copy this article:",t);};
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){jahToast("Article copied.")},function(){copyFallbackBox(t,"Copy this article:")})}
+      else copyFallbackBox(t,"Copy this article:");};
   });
   Array.prototype.forEach.call($("edview").querySelectorAll("[data-aread]"),function(b){
     b.onclick=function(){readArticle(e,+b.getAttribute("data-aread"))};
@@ -1219,6 +1220,30 @@ if(!deep){(function(){var o=null;try{o=JSON.parse(PS.get(TK)||"{}")}catch(x){}
 <style>#jah-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1c2940;color:#fff;padding:12px 20px;border-radius:10px;border:1px solid #35e0ff;z-index:99999;max-width:90vw;display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);font-size:.95em}</style>
 <script>
 function jahToast(m){var t=document.getElementById('jah-toast');if(!t){t=document.createElement('div');t.id='jah-toast';document.body.appendChild(t)}t.textContent=String(m);t.style.display='block';clearTimeout(t._x);t._x=setTimeout(function(){t.style.display='none'},3000)}
+/* in-page copy fallback (never prompt()/alert(): native dialogs are suppressed
+   in some in-app browsers). Shows the text in a tappable box with a Copy button. */
+function copyFallbackBox(text,label){
+  var ov=document.getElementById('jah-copyov');
+  if(!ov){
+    ov=document.createElement('div');ov.id='jah-copyov';
+    ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+    ov.innerHTML='<div style="background:#fffdf5;color:#111;border-radius:12px;padding:18px;max-width:520px;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.4)">'+
+      '<h3 id="jah-copyov-t" style="margin:0 0 8px;font-size:1em"></h3>'+
+      '<textarea id="jah-copyov-x" readonly style="width:100%;height:130px;font-size:.85em;border:1px solid #ccc;border-radius:8px;padding:8px"></textarea>'+
+      '<div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end">'+
+      '<button id="jah-copyov-c" class="btn" type="button">Copy</button><button id="jah-copyov-x0" class="btn ghost" type="button">Close</button></div></div>';
+    document.body.appendChild(ov);
+    document.getElementById('jah-copyov-x0').onclick=function(){ov.style.display='none'};
+    ov.addEventListener('click',function(e){if(e.target===ov)ov.style.display='none'});
+    document.getElementById('jah-copyov-c').onclick=function(){
+      var x=document.getElementById('jah-copyov-x');x.focus();x.select();
+      try{document.execCommand('copy');jahToast('Copied.')}catch(e){jahToast('Copy: long-press the text to copy it.')}
+    };
+  }
+  document.getElementById('jah-copyov-t').textContent=label||'Copy';
+  document.getElementById('jah-copyov-x').value=String(text);
+  ov.style.display='flex';
+}
 function jahConfirm(msg,cb){var o=document.getElementById('jah-confirm');if(o)o.remove();o=document.createElement('div');o.id='jah-confirm';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px';var box=document.createElement('div');box.style.cssText='background:#1c2940;border:1px solid #35e0ff;border-radius:12px;padding:20px;max-width:92vw;color:#fff';var p=document.createElement('p');p.style.margin='0 0 16px';p.textContent=String(msg);var row=document.createElement('div');row.style.cssText='display:flex;gap:10px;justify-content:flex-end';var no=document.createElement('button');no.textContent='Cancel';no.style.cssText='padding:10px 18px;border-radius:8px;border:1px solid #666;background:#222;color:#fff;font-size:1em';var yes=document.createElement('button');yes.textContent='Confirm';yes.style.cssText='padding:10px 18px;border-radius:8px;border:none;background:#35e0ff;color:#000;font-weight:bold;font-size:1em';no.onclick=function(){o.remove();cb(false)};yes.onclick=function(){o.remove();cb(true)};row.appendChild(no);row.appendChild(yes);box.appendChild(p);box.appendChild(row);o.appendChild(box);document.body.appendChild(o);yes.focus()}
 </script>
 
