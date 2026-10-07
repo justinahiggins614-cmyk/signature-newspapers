@@ -494,14 +494,32 @@
         var all = list();
         for (i = 0; i < all.length; i++) { drop.appendChild(profileRow(doc, all[i])); }
         drop.appendChild(actionRow(doc, '\uFF0B New profile\u2026', function () {
-          var name = '';
-          try {
-            if (typeof prompt === 'function') name = prompt('Profile name:', '');
-            else if (root.prompt) name = root.prompt('Profile name:', '');
-          } catch (e) {}
-          if (name == null) return;
-          createProfile(name);
-          _reloadPage();
+          /* in-page name entry — never prompt(): native dialogs are suppressed
+             in some in-app browsers, which would strand this flow silently. */
+          if (doc.getElementById('jah-newprof')) return;
+          var form = doc.createElement('div');
+          form.id = 'jah-newprof';
+          form.setAttribute('style', 'padding:8px;border-top:1px solid #ddd;display:flex;gap:6px;align-items:center;');
+          var inp = doc.createElement('input');
+          inp.type = 'text'; inp.placeholder = 'Profile name'; inp.maxLength = 40;
+          inp.setAttribute('aria-label', 'Profile name');
+          inp.setAttribute('style', 'flex:1;min-width:0;padding:6px 8px;border:1px solid #bbb;border-radius:6px;font-size:14px;color:#111;background:#fff;');
+          var ok = doc.createElement('button'); ok.type = 'button'; ok.textContent = 'Save';
+          ok.setAttribute('style', 'padding:6px 10px;border-radius:6px;border:1px solid #999;background:#f5c518;font-weight:700;cursor:pointer;color:#111;');
+          var cx = doc.createElement('button'); cx.type = 'button'; cx.textContent = 'Cancel';
+          cx.setAttribute('style', 'padding:6px 10px;border-radius:6px;border:1px solid #bbb;background:#fff;cursor:pointer;color:#111;');
+          form.appendChild(inp); form.appendChild(ok); form.appendChild(cx);
+          drop.appendChild(form);
+          try { inp.focus(); } catch (e) {}
+          function done(save){
+            try { drop.removeChild(form); } catch (e) {}
+            if (!save) return;
+            createProfile(inp.value);
+            _reloadPage();
+          }
+          ok.onclick = function(){ done(true); };
+          cx.onclick = function(){ done(false); };
+          inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') done(true); if (e.key === 'Escape') done(false); });
         }));
         if (c) {
           drop.appendChild(actionRow(doc, 'Sign out (use public)', function () {
