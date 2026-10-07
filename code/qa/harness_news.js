@@ -47,6 +47,8 @@ function mkEl(id) {
 const ids = new Set();
 for (const mm of src.matchAll(/\$\("([^"]+)"\)/g)) ids.add(mm[1]);
 for (const mm of src.matchAll(/getElementById\("([^"]+)"\)/g)) ids.add(mm[1]);
+for (const mm of src.matchAll(/\$\('([^']+)'\)/g)) ids.add(mm[1]);
+for (const mm of src.matchAll(/getElementById\('([^']+)'\)/g)) ids.add(mm[1]);
 ids.forEach(id => mkEl(id));
 
 const qalogMsgs = [];
@@ -254,7 +256,10 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   (chunks.length > 0 && chunks.every(c => c.length <= 400)) ? ok("read-aloud chunks built (" + chunks.length + ")") : bad("rdChunks", "");
   // copy path: clipboard undefined -> fallbackCopy (execCommand stubbed)
   vm.runInContext('copyEdition(curEdition)', sandbox);
-  alerts.length && alerts[0].includes("copied") ? ok("copyEdition -> fallback copy + alert") : bad("copyEdition", JSON.stringify(alerts));
+  // copyEdition confirms via in-page jahToast (native alert() is suppressed in
+  // in-app browsers); the harness toast element proves the success path ran.
+  const toastMsg = (els["jah-toast"] && els["jah-toast"].textContent) || "";
+  (toastMsg.toLowerCase().includes("copied") || (alerts.length && alerts[0].includes("copied"))) ? ok("copyEdition -> fallback copy + toast") : bad("copyEdition", "toast=" + JSON.stringify(toastMsg) + " alerts=" + JSON.stringify(alerts));
 
   /* ---- Ask-AI grounded answers (Ask-AI crew's work — verify) ---- */
   await vm.runInContext('openEdition("JAH-ED-000001")', sandbox);
