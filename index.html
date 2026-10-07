@@ -627,7 +627,7 @@ function wireEdPanel(e,wi){
       if(a==="open"){location.href=deep;}
       else if(a==="src"){if(!panel.querySelector(".srcnote")){var sn=document.createElement("span");sn.className="srcnote";sn.style.color="var(--mut)";sn.textContent="Source: Newspaper Archive catalog · "+chunk;panel.appendChild(sn);}}
       else if(a==="share"){
-        if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(deep).then(function(){alert("Edition link copied.")},function(){prompt("Copy this edition link:",deep)});}
+        if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(deep).then(function(){jahToast("Edition link copied.")},function(){prompt("Copy this edition link:",deep)});}
         else prompt("Copy this edition link:",deep);}
       else if(a==="copy"){copyEdition(e);}
       else if(a==="dl"){downloadEdition(e);}
@@ -691,7 +691,7 @@ async function openEdition(id){
   }
   Array.prototype.forEach.call($("edview").querySelectorAll("[data-acopy]"),function(b){
     b.onclick=function(){var a=e.articles[+b.getAttribute("data-acopy")];var t=artText(a);
-      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){alert("Article copied.")},function(){prompt("Copy this article:",t)})}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){jahToast("Article copied.")},function(){prompt("Copy this article:",t)})}
       else prompt("Copy this article:",t);};
   });
   Array.prototype.forEach.call($("edview").querySelectorAll("[data-aread]"),function(b){
@@ -746,7 +746,7 @@ function editionText(e){
   return t;
 }
 function copyEdition(e){
-  var done=function(){alert("Edition copied — paste it anywhere.")};
+  var done=function(){jahToast("Edition copied — paste it anywhere.")};
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(editionText(e)).then(done,function(){fallbackCopy(e);done()})}
   else{fallbackCopy(e);done()}
 }
@@ -1216,5 +1216,11 @@ if(!deep){(function(){var o=null;try{o=JSON.parse(PS.get(TK)||"{}")}catch(x){}
 <a href="https://justinahiggins614-cmyk.github.io/signature-image-grid-measure/">35 Grid Measure</a>
 <a href="https://justinahiggins614-cmyk.github.io/signature-cyber-mega-mall/">36 The Signature Cyber Mega-Mall</a>
 <a href="https://justinahiggins614-cmyk.github.io/signature-3d-print/">37 The Signature 3D Print Mega Mall</a><span class="here">13 The Signature Global Newspaper Archive — YOU ARE HERE</span></nav>
+<style>#jah-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1c2940;color:#fff;padding:12px 20px;border-radius:10px;border:1px solid #35e0ff;z-index:99999;max-width:90vw;display:none;box-shadow:0 4px 20px rgba(0,0,0,.5);font-size:.95em}</style>
+<script>
+function jahToast(m){var t=document.getElementById('jah-toast');if(!t){t=document.createElement('div');t.id='jah-toast';document.body.appendChild(t)}t.textContent=String(m);t.style.display='block';clearTimeout(t._x);t._x=setTimeout(function(){t.style.display='none'},3000)}
+function jahConfirm(msg,cb){var o=document.getElementById('jah-confirm');if(o)o.remove();o=document.createElement('div');o.id='jah-confirm';o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px';var box=document.createElement('div');box.style.cssText='background:#1c2940;border:1px solid #35e0ff;border-radius:12px;padding:20px;max-width:92vw;color:#fff';var p=document.createElement('p');p.style.margin='0 0 16px';p.textContent=String(msg);var row=document.createElement('div');row.style.cssText='display:flex;gap:10px;justify-content:flex-end';var no=document.createElement('button');no.textContent='Cancel';no.style.cssText='padding:10px 18px;border-radius:8px;border:1px solid #666;background:#222;color:#fff;font-size:1em';var yes=document.createElement('button');yes.textContent='Confirm';yes.style.cssText='padding:10px 18px;border-radius:8px;border:none;background:#35e0ff;color:#000;font-weight:bold;font-size:1em';no.onclick=function(){o.remove();cb(false)};yes.onclick=function(){o.remove();cb(true)};row.appendChild(no);row.appendChild(yes);box.appendChild(p);box.appendChild(row);o.appendChild(box);document.body.appendChild(o);yes.focus()}
+</script>
+
 </body>
 </html>
