@@ -3,20 +3,20 @@
  "site_name": "The Signature Global Newspaper Archive",
  "site_version": "1.0",
  "archive_version": "2026-10-08",
- "total_editions": 2226,
- "total_articles": 13356,
+ "total_editions": 66,
+ "total_articles": 396,
  "total_papers": 6,
  "total_regions": 6,
- "total_entities": 98,
- "earliest_date": "2025-10-03",
+ "total_entities": 0,
+ "earliest_date": "2026-09-28",
  "latest_date": "2026-10-08",
  "goal": "1,000,000 editions + articles",
  "schema_version": "JAH-NEWSPAPER-RECORD/1.0",
  "index_version": "1.0",
- "index_hash": "1ae24c549634f836385322e775ff2c3ab1c4789b7e02d577b63864a6e3bb9709",
+ "index_hash": "6093bf61bb0c8e24db59df2a6eab4cfc9458ac2d37e48f63c4c8bbcc01f829ea",
  "generator_version": "code/gen_editions.py (SALT 20261002)",
- "fictionality_status": "FICTIONAL_GENERATED",
- "fictionality_note": "Two-era archive. Editions dated 2026-09-28 onward carry ECOSYSTEM_REPORTED: real news from the 35-website Signature network, every story grounded in the sites' own data. Editions before 2026-09-28 carry FICTIONAL_GENERATED: retired Signature-world fiction — invented people, places and events — kept in the archive and clearly labeled, never presented as fact. No real-world news, no real persons named.",
+ "fictionality_status": "ECOSYSTEM_REPORTED",
+ "fictionality_note": "The archive holds only real Signature-ecosystem news: every edition reports real events from the Signature website network, verified from the sites' own data. The retired fiction archive (2,160 editions) was removed outright on 2026-10-08 per the publisher's order. No real-world news, no real persons named.",
  "license": "Original Signature-generated content. Read, copy and download freely from this archive.",
  "created": "2025-10-03",
  "updated": "2026-10-08",
@@ -46,8 +46,8 @@
    "name": "The Signature Daily Globe",
    "region_id": "JAH-REGION-000001",
    "region": "the Signature ecosystem",
-   "edition_count": 371,
-   "first_edition": "JAH-ED-000001",
+   "edition_count": 11,
+   "first_edition": "JAH-ED-002161",
    "latest_edition": "JAH-ED-002221"
   },
   {
@@ -55,8 +55,8 @@
    "name": "The Meridian Herald",
    "region_id": "JAH-REGION-000002",
    "region": "Catalogs & Records",
-   "edition_count": 371,
-   "first_edition": "JAH-ED-000002",
+   "edition_count": 11,
+   "first_edition": "JAH-ED-002162",
    "latest_edition": "JAH-ED-002222"
   },
   {
@@ -64,8 +64,8 @@
    "name": "The Argent Post",
    "region_id": "JAH-REGION-000003",
    "region": "AI & Systems",
-   "edition_count": 371,
-   "first_edition": "JAH-ED-000003",
+   "edition_count": 11,
+   "first_edition": "JAH-ED-002163",
    "latest_edition": "JAH-ED-002223"
   },
   {
@@ -73,8 +73,8 @@
    "name": "The Northlight Times",
    "region_id": "JAH-REGION-000004",
    "region": "Builders & Labs",
-   "edition_count": 371,
-   "first_edition": "JAH-ED-000004",
+   "edition_count": 11,
+   "first_edition": "JAH-ED-002164",
    "latest_edition": "JAH-ED-002224"
   },
   {
@@ -82,8 +82,8 @@
    "name": "The Sunspire Gazette",
    "region_id": "JAH-REGION-000005",
    "region": "Library & Culture",
-   "edition_count": 371,
-   "first_edition": "JAH-ED-000005",
+   "edition_count": 11,
+   "first_edition": "JAH-ED-002165",
    "latest_edition": "JAH-ED-002225"
   },
   {
@@ -91,8 +91,8 @@
    "name": "The Tidewater Chronicle",
    "region_id": "JAH-REGION-000006",
    "region": "Markets",
-   "edition_count": 371,
-   "first_edition": "JAH-ED-000006",
+   "edition_count": 11,
+   "first_edition": "JAH-ED-002166",
    "latest_edition": "JAH-ED-002226"
   }
  ]

@@ -2,10 +2,14 @@
 """QA gates for the Signature Global Newspaper Archive. Exit 1 on ANY failure.
 
 Checks:
- 1. edition IDs unique + contiguous (JAH-ED-000001..N)
- 2. article IDs unique + contiguous, each linked to a real edition
+ 1. edition IDs unique + well-formed + contiguous within the kept range
+    (the retired fiction archive was removed 2026-10-08, so the range no
+    longer starts at JAH-ED-000001; kept IDs are never renumbered)
+ 2. article IDs unique + well-formed + contiguous within the kept range,
+    each linked to a real edition
  3. counts agree: api.json == edition index == volume records; article sums agree
- 4. every edition + article carries FICTIONAL_GENERATED
+ 4. every edition + article carries a valid fictionality status (ECOSYSTEM_REPORTED)
+    and ZERO FICTIONAL_GENERATED records remain (real-news-only policy)
  5. every edition + article hash verifies (SHA-256 over canonical JSON)
  6. paper/region IDs present and consistent
  7. sitemap-index.xml + children are valid XML; edition URL count matches
@@ -47,26 +51,32 @@ art_rows = json.load(gzip.open(os.path.join(IDX, "articles.idx.json.gz"), "rt"))
 api = json.load(open(os.path.join(REPO, "api.json")))
 papers = json.load(open(os.path.join(IDX, "papers.json")))
 
-# 1. edition IDs
+# 1. edition IDs: unique, well-formed, contiguous within the kept range
 ids = [e["id"] for e in editions]
+nums = [int(x.rsplit("-", 1)[1]) for x in ids]
 if len(ids) != len(set(ids)):
     fail("duplicate edition IDs")
-elif ids != ["JAH-ED-%06d" % (i + 1) for i in range(len(ids))]:
-    fail("edition IDs not contiguous from JAH-ED-000001")
+elif any(not re.fullmatch(r"JAH-ED-\d{6}", x) for x in ids):
+    fail("malformed edition ID")
+elif sorted(nums) != list(range(min(nums), max(nums) + 1)):
+    fail("edition IDs not contiguous within kept range %06d..%06d" % (min(nums), max(nums)))
 else:
-    ok("edition IDs contiguous: %d" % len(ids))
+    ok("edition IDs unique + contiguous %06d..%06d: %d" % (min(nums), max(nums), len(ids)))
 
-# 2. article IDs
+# 2. article IDs: unique, well-formed, contiguous within the kept range
 aids = [a["id"] for e in editions for a in e["articles"]]
 edset = set(ids)
+anums = [int(x.rsplit("-", 1)[1]) for x in aids]
 if len(aids) != len(set(aids)):
     fail("duplicate article IDs")
-elif aids != ["JAH-ARTICLE-%06d" % (i + 1) for i in range(len(aids))]:
-    fail("article IDs not contiguous from JAH-ARTICLE-000001")
+elif any(not re.fullmatch(r"JAH-ARTICLE-\d{6}", x) for x in aids):
+    fail("malformed article ID")
+elif sorted(anums) != list(range(min(anums), max(anums) + 1)):
+    fail("article IDs not contiguous within kept range")
 elif any(a.get("edition_id") not in edset for e in editions for a in e["articles"]):
     fail("article linked to nonexistent edition")
 else:
-    ok("article IDs contiguous: %d, all linked" % len(aids))
+    ok("article IDs unique + contiguous %06d..%06d: %d, all linked" % (min(anums), max(anums), len(aids)))
 
 # 3. counts
 n_art = len(aids)
@@ -81,7 +91,17 @@ elif api["counts"]["papers"] != 6 or len(papers) != 6:
 else:
     ok("counts agree: %d editions / %d articles / 6 papers" % (len(editions), n_art))
 
-# 4+5. fictionality + hashes on every record (full verify)
+# 4a. real-news-only policy: zero fiction records may remain
+n_fic = sum(1 for e in editions if e.get("fictionality_status") == "FICTIONAL_GENERATED")
+n_fic_art = sum(1 for e in editions for a in e["articles"]
+                if a.get("fictionality_status") == "FICTIONAL_GENERATED")
+if n_fic or n_fic_art:
+    fail("real-news-only policy violated: %d fiction editions, %d fiction articles remain"
+         % (n_fic, n_fic_art))
+else:
+    ok("real-news-only: 0 fiction editions, 0 fiction articles")
+
+# 4b+5. fictionality + hashes on every record (full verify)
 bad = 0
 for e in editions:
     errs = record_std.verify_edition(e)

@@ -9,11 +9,11 @@ var PS = (typeof JAHProfile !== 'undefined') ? JAHProfile.store : localStorage;<
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Browse the Full Edition Catalog — The Signature Global Newspaper Archive</title>
-<meta name="description" content="The full edition catalog of The Signature Global Newspaper Archive: every paper, every day. Real Signature-ecosystem news since 2026-09-28 plus the labeled fiction archive.">
+<meta name="description" content="The full edition catalog of The Signature Global Newspaper Archive: every paper, every day. Real Signature-ecosystem news, verified from the sites' own data.">
 <link rel="canonical" href="https://justinahiggins614-cmyk.github.io/signature-newspapers/browse.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Browse the Full Edition Catalog — The Signature Global Newspaper Archive">
-<meta property="og:description" content="Every edition, every paper, every day: the full catalog of The Signature Global Newspaper Archive. Real Signature-ecosystem news plus the labeled fiction archive.">
+<meta property="og:description" content="Every edition, every paper, every day: the full catalog of The Signature Global Newspaper Archive. Real Signature-ecosystem news, verified from the sites' own data.">
 <meta property="og:url" content="https://justinahiggins614-cmyk.github.io/signature-newspapers/browse.html">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Browse the Full Edition Catalog — The Signature Global Newspaper Archive">
@@ -22,7 +22,7 @@ var PS = (typeof JAHProfile !== 'undefined') ? JAHProfile.store : localStorage;<
 {"@context":"https://schema.org","@type":"CollectionPage",
 "name":"Full Edition Catalog — The Signature Global Newspaper Archive",
 "url":"https://justinahiggins614-cmyk.github.io/signature-newspapers/browse.html",
-"description":"Every edition of The Signature Global Newspaper Archive, browsable by week and by paper desk. Editions since 2026-09-28 report real Signature-ecosystem news; earlier editions are the labeled fiction archive.",
+"description":"Every edition of The Signature Global Newspaper Archive, browsable by week and by paper desk. Every edition reports real Signature-ecosystem news, verified from the sites' own data.",
 "isPartOf":{"@type":"NewsMediaOrganization","name":"The Signature Global Newspaper Archive"}}
 </script>
 <style>
@@ -125,7 +125,7 @@ footer a{color:#3a5a9c}
 </head>
 <body>
 
-<div class="honesty"><b>Signature press.</b> Every edition below reports on the Signature website network — real drip milestones, fixes shipped, launches and records, verified from the sites’ own data. Early archive editions are retired Signature-world fiction and are labeled as such. This paper reports no real-world news and names no real-world persons.</div>
+<div class="honesty"><b>Signature press.</b> Every edition below reports on the Signature website network — real drip milestones, fixes shipped, launches and records, verified from the sites’ own data. This paper reports no real-world news and names no real-world persons.</div>
 
 <header class="hero wrap">
 <div class="jnkicker">SITE 13 OF 35 · THE JAH NETWORK</div>
@@ -133,7 +133,7 @@ footer a{color:#3a5a9c}
 <div class="dateline">The full edition catalog — every paper, every day, A to Z · <span id="bupdated">updated daily</span></div>
 <p style="margin:12px 0 4px"><a class="btn ghost" href="./" style="text-decoration:none">← Today's front page</a></p>
 <div class="stats" id="bstats"><!-- BROWSE-STATS -->
-<div class="stat"><b>2,226</b><span>editions on file</span></div><div class="stat"><b>13,356</b><span>articles printed</span></div><div class="stat"><b>66</b><span>real-news editions</span></div><div class="stat"><b>2,160</b><span>fiction-archive editions</span></div>
+<div class="stat"><b>66</b><span>editions on file</span></div><div class="stat"><b>396</b><span>articles printed</span></div><div class="stat"><b>66</b><span>real-news editions</span></div>
 <!-- /BROWSE-STATS --></div>
 </header>
 <!-- JAH TAB BAR — Manon's 2026-10-04 order (calculator screenshot as spec).
@@ -159,7 +159,7 @@ footer a{color:#3a5a9c}
 <div class="row">
 <button class="btn" id="vweek" aria-pressed="true">By week</button>
 <button class="btn ghost" id="vpaper" aria-pressed="false">By paper desk</button>
-<select id="bera" aria-label="Era filter"><option value="">Both eras</option><option value="ecosystem">Real ecosystem news</option><option value="fiction-archive">Fiction archive</option></select>
+<select id="bera" aria-label="Era filter" style="display:none"><option value="">All editions</option><option value="ecosystem">Real ecosystem news</option></select>
 </div>
 <div id="bresults" style="margin-top:8px"></div>
 </div></div>
@@ -280,10 +280,6 @@ document.getElementById("jah-askai-q").addEventListener("keydown",function(e){if
 <h2 class="sec">Real Signature-ecosystem news <span class="stbadge">2026-09-28 → today</span></h2>
 <p class="prov">Every edition since 2026-09-28 reports <b>real events from the 35-website Signature network</b> — drip milestones, fixes shipped, launches and records — verified from the sites’ own data. Open a week to browse its editions; every edition opens on the front page.</p>
 <div id="ecoweeks"><p class="prov">Loading the press…</p></div>
-
-<h2 class="sec">The fiction archive — clearly labeled <span class="stbadge fic">2025-10-03 → 2026-09-27</span></h2>
-<p class="prov">Editions before 2026-09-28 are <b>retired Signature-world fiction</b> — invented people, places and events from the paper’s early days. Kept on file and labeled as fiction, never presented as fact.</p>
-<div id="ficweeks"><p class="prov">Loading the archive…</p></div>
 </div>
 
 <div id="paperview" style="display:none">
@@ -364,7 +360,7 @@ document.getElementById("best-dl").onclick=function(){download("JAH-ED-002202-be
 
 <div class="about lateststatic">
 <h3>Fresh off the press</h3>
-<p class="prov" style="text-align:left">New editions report real Signature-ecosystem events; early archive editions are labeled fiction. No real-world news, no real persons.</p>
+<p class="prov" style="text-align:left">Every edition reports real Signature-ecosystem events, verified from the sites’ own data. No real-world news, no real persons.</p>
 <!-- BROWSE-LATEST -->
 <p itemscope itemtype="https://schema.org/NewsArticle"><b><a itemprop="url" href="?edition=JAH-ED-002221"><span itemprop="headline">The Signature Daily Globe</span></a></b> — <time itemprop="datePublished" datetime="2026-10-08">2026-10-08</time>, Vol. 3 Issue 998<ul><li>The Signature Boundless Generator Archive adds 6,000 generator outputs in a day</li><li>JAH-N Wiki Leaks adds 4,000 dossiers in a day</li><li>Signature Earth adds 300 places in a day</li></ul></p>
 <p itemscope itemtype="https://schema.org/NewsArticle"><b><a itemprop="url" href="?edition=JAH-ED-002222"><span itemprop="headline">The Meridian Herald</span></a></b> — <time itemprop="datePublished" datetime="2026-10-08">2026-10-08</time>, Vol. 3 Issue 981<ul><li>JAH-N Wiki Leaks adds 4,000 dossiers in a day</li><li>JAH Wiki: Count re-stamp 2026-10-08</li><li>The Signature Boundless Generator Archive adds 6,000 generator outputs in a day</li></ul></p>
@@ -379,7 +375,7 @@ document.getElementById("best-dl").onclick=function(){download("JAH-ED-002202-be
 
 <footer>
 <div class="wrap">
-<p><b>The Signature Global Newspaper Archive</b> — the Signature network’s own newspaper, by <b>Justin Addam Higgins</b>. New editions report real events from the 31 websites every morning; early archive editions are retired Signature-world fiction, labeled as such. No real-world news; no real persons named.</p>
+<p><b>The Signature Global Newspaper Archive</b> — the Signature network’s own newspaper, by <b>Justin Addam Higgins</b>. New editions report real events from the network every morning. No real-world news; no real persons named.</p>
 
 <p>Free forever. No login. Machine-readable: <a href="api.json">api.json</a> · <a href="data/index/editions.idx.json.gz">edition index</a> · <a href="sitemap.xml">sitemap</a></p>
 </div>
@@ -415,7 +411,6 @@ async function boot(){
   try{await loadPapers();ROWS=JSON.parse(await gzText(IDX_URL));}
   catch(e){
     $("ecoweeks").innerHTML='<p class="prov">The catalog index could not be loaded. <a href="./">Back to the front page →</a></p>';
-    $("ficweeks").innerHTML="";
     return;
   }
   paintStats();buildViews();
@@ -438,8 +433,7 @@ function paintStats(){
   $("bstats").innerHTML=
     '<div class="stat"><b>'+f(nEd)+'</b><span>editions on file</span></div>'+
     '<div class="stat"><b>'+f(nArt)+'</b><span>articles printed</span></div>'+
-    '<div class="stat"><b>'+f(nEco)+'</b><span>real-news editions</span></div>'+
-    '<div class="stat"><b>'+f(nEd-nEco)+'</b><span>fiction-archive editions</span></div>';
+    '<div class="stat"><b>'+f(nEco)+'</b><span>real-news editions</span></div>';
   $("bupdated").textContent="catalog updated "+fmtDate(latestDate());
 }
 function eraRows(){
@@ -497,16 +491,15 @@ function buildViews(){
     var rs=byKey[key].slice().sort(function(a,b){return a[1]<b[1]?1:(a[1]>b[1]?-1:a[2]-b[2]);});
     return {key:key,eco:rs[0][6]==="ecosystem",d0:rs[rs.length-1][1],d1:rs[0][1],rows:rs};
   });
-  var ecoBox=$("ecoweeks"),ficBox=$("ficweeks");
-  ecoBox.innerHTML="";ficBox.innerHTML="";
-  var nEco=0,nFic=0;
+  var ecoBox=$("ecoweeks");
+  ecoBox.innerHTML="";
+  var nEco=0;
   for(i=0;i<GROUPS.length;i++){
     var g=GROUPS[i];
     var el=makeGroup("Week of "+fmtDate(g.d0)+" – "+fmtDate(g.d1),g.eco?ECO_TAG:FIC_TAG,g.rows.length,g.rows);
-    if(g.eco){ecoBox.appendChild(el);nEco++;}else{ficBox.appendChild(el);nFic++;}
+    ecoBox.appendChild(el);nEco++;
   }
   if(!nEco)ecoBox.innerHTML='<p class="prov">No real-news editions under this filter.</p>';
-  if(!nFic)ficBox.innerHTML='<p class="prov">No fiction-archive editions under this filter.</p>';
   buildPaperView(rows);
 }
 function buildPaperView(rows){

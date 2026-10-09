@@ -162,14 +162,14 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   paperNames.every(n => els["paperlist"].innerHTML.includes(n)) ? ok("all six papers listed in About") : bad("paper list", "");
 
   /* ---- 9. search headlines ---- */
-  els["q"].value = "tide gala";
+  els["q"].value = "patent catalog";
   let f = vm.runInContext("filtered()", sandbox);
-  (f.length > 0 && f.some(r => r[0] === "JAH-ED-000001")) ? ok("headline search finds JAH-ED-000001") : bad("headline search", "len=" + f.length);
+  (f.length > 0 && f.some(r => r[0] === "JAH-ED-002161")) ? ok("headline search finds JAH-ED-002161") : bad("headline search", "len=" + f.length);
 
   /* ---- 11. search edition ID ---- */
-  els["q"].value = "JAH-ED-000042";
+  els["q"].value = "JAH-ED-002190";
   f = vm.runInContext("filtered()", sandbox);
-  (f.length === 1 && f[0][0] === "JAH-ED-000042") ? ok("edition-ID search exact hit") : bad("edition-ID search", "len=" + f.length);
+  (f.length === 1 && f[0][0] === "JAH-ED-002190") ? ok("edition-ID search exact hit") : bad("edition-ID search", "len=" + f.length);
 
   /* ---- paper / date / year / month filters ---- */
   els["q"].value = ""; els["paper"].value = "2";
@@ -210,13 +210,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   (bg.length > 0 && bg.every(it => it.match && it.match.length)) ? ok("body search '" + probe.w + "' -> " + bg.length + " editions with match heads") : bad("body search", "len=" + bg.length);
   (bg.some(it => it.row[0] === probe.eid)) ? ok("body search includes source edition " + probe.eid) : bad("body search source edition", probe.eid);
   // scope=both unions headline + body
-  els["qscope"].value = "both"; els["q"].value = "tide gala";
+  els["qscope"].value = "both"; els["q"].value = "patent catalog";
   vm.runInContext("doGrid()", sandbox);
-  (sandbox.grid.length >= 1 && sandbox.grid.some(it => it.row[0] === "JAH-ED-000001")) ? ok("scope 'both' keeps headline hits") : bad("scope both", "");
+  (sandbox.grid.length >= 1 && sandbox.grid.some(it => it.row[0] === "JAH-ED-002161")) ? ok("scope 'both' keeps headline hits") : bad("scope both", "");
   els["qscope"].value = "h"; els["q"].value = "";
 
   /* ---- 12. Finder ---- */
-  els["fq"].value = "a lantern festival";
+  els["fq"].value = "patent catalog";
   vm.runInContext("fAsk()", sandbox);
   const fr = S("fresults");
   ((fr.match(/class="fcard"/g) || []).length >= 1 && fr.includes("?edition=")) ? ok("Finder returns edition cards w/ deep links") : bad("Finder", fr.slice(0, 100));
@@ -237,16 +237,18 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
   /* ---- 14. open individual article ---- */
   qalogMsgs.length = 0;
-  await vm.runInContext('openArticle("JAH-ARTICLE-000005")', sandbox);
-  (S("edview").includes("JAH-ED-000001") && sandbox.document.title.includes("JAH-ARTICLE-000005")) ? ok("?article= resolves to edition view at article") : bad("article deep link", sandbox.document.title);
+  await vm.runInContext('openArticle("JAH-ARTICLE-012961")', sandbox);
+  (S("edview").includes("JAH-ED-002161") && sandbox.document.title.includes("JAH-ARTICLE-012961")) ? ok("?article= resolves to edition view at article") : bad("article deep link", sandbox.document.title);
 
   /* ---- article not found ---- */
   await vm.runInContext('openArticle("JAH-ARTICLE-999999")', sandbox);
   (S("edview").includes("ARTICLE_NOT_FOUND")) ? ok("bad article ID -> honest error") : bad("article 404", "");
 
-  /* ---- edition text / fictionality in downloads ---- */
+  /* ---- edition text / real-news headers in downloads ---- */
+  await vm.runInContext('openEdition("JAH-ED-002161")', sandbox);
   const et = vm.runInContext('editionText(curEdition)', sandbox);
-  (et.startsWith("FICTIONAL SIGNATURE WORLD") && et.includes("FICTIONAL SIGNATURE WORLD — NOT REAL-WORLD NEWS.")) ? ok("editionText() fiction headers (JAH-ED-000001)") : bad("editionText fiction", et.slice(0, 60));
+  (et.startsWith("SIGNATURE ECOSYSTEM NEWS") && et.includes("SIGNATURE ECOSYSTEM NEWS — REAL EVENTS.")) ? ok("editionText() real-news headers (JAH-ED-002161)") : bad("editionText real-news", et.slice(0, 60));
+  (!et.includes("FICTIONAL SIGNATURE WORLD")) ? ok("editionText() carries no fiction headers") : bad("editionText fiction leak", et.slice(0, 60));
   await vm.runInContext('openEdition("JAH-ED-002190")', sandbox);
   const et2 = vm.runInContext('editionText(curEdition)', sandbox);
   (et2.startsWith("SIGNATURE ECOSYSTEM NEWS") && et2.includes("SIGNATURE ECOSYSTEM NEWS — REAL EVENTS.")) ? ok("editionText() ecosystem headers (JAH-ED-002190)") : bad("editionText ecosystem", et2.slice(0, 60));
@@ -262,7 +264,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   (toastMsg.toLowerCase().includes("copied") || (alerts.length && alerts[0].includes("copied"))) ? ok("copyEdition -> fallback copy + toast") : bad("copyEdition", "toast=" + JSON.stringify(toastMsg) + " alerts=" + JSON.stringify(alerts));
 
   /* ---- Ask-AI grounded answers (Ask-AI crew's work — verify) ---- */
-  await vm.runInContext('openEdition("JAH-ED-000001")', sandbox);
+  await vm.runInContext('openEdition("JAH-ED-002161")', sandbox);
   qalogMsgs.length = 0;
   els["qin"].value = "What are the headlines?";
   vm.runInContext('qaAsk(curEdition)', sandbox);
@@ -282,7 +284,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   qalogMsgs.length = 0;
   els["qin"].value = "is this real news?";
   vm.runInContext('qaAsk(curEdition)', sandbox);
-  (qalogMsgs[1] && qalogMsgs[1].html.includes("retired fiction editions")) ? ok("Ask-AI fiction-era honesty") : bad("Ask-AI fiction honesty", "");
+  (qalogMsgs[1] && qalogMsgs[1].html.includes("yes, this edition is real news") && !qalogMsgs[1].html.includes("retired fiction")) ? ok("Ask-AI real-news honesty, no fiction mention") : bad("Ask-AI real-news honesty", "");
   await vm.runInContext('openEdition("JAH-ED-002190")', sandbox);
   qalogMsgs.length = 0;
   els["qin"].value = "is this real news?";
@@ -295,10 +297,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   (vv.includes("HASH MATCHES") && vv.includes("Recomputed SHA-256")) ? ok("?verify= recomputes SHA-256, hash matches") : bad("verify view", vv.slice(0, 150));
   (vv.includes("ECOSYSTEM_REPORTED") && vv.includes("Signature ecosystem news")) ? ok("verify view ecosystem label") : bad("verify ecosystem", "");
 
-  /* ---- entity view ---- */
+  /* ---- entity view: no entity index ships (miner found none in real news) ---- */
   await vm.runInContext('openEntity("JAH-ENTITY-000001")', sandbox);
-  const en = S("edview");
-  (en.includes("Aldermere") && en.includes("FICTIONAL_GENERATED")) ? ok("?entity= view with fictionality") : bad("entity view", en.slice(0, 120));
+  (S("edview").includes("ENTITY_NOT_FOUND")) ? ok("empty entity index -> honest ENTITY_NOT_FOUND") : bad("entity view", S("edview").slice(0, 120));
   await vm.runInContext('openEntity("JAH-ENTITY-999999")', sandbox);
   (S("edview").includes("ENTITY_NOT_FOUND")) ? ok("bad entity ID -> honest error") : bad("entity 404", "");
 
@@ -326,8 +327,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     ? ok("raw HTML: search-scope select present") : bad("scope select markup", "");
   (html.includes('id="welcomemodal"') && html.includes('id="guidemodal"'))
     ? ok("raw HTML: tour + guide markup present") : bad("tour/guide markup", "");
-  (html.includes("New editions report real Signature-ecosystem events; early archive editions are labeled fiction."))
-    ? ok("raw HTML: static two-era line on Fresh-off-the-press") : bad("static two-era line", "");
+  (html.includes("Every edition reports real Signature-ecosystem events, verified from the sites\u2019 own data."))
+    ? ok("raw HTML: real-news line on Fresh-off-the-press") : bad("raw HTML real-news line", "");
 
   console.log("\n==== " + pass + " passed, " + fail + " failed ====");
   process.exit(fail ? 1 : 0);

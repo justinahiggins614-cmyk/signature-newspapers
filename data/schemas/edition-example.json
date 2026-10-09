@@ -1,132 +1,140 @@
 {
  "paper": 0,
- "date": "2025-10-03",
- "issue": 628,
- "volume": 2,
+ "date": "2026-09-28",
+ "issue": 988,
+ "volume": 3,
  "articles": [
   {
    "sec": "lead",
-   "h": "Thousands Turn Out as the Tide Gala Opens in Emberline",
-   "by": "By Alistair Fenwick, Globe staff",
+   "h": "Globally Rejustered Patent Catalog opens its doors — site 8 of 27",
+   "by": "Signature News Desk",
    "body": [
-    "Councilor Elowen Marsh called the vote 'a promise kept,' noting that work crews will begin surveying within the fortnight.",
-    "The plan's backers say The Festival Green will employ hundreds of makers, printers, and engineers over its construction.",
-    "A public reading of the full plan is scheduled at the Civic Athenaeum, and printed copies will be sold for a copper."
+    "The Globally Rejustered Patent Catalog launched today, joining the Signature network as site 8 of 27. Real harvested public patent records across every field of invention.",
+    "Like every site in the network, it ships with its full apparatus: its records, its tools, and its AI helper, all marching toward one million files.",
+    "The launch is one more step in the network's standing order: expand and expand, with growth always sideways and no data ever cut."
    ],
-   "id": "JAH-ARTICLE-000001",
-   "edition_id": "JAH-ED-000001",
-   "fictionality_status": "FICTIONAL_GENERATED",
+   "id": "JAH-ARTICLE-012961",
+   "edition_id": "JAH-ED-002161",
+   "fictionality_status": "ECOSYSTEM_REPORTED",
    "creation_mode": "GENERATED",
    "version": "1.0",
-   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?article=JAH-ARTICLE-000001",
-   "content_hash": "84d14369502a121da2a0e0aa94d85da9c9b6722034044422734069223c2ab9a6"
+   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?article=JAH-ARTICLE-012961",
+   "content_hash": "d5bd64101ebb3d8477f5b1092f7d4f638295f964c2241bf2e6e55ed2440c1d0e"
   },
   {
-   "sec": "region",
-   "h": "Cinderwick Council Votes to Plant Ten Thousand Trees",
-   "by": "By Percival Odd, Globe staff",
+   "sec": "catalogs",
+   "h": "Signature Spec Catalog Pending Patents opens its doors — site 9 of 27",
+   "by": "Records Desk",
    "body": [
-    "Rosalind Pryce, who has kept shop on Lantern Row for thirty years, said the neighborhood 'has never felt more alive.'",
-    "Schoolchildren toured the restoration works on Tuesday, each taking home a printed keepsake.",
-    "In a brief ceremony, Kellan Drisc cut the ribbon and declared the season officially open.",
-    "Merchants report strong trade, and the night ferries have added an extra sailing on Fridays."
+    "The Signature Spec Catalog Pending Patents launched today, joining the Signature network as site 9 of 27. Original draft patent specs, marching toward one million.",
+    "Like every site in the network, it ships with its full apparatus: its records, its tools, and its AI helper, all marching toward one million files.",
+    "The launch is one more step in the network's standing order: expand and expand, with growth always sideways and no data ever cut."
    ],
-   "id": "JAH-ARTICLE-000002",
-   "edition_id": "JAH-ED-000001",
-   "fictionality_status": "FICTIONAL_GENERATED",
+   "id": "JAH-ARTICLE-012962",
+   "edition_id": "JAH-ED-002161",
+   "fictionality_status": "ECOSYSTEM_REPORTED",
    "creation_mode": "GENERATED",
    "version": "1.0",
-   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?article=JAH-ARTICLE-000002",
-   "content_hash": "c5bb95c6d2ae3dcd9875cd757889a6057a503bf749593a2819b48375f4779a3f"
+   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?article=JAH-ARTICLE-012962",
+   "content_hash": "19ad19420d1f4c09ee9bdc83e78945d5f45c3f48be8e12d5481187d5e9987aa7"
   },
   {
-   "sec": "science",
-   "h": "New Study: Juniper Quay Air Sweetest at Dawn",
-   "by": "By Rosalind Pryce, Globe staff",
+   "sec": "catalogs",
+   "h": "Globally Rejustered Patent Catalog fix ships: Fix title encoding leak + blank owner lines; README reword",
+   "by": "Records Desk",
    "body": [
-    "The team documented every step in the public record, and printed diagrams are available at the institute's front desk.",
-    "Funding for the next phase was confirmed by the Lumen Exchange, ensuring the work continues uninterrupted.",
-    "The discovery has already found its way into school lessons across Pelagia.",
-    "The full paper, set in handsome type, runs to forty pages and is free to any reader who asks."
+    "A fix shipped on the Globally Rejustered Patent Catalog today: Fix title encoding leak + blank owner lines; README reword.",
+    "Real harvested public patent records across every field of invention.",
+    "The fix is live on the site now."
    ],
-   "id": "JAH-ARTICLE-000003",
-   "edition_id": "JAH-ED-000001",
-   "fictionality_status": "FICTIONAL_GENERATED",
+   "id": "JAH-ARTICLE-012963",
+   "edition_id": "JAH-ED-002161",
+   "fictionality_status": "ECOSYSTEM_REPORTED",
    "creation_mode": "GENERATED",
    "version": "1.0",
-   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?article=JAH-ARTICLE-000003",
-   "content_hash": "9ec86f97b0af034e8f49095cf4628dc28faf976498760563cba5853e30cb6dd5"
+   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?article=JAH-ARTICLE-012963",
+   "content_hash": "82717dc6842252c3ff2d9448ded11a8af314f28544ee37ab2283c0a3b1ffea3c"
   },
   {
-   "sec": "culture",
-   "h": "Frostgate Choir to Sing the Dawn In",
-   "by": "By Imogen Starr, Globe staff",
+   "sec": "catalogs",
+   "h": "Signature Spec Catalog Pending Patents: fresh draft specs land in today's drip",
+   "by": "Records Desk",
    "body": [
-    "Young artists in the audience were seen sketching throughout, a hopeful sign for the future.",
-    "Local printers have already produced a handsome program, which sold out before curtain.",
-    "A second run is under discussion; the box office opens to subscribers on Monday."
+    "The Signature Spec Catalog Pending Patents regular drip added a fresh batch of draft specs today.",
+    "Original draft patent specs, marching toward one million.",
+    "The site keeps marching toward one million draft specs, with fresh batches landing around the clock. Growth goes sideways into new storage, never by trimming the archive."
    ],
-   "id": "JAH-ARTICLE-000004",
-   "edition_id": "JAH-ED-000001",
-   "fictionality_status": "FICTIONAL_GENERATED",
+   "id": "JAH-ARTICLE-012964",
+   "edition_id": "JAH-ED-002161",
+   "fictionality_status": "ECOSYSTEM_REPORTED",
    "creation_mode": "GENERATED",
    "version": "1.0",
-   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?article=JAH-ARTICLE-000004",
-   "content_hash": "b4a06a9fa0ab796a0da19c8c30bf8df04b963c2be5ff7ef12484b9830c729ce7"
+   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?article=JAH-ARTICLE-012964",
+   "content_hash": "befeab94732f6428e71038df1958d910083f23b0639492a5207aef556e2ee12e"
   },
   {
-   "sec": "business",
-   "h": "Harbor Trade Through Aldermere Hits New High",
-   "by": "By Mabel Drummond, Globe staff",
+   "sec": "network",
+   "h": "Around the network: September 28, 2026",
+   "by": "Network Desk",
    "body": [
-    "Beatrix Wold, speaking for the Observatory at Frostgate, attributed the figures to 'steady hands and honest work.'",
-    "The harbor manifests show cargo up across every category, from ink to timber.",
-    "Beatrix Wold, speaking for the Solar Conservatory, attributed the figures to 'steady hands and honest work.'"
+    "Beyond the front page, the network kept its usual pace today. Here is what else shipped across the 27 sites.",
+    "Globally Rejustered Patent Catalog — Fix catalog search (broken script syntax).",
+    "Globally Rejustered Patent Catalog — Harvest update.",
+    "Globally Rejustered Patent Catalog — 1351 patents.",
+    "Signature Spec Catalog Pending Patents — Spec drip fill.",
+    "Signature Spec Catalog Pending Patents — 302 new categories across 24 groups (+2,718 seeds with version variants); page: nav, Catalogs browser, Wiki + Leaks….",
+    "Globally Rejustered Patent Catalog — Add searchable catalog page (1,351 patents).",
+    "Every item above is drawn from the sites' own records for 2026-09-28 — commits, drip logs and the operations journal."
    ],
-   "id": "JAH-ARTICLE-000005",
-   "edition_id": "JAH-ED-000001",
-   "fictionality_status": "FICTIONAL_GENERATED",
+   "id": "JAH-ARTICLE-012965",
+   "edition_id": "JAH-ED-002161",
+   "fictionality_status": "ECOSYSTEM_REPORTED",
    "creation_mode": "GENERATED",
    "version": "1.0",
-   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?article=JAH-ARTICLE-000005",
-   "content_hash": "53f69446faf0c0034eca6db98820d2a8e604ef3aa4e0c18fdc8d59c4f4461f1c"
+   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?article=JAH-ARTICLE-012965",
+   "content_hash": "c90512432d735949656648e04449c48bf6357e846d6b42eb57d484dec3c23309"
   },
   {
-   "sec": "opinion",
-   "h": "Editorial: Keep the Night Markets Open Late",
-   "by": "By Tamsin Cole, Globe staff",
+   "sec": "network",
+   "h": "Around the network: September 28, 2026",
+   "by": "Network Desk",
    "body": [
-    "A city is its readers, and a reader is made one morning at a time, over coffee and these pages.",
-    "Plant the trees, ring the bells, and mind the small courtesies; great cities are built of such things.",
-    "To the correspondent who praised the morning edition: the praise belongs to the compositors, who rise before the birds."
+    "Beyond the front page, the network kept its usual pace today. Here is what else shipped across the 27 sites.",
+    "Signature Spec Catalog Pending Patents — chip, progress bar, infobox line.",
+    "Signature Spec Catalog Pending Patents — Add full example prose.",
+    "Signature Spec Catalog Pending Patents — 10,000 draft JAH specs + specs.html.",
+    "Globally Rejustered Patent Catalog — light registry theme, seal masthead, formal footer.",
+    "Globally Rejustered Patent Catalog — all CPC fields A-H, dynamic area pills + count.",
+    "Globally Rejustered Patent Catalog — stats chips, sort control, floating top button, card polish.",
+    "Every item above is drawn from the sites' own records for 2026-09-28 — commits, drip logs and the operations journal."
    ],
-   "id": "JAH-ARTICLE-000006",
-   "edition_id": "JAH-ED-000001",
-   "fictionality_status": "FICTIONAL_GENERATED",
+   "id": "JAH-ARTICLE-012966",
+   "edition_id": "JAH-ED-002161",
+   "fictionality_status": "ECOSYSTEM_REPORTED",
    "creation_mode": "GENERATED",
    "version": "1.0",
-   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?article=JAH-ARTICLE-000006",
-   "content_hash": "f06417583937ce1dd388ed29bd1686ca3aa7ab690ffc18f8fedc0acf10cf6add"
+   "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?article=JAH-ARTICLE-012966",
+   "content_hash": "97ef6fd071d7cbc63b5e441e323c4c0d62715d37ff8c6ae7bc68663161c5db53"
   }
  ],
- "honesty": "Signature press: this edition is an original generated newspaper of the Signature world. All people, places, teams, organizations, and events named herein are invented. It reports no real-world news and names no real persons.",
- "id": "JAH-ED-000001",
+ "honesty": "Signature ecosystem press: this edition reports real events from the 27-website Signature network — drip milestones, fixes shipped, launches and records, verified against the sites' own data. It reports no real-world news and names no real-world persons.",
+ "coverage": "ecosystem",
+ "id": "JAH-ED-002161",
  "paper_id": "JAH-PAPER-000001",
- "fictionality_status": "FICTIONAL_GENERATED",
+ "created": "2026-09-28",
+ "fictionality_status": "ECOSYSTEM_REPORTED",
+ "status": "PUBLISHED",
  "creation_mode": "GENERATED",
  "version": "1.0",
- "status": "PUBLISHED",
- "created": "2025-10-03",
- "updated": "2025-10-03",
- "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?edition=JAH-ED-000001",
- "article_count": 6,
+ "updated": "2026-09-28",
  "article_ids": [
-  "JAH-ARTICLE-000001",
-  "JAH-ARTICLE-000002",
-  "JAH-ARTICLE-000003",
-  "JAH-ARTICLE-000004",
-  "JAH-ARTICLE-000005",
-  "JAH-ARTICLE-000006"
+  "JAH-ARTICLE-012961",
+  "JAH-ARTICLE-012962",
+  "JAH-ARTICLE-012963",
+  "JAH-ARTICLE-012964",
+  "JAH-ARTICLE-012965",
+  "JAH-ARTICLE-012966"
  ],
- "content_hash": "96d27b3ed46beaba2141588723d41ec2ea1ffa925a070fbf2d6f27a393d54fd0"
+ "article_count": 6,
+ "content_hash": "ecc0c4b117d1e5a1943ef47372855398b2a2b7ee4cce81b1b7115aacb15ce054"
 }

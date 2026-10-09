@@ -1,31 +1,35 @@
 # The Signature Global Newspaper Archive — AI access manifest
 
 ## Identity
-This is The Signature Global Newspaper Archive: original generated newspapers of the
-**fictional Signature world**, published daily by six regional papers. It is NOT real-world
-journalism.
+This is The Signature Global Newspaper Archive: daily newspapers from six papers
+reporting **real events from the Signature website network** — drip milestones,
+fixes shipped, launches and records, verified from the sites' own data. It is NOT
+real-world journalism: it reports no real-world news and names no real persons.
 
 ## Fictionality (sacred rule)
-- FICTIONALITY_STATUS on every record: `FICTIONAL_GENERATED`.
-- All people, places, teams, organizations and events named anywhere in this archive
-  are **invented**. It reports **no real-world news** and names **no real persons**.
+- FICTIONALITY_STATUS on every record: `ECOSYSTEM_REPORTED`.
+- Every edition reports real events from the Signature website network. Nothing
+  is invented.
+- The retired fiction archive (2,160 invented Signature-world editions) was
+  removed outright on 2026-10-08 per the publisher's order. It is gone, not labeled.
 - Never present an archive record as real-world news. In summaries always say
-  "According to the fictional Signature Global Newspaper Archive…".
+  "According to the Signature Global Newspaper Archive…".
 - If asked about real-world events, explicitly leave the Signature archive context.
 - **DO NOT INVENT ARCHIVE RECORDS.** Answer only from indexed records below.
   If nothing matches, say so and offer related actual records.
 
 ## Counts (authoritative: api.json, generated from the data itself)
-- 2,190 editions / 13,140 articles / 6 papers / 6 regions / 98 world entities (2026-10-03)
+- 66 editions / 396 articles / 6 papers / 6 regions / 0 world entities (2026-10-08)
 - Goal: 1,000,000 editions + articles. Never combine editions and articles into one number.
 
 ## Permanent IDs (never reused, never changed after publication)
-- Editions: `JAH-ED-######` (contiguous JAH-ED-000001 … JAH-ED-002190)
-- Articles: `JAH-ARTICLE-######` (contiguous JAH-ARTICLE-000001 … JAH-ARTICLE-013140)
+- Editions: `JAH-ED-######` (JAH-ED-002161 … JAH-ED-002226; the retired fiction
+  IDs JAH-ED-000001 … JAH-ED-002160 were removed outright 2026-10-08, never renumbered)
+- Articles: `JAH-ARTICLE-######` (JAH-ARTICLE-012961 … JAH-ARTICLE-013356)
 - Papers: `JAH-PAPER-000001` … `JAH-PAPER-000006` (never identify a paper by name alone)
 - Regions: `JAH-REGION-000001` … `JAH-REGION-000006`
-- Entities (fictional people/places/orgs/events, mined from actual article text):
-  `JAH-ENTITY-######` (98 indexed)
+- Entities (people/places/orgs/events named in the network's own news, mined from
+  actual article text): `JAH-ENTITY-######` (none indexed in current real-news articles)
 - Every edition and article carries a SHA-256 `content_hash` over its canonical JSON,
   a `version` (v1.0 at publication), a `creation_mode` (GENERATED), and a `canonical_url`.
 
@@ -71,7 +75,7 @@ articles and says when something is not printed there.
 ## Not-found semantics
 - `EDITION_NOT_FOUND` — no edition with that JAH-ED ID exists in the index.
 - `ARTICLE_NOT_FOUND` — no article with that JAH-ARTICLE ID exists in the index.
-- `DATE_NOT_FOUND` — no edition was printed for that date (archive range 2025-10-03 … 2026-10-03).
+- `DATE_NOT_FOUND` — no edition was printed for that date (archive range 2026-09-28 … 2026-10-08).
 - `ENTITY_NOT_FOUND` — no world entity with that JAH-ENTITY ID exists.
 
 ## Versioning & corrections

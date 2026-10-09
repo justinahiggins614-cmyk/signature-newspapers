@@ -489,8 +489,9 @@ def eid(n):
 
 def add_editions(ed_list, state):
     """Assign IDs, append into weekly chunks. ed_list: [(paper_idx, date)] oldest-first.
-    Dates before ECO_START get fiction editions; ECO_START onward get real
-    ecosystem editions. Existing (paper, date) pairs are never duplicated."""
+    Every edition reports real Signature-ecosystem news (the fiction generator was
+    retired 2026-10-08 per the publisher's order). Existing (paper, date) pairs
+    are never duplicated."""
     by_week = {}
     for pi, d in ed_list:
         wi = week_idx(d)
@@ -674,8 +675,7 @@ def stamp_browse():
         '<div class="stat"><b>%s</b><span>editions on file</span></div>'
         '<div class="stat"><b>%s</b><span>articles printed</span></div>'
         '<div class="stat"><b>%s</b><span>real-news editions</span></div>'
-        '<div class="stat"><b>%s</b><span>fiction-archive editions</span></div>'
-        % (format(n_ed, ","), format(n_art, ","), format(n_eco, ","), format(n_fic, ",")))
+        % (format(n_ed, ","), format(n_art, ","), format(n_eco, ",")))
     p = os.path.join(ROOT, "browse.html")
     with open(p, encoding="utf-8") as f:
         src = f.read()
@@ -868,10 +868,10 @@ def build_static_archive(meta):
         "<style>%s</style></head><body><div class=\"wrap\">"
         "<header><h1>The Signature Global Newspaper Archive</h1>"
         "<p>Static press digests &mdash; every edition, plain HTML</p></header>"
-        "<div class=\"hon\"><b>Signature press.</b> Editions from 2026-09-28 onward report real "
-        "events from the 35-website Signature network. Earlier editions are retired "
-        "Signature-world fiction — invented people, places and events — and are labeled "
-        "as such on their pages. No real-world news.</div>"
+        "<div class=\"hon\"><b>Signature press.</b> Every edition reports real "
+        "events from the Signature website network &mdash; drip milestones, fixes "
+        "shipped, launches and records, verified from the sites' own data. "
+        "No real-world news, no real persons named.</div>"
         "<ul class=\"weeks\">%s</ul>"
         "<p class=\"back\"><a href=\"%s\">&larr; Back to the Newspaper Archive</a></p>"
         "<script>(function () {  var mount = document.querySelector('header .booksearch') ||              document.querySelector('nav.jtabbar') ||              document.querySelector('header nav') ||              document.querySelector('header') ||              document.body;  if (window.JAHProfile && JAHProfile.ui) JAHProfile.ui.renderButton(mount);})();</script><script>(function () { if (window.JAHProfile && JAHProfile.ui) { var mount = document.querySelector('header') || document.body; JAHProfile.ui.renderGreeting(mount); } })();</script></div></body></html>" % (WEEK_CSS, lis, SITE))
@@ -928,14 +928,14 @@ def build_all():
             "latest_edition": mine[-1][0] if mine else None,
             "editorial_model": "generated-daily",
             "creation_mode": "GENERATED", "version": "1.0",
-            "fictionality_status": record_std.FICTIONALITY,
+            "fictionality_status": record_std.ECO_FICTIONALITY,
             "canonical_url": SITE + "?paper=" + p["paper_id"],
             "created": p["founded"], "updated": local_today().isoformat(),
         })
         regions.append({
             "region_id": p["region_id"], "name": p["region"],
             "papers": [p["paper_id"]],
-            "fictionality_status": record_std.FICTIONALITY,
+            "fictionality_status": record_std.ECO_FICTIONALITY,
             "note": ("News desk beat, not a place: this paper covers one beat of "
                      "the Signature website network (catalogs, AI, builders, "
                      "culture, markets) plus the flagship all-network edition."),
@@ -977,9 +977,9 @@ def build_all():
         "site_url": SITE,
         "title_provisional": True,
         "description": ("Real Signature-ecosystem news: daily editions from six papers "
-                        "covering the 35-website Signature network — drip milestones, fixes shipped, "
+                        "covering the Signature website network — drip milestones, fixes shipped, "
                         "launches and records, verified from the sites' own data. "
-                        "Editions before 2026-09-28 are retired Signature-world fiction, clearly labeled."),
+                        "No real-world news, no real persons named."),
         "updated": local_today().isoformat(),
         "counts": {"editions": n_ed, "articles": n_art,
                    "papers": len(PAPERS), "regions": len(PAPERS)},
@@ -1009,11 +1009,12 @@ def build_all():
         "feed": "data/index/newspapers-catalog.json",
         "sitemap_index": "sitemap-index.xml",
         "static_archive": "archive/index.html",
-        "honesty": ("Two-era archive. New editions (2026-09-28 onward) report real events from "
-                    "the 35-website Signature network, verified from the sites' own data. Earlier "
-                    "editions are retired Signature-world fiction, clearly labeled. "
+        "honesty": ("Every edition reports real events from the Signature website network — "
+                    "drip milestones, fixes shipped, launches and records, verified from the "
+                    "sites' own data. The retired fiction archive was removed outright on "
+                    "2026-10-08 per the publisher's order; nothing invented remains on file. "
                     "No real-world news, no real persons named."),
-        "fictionality_status": record_std.FICTIONALITY,
+        "fictionality_status": record_std.ECO_FICTIONALITY,
     }
     with open(os.path.join(ROOT, "api.json"), "w") as f:
         json.dump(api, f, indent=1)
@@ -1035,13 +1036,12 @@ def build_all():
         "index_version": "1.0",
         "index_hash": hashes.get("editions.idx.json.gz"),
         "generator_version": "code/gen_editions.py (SALT 20261002)",
-        "fictionality_status": record_std.FICTIONALITY,
-        "fictionality_note": ("Two-era archive. Editions dated 2026-09-28 onward carry "
-            "ECOSYSTEM_REPORTED: real news from the 35-website Signature network, every "
-            "story grounded in the sites' own data. Editions before 2026-09-28 carry "
-            "FICTIONAL_GENERATED: retired Signature-world fiction — invented people, "
-            "places and events — kept in the archive and clearly labeled, never "
-            "presented as fact. No real-world news, no real persons named."),
+        "fictionality_status": record_std.ECO_FICTIONALITY,
+        "fictionality_note": ("The archive holds only real Signature-ecosystem news: every "
+            "edition reports real events from the Signature website network, verified from "
+            "the sites' own data. The retired fiction archive (2,160 editions) was removed "
+            "outright on 2026-10-08 per the publisher's order. No real-world news, no real "
+            "persons named."),
         "license": "Original Signature-generated content. Read, copy and download freely from this archive.",
         "created": "2025-10-03",
         "updated": local_today().isoformat(),
@@ -1110,6 +1110,12 @@ def cmd_backfill(days=365):
     start = today - datetime.timedelta(days=days)
     if start < EPOCH_START:
         start = EPOCH_START
+    if start < ECO_START:
+        # Real-news-only policy (publisher's order 2026-10-08): the fiction
+        # generator is retired. Backfills cover the ecosystem era only.
+        print("backfill: start %s predates the ecosystem era; beginning at %s" %
+              (start.isoformat(), ECO_START.isoformat()))
+        start = ECO_START
     end = today - datetime.timedelta(days=1)
     work = []
     d = start
