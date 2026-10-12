@@ -8,9 +8,14 @@ const fs = require("fs"), vm = require("vm"), zlib = require("zlib"),
 
 const REPO = "/home/hatch/workspace/signature-newspapers";
 const html = fs.readFileSync(path.join(REPO, "index.html"), "utf8");
-const m = html.match(/^<script>\n([\s\S]*?)^<\/script>$/m);
-if (!m) { console.error("FAIL: inline script not found"); process.exit(1); }
-let src = m[1];
+// Select the MAIN app block (the one defining boot()), not merely the first
+// inline block: index.html may carry helper blocks (e.g. SigTTS dead-voice
+// guard) ahead of the main block (2026-10-12 fix — read-aloud commit added
+// blocks before the main one and the old first-block assumption broke).
+const _blocks = [...html.matchAll(/^<script>\n([\s\S]*?)^<\/script>$/gm)];
+const _main = _blocks.find(b => /(?:^|[^A-Za-z0-9_])function boot\s*\(/.test(b[1]));
+if (!_main) { console.error("FAIL: main inline script (boot) not found"); process.exit(1); }
+let src = _main[1];
 
 let pass = 0, fail = 0;
 function ok(name) { pass++; console.log("PASS:", name); }
