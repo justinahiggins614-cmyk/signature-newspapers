@@ -21,7 +21,10 @@ import sys
 REPO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 CANON_PATH = os.path.expanduser(
     "~/workspace/jah-ai-models/ai-catalog.json")
-CANON_ID = re.compile(r"JAH-AI-[A-Z]+-\d+")
+# Range-aware: phone-book news headlines report ID ranges like
+# JAH-AI-SIG-014..017 — the negative lookahead keeps a range START from
+# matching as a claimed ID (the range is news, not a claimed identity).
+CANON_ID = re.compile(r"JAH-AI-[A-Z]+-\d+(?![\d.])")
 
 
 def main():
