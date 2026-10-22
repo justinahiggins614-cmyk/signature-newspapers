@@ -1,19 +1,19 @@
 {
- "generated": "2026-10-21",
+ "generated": "2026-10-22",
  "algorithm": "SHA-256",
  "files": {
-  "api.json": "c016dfcea7259c17797f020b86d87dc94c19eadd91b69d1715ddcd2bea85e9b6",
-  "articles.idx.json": "63cd90cd813543361430881bb464f929ef26af59c50845b2f0c56645940fdb35",
-  "articles.idx.json.gz": "a41225e0c76fb073eba5946bfb638c551d3e3b42e5753038d83b86db92f5a9a9",
-  "articles.search.json": "3259925754f81b79ff4566928f0a8d07e6e2dbb2f8b820081dd6d7240c2a2bde",
-  "articles.search.json.gz": "7701591f5db4c8d608e9bed85375a08a3ee03f68d82ea99d702f8dcad3b3ec00",
-  "editions.idx.json": "e997e185a5f503c258e6c7719d759ed5152572ab57f8fe69c973b0f619686d8e",
-  "editions.idx.json.gz": "5dfc8024e59053816d30d6c464d745c742800103043c81b9dc6d4450fe3d24c3",
+  "api.json": "18141e1b41d87bb9999028d6d972890b76d49618e119691479c76e17bbf8641c",
+  "articles.idx.json": "7eca86bf4e16261b625db0fce267f4c2ad6d91b5d7aae0ad0339da8a264cb4a2",
+  "articles.idx.json.gz": "572bf3a20fef405b03a62add8e6d259174d3b68a0c9c0e5e5054ee525807cd3d",
+  "articles.search.json": "d324f7a28593576c117cc6cf70f77930e2e23c0a070fca96c20651c9e9acaf35",
+  "articles.search.json.gz": "adf86606dfe99b9fb4cff73cab130e8f7dd490af53343ba27a77805b076afc3a",
+  "editions.idx.json": "ce8edd362b77d65deb44780fac33b321ab6516e6dec132fc0cc1aebe84f7b66a",
+  "editions.idx.json.gz": "e7aa35e4e9783aaeeae33b864172ea325b1f3194ca71772e129fb8df1ae61b33",
   "entities.idx.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-  "entities.idx.json.gz": "027b432fd4300a640fa2f19602511e21827fb4ac16670bd0fa4f83fa7516bfcf",
-  "hash-manifest.json": "ebac752788c9a8283cc19af92f4756618fde844c1d43eb74d3f051cb8a934850",
-  "newspapers-catalog.json": "50203a1dfc938fe996bf011557d8289816be84ab21a1c5c81bd59a346991bdb4",
-  "papers.json": "a71018bdd6f665b1ec2c8133b46df098f68f3122a875763146bab6537ebef5aa",
+  "entities.idx.json.gz": "e1e9356bd2b6744d2c433a2068fe13a7af77e46e586e26a048b77e237c0c897c",
+  "hash-manifest.json": "73ff58d655c223b57c51e0af6946407561f9b974f6d0711144e9a74d5996904d",
+  "newspapers-catalog.json": "bd8a003e324ee907b9fa94aa37217458d88d66e9303959fd6e8933f881c395a8",
+  "papers.json": "d0f6cbe36d1ee24bfd58abc6b3c474e3f3217fa1fa6745522e1ccb63f80cf32a",
   "regions.json": "1e017a99fd931181e7600906abcc19a9ae43fba6df313be1aa394c243d5c1852"
  }
 }
