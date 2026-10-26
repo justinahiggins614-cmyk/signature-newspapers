@@ -27,6 +27,17 @@ CANON_PATH = os.path.expanduser(
 CANON_ID = re.compile(r"JAH-AI-[A-Z]+-\d+(?![\d.])")
 
 
+def claimed_ids(text):
+    """Canon-ID matches that are claims, not range endpoints.
+
+    A match immediately preceded by ".." is the END of a reported ID range
+    (e.g. "JAH-AI-SIG-1599..JAH-AI-SIG-1622") — news, not a claimed
+    identity, same as the range start the lookahead already excludes.
+    """
+    return {m.group(0) for m in CANON_ID.finditer(text)
+            if not text[max(0, m.start() - 2):m.start()].endswith("..")}
+
+
 def main():
     with open(CANON_PATH, encoding="utf-8") as f:
         canon_raw = json.load(f)
@@ -46,13 +57,13 @@ def main():
                 issues.append(f"could not read {vf}: {e}")
                 continue
             checked += 1
-            for m in set(CANON_ID.findall(blob)):
+            for m in claimed_ids(blob):
                 if m in canon_ids:
                     issues.append(
                         f"edition data {os.path.basename(vf)} references canon AI ID {m}")
     for fn in ("index.html",):
         text = open(os.path.join(REPO, fn), encoding="utf-8").read()
-        for m in set(CANON_ID.findall(text)):
+        for m in claimed_ids(text):
             if m in canon_ids:
                 issues.append(f"SERVED FILE {fn} references canon AI ID {m}")
 
