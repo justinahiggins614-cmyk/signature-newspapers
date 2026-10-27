@@ -1,19 +1,19 @@
 {
- "generated": "2026-10-26",
+ "generated": "2026-10-27",
  "algorithm": "SHA-256",
  "files": {
   "api.json": "79ffdbefc27cb07fd6ef87c67687b5ded99645029acb68f70a1d04299aa82838",
-  "articles.idx.json": "e4cf3e27e7b7f61308605d3e71e0094b2d7912454b9e358e688293aee593a6f6",
-  "articles.idx.json.gz": "123379f4dcfc8ae1796d7f36b3fd2de95718ce464a942456944767e72ba2302b",
-  "articles.search.json": "62c985a33d1603a8ca0a2c4fd55737494ec30d3b508a7433d1db589fd5188126",
-  "articles.search.json.gz": "6cd1c9eaa8bda7418d97e0938904a0023bef989c05ca03fa8019bd968180c22d",
-  "editions.idx.json": "5dca2ebeb278962a12eff3bb40d4a07e910182de82ee8b8003d9a0eabbca23e9",
-  "editions.idx.json.gz": "ddf4b95ff8a9a358d4b6b64bba8e2a08cdada56fffd6373bc0781956313a6f38",
+  "articles.idx.json": "d64b4f08b7c266e2b0037093a51e1f567f171226f74b786959f4d7bf89bab9c2",
+  "articles.idx.json.gz": "24cb205b032ee7e524bda113215246b5a5cdef6b5a562b8aeef15017a9a401af",
+  "articles.search.json": "3044b21b6393de484e902043d6d571f87db3137a1f62ff43b67bf8fc7ea986c8",
+  "articles.search.json.gz": "93eb64a6a2c01633ae53f8affd295dca57b137fa0d9bc0ed7ef8e2ddf76ca2a1",
+  "editions.idx.json": "a1709cbe55e665e92bbc26f7df079cb6b552c54fd09a51df3eebdb6879779cf9",
+  "editions.idx.json.gz": "061534211b78a9586ffd058b70a55b209bfef8ec56f58b17083626f38471cb65",
   "entities.idx.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-  "entities.idx.json.gz": "34ea9ec723767a47390f9f627b87b9e5e2ed861a6adbb1885e1bbc0c7e939938",
-  "hash-manifest.json": "b0e3d98f469e786a6a43b0424aa87c453e85a098d8dc0f50d6611015feb754ef",
+  "entities.idx.json.gz": "a0f6ae447f79f8e1af80942922ec5705c4be67309a833d018e5f3d7edb74fda9",
+  "hash-manifest.json": "a93df55b60bf83ed774c1a39fc454bc12c595d7274a7694afc8a058f42ab5fbb",
   "newspapers-catalog.json": "fed8a5cb5d032c31cd735f087fce2e6fbe3dadc565494058d3768bf122cebc2b",
-  "papers.json": "d3eff5274a3182560d4004dd9f41425f7218859792edfe0664e14605f05423fb",
+  "papers.json": "cc4340461854bc73d8fa1f7a1887b72dd074a164bfe1777ee5af3328045254ff",
   "regions.json": "1e017a99fd931181e7600906abcc19a9ae43fba6df313be1aa394c243d5c1852"
  }
 }
