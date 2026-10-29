@@ -3,16 +3,16 @@
  "site_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/",
  "title_provisional": true,
  "description": "Real Signature-ecosystem news: daily editions from six papers covering the Signature website network \u2014 drip milestones, fixes shipped, launches and records, verified from the sites' own data. No real-world news, no real persons named.",
- "updated": "2026-10-28",
+ "updated": "2026-10-29",
  "counts": {
-  "editions": 186,
-  "articles": 1116,
+  "editions": 192,
+  "articles": 1152,
   "papers": 6,
   "regions": 6
  },
  "schema_version": "JAH-NEWSPAPER-RECORD/1.0",
- "catalog_version": "2026-10-28",
- "archive_version": "2026-10-28",
+ "catalog_version": "2026-10-29",
+ "archive_version": "2026-10-29",
  "papers": [
   {
    "paper_id": "JAH-PAPER-000001",
@@ -65,7 +65,7 @@
  ],
  "date_range": [
   "2026-09-28",
-  "2026-10-28"
+  "2026-10-29"
  ],
  "deep_links": {
   "edition": "https://justinahiggins614-cmyk.github.io/signature-newspapers/?edition=JAH-ED-000001",
