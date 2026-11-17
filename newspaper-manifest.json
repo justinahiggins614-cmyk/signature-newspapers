@@ -2,24 +2,24 @@
  "site_id": "SIGNATURE-GLOBAL-NEWSPAPER-ARCHIVE",
  "site_name": "The Signature Global Newspaper Archive",
  "site_version": "1.0",
- "archive_version": "2026-11-16",
- "total_editions": 300,
- "total_articles": 1800,
+ "archive_version": "2026-11-17",
+ "total_editions": 306,
+ "total_articles": 1836,
  "total_papers": 6,
  "total_regions": 6,
  "total_entities": 0,
  "earliest_date": "2026-09-28",
- "latest_date": "2026-11-16",
+ "latest_date": "2026-11-17",
  "goal": "1,000,000 editions + articles",
  "schema_version": "JAH-NEWSPAPER-RECORD/1.0",
  "index_version": "1.0",
- "index_hash": "0d9698753698283bab3e8d421ec6c29ab8ccb9ee1ad4a8156641035bc6168ab5",
+ "index_hash": "0c0b4ba48dff2ec0bc7e95cd7b2f6eb83daeba6e0341b5425ac3be89b1fde89c",
  "generator_version": "code/gen_editions.py (SALT 20261002)",
  "fictionality_status": "ECOSYSTEM_REPORTED",
  "fictionality_note": "The archive holds only real Signature-ecosystem news: every edition reports real events from the Signature website network, verified from the sites' own data. The retired fiction archive (2,160 editions) was removed outright on 2026-10-08 per the publisher's order. No real-world news, no real persons named.",
  "license": "Original Signature-generated content. Read, copy and download freely from this archive.",
  "created": "2025-10-03",
- "updated": "2026-11-16",
+ "updated": "2026-11-17",
  "canonical_url": "https://justinahiggins614-cmyk.github.io/signature-newspapers/",
  "records": {
   "edition_id": "JAH-ED-######",
@@ -46,54 +46,54 @@
    "name": "The Signature Daily Globe",
    "region_id": "JAH-REGION-000001",
    "region": "the Signature ecosystem",
-   "edition_count": 50,
+   "edition_count": 51,
    "first_edition": "JAH-ED-002161",
-   "latest_edition": "JAH-ED-002455"
+   "latest_edition": "JAH-ED-002461"
   },
   {
    "paper_id": "JAH-PAPER-000002",
    "name": "The Meridian Herald",
    "region_id": "JAH-REGION-000002",
    "region": "Catalogs & Records",
-   "edition_count": 50,
+   "edition_count": 51,
    "first_edition": "JAH-ED-002162",
-   "latest_edition": "JAH-ED-002456"
+   "latest_edition": "JAH-ED-002462"
   },
   {
    "paper_id": "JAH-PAPER-000003",
    "name": "The Argent Post",
    "region_id": "JAH-REGION-000003",
    "region": "AI & Systems",
-   "edition_count": 50,
+   "edition_count": 51,
    "first_edition": "JAH-ED-002163",
-   "latest_edition": "JAH-ED-002457"
+   "latest_edition": "JAH-ED-002463"
   },
   {
    "paper_id": "JAH-PAPER-000004",
    "name": "The Northlight Times",
    "region_id": "JAH-REGION-000004",
    "region": "Builders & Labs",
-   "edition_count": 50,
+   "edition_count": 51,
    "first_edition": "JAH-ED-002164",
-   "latest_edition": "JAH-ED-002458"
+   "latest_edition": "JAH-ED-002464"
   },
   {
    "paper_id": "JAH-PAPER-000005",
    "name": "The Sunspire Gazette",
    "region_id": "JAH-REGION-000005",
    "region": "Library & Culture",
-   "edition_count": 50,
+   "edition_count": 51,
    "first_edition": "JAH-ED-002165",
-   "latest_edition": "JAH-ED-002459"
+   "latest_edition": "JAH-ED-002465"
   },
   {
    "paper_id": "JAH-PAPER-000006",
    "name": "The Tidewater Chronicle",
    "region_id": "JAH-REGION-000006",
    "region": "Markets",
-   "edition_count": 50,
+   "edition_count": 51,
    "first_edition": "JAH-ED-002166",
-   "latest_edition": "JAH-ED-002460"
+   "latest_edition": "JAH-ED-002466"
   }
  ]
 }
